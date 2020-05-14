@@ -1,0 +1,27 @@
+#%RAML 1.0 Library
+
+types:
+  UuidString:
+    displayName: UUID v4 String
+    type: string
+    pattern: "^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}$"
+  ProjectType:
+    type: string
+    enum:
+      - AmoebaDB
+      - ClinepiDB
+      - CryptoDB
+      - FungiDB
+      - GiardiaDB
+      - HostDB
+      - MicrobiomeDB
+      - MicrosporidiaDB
+      - Orthomcl
+      - PiroplasmaDB
+      - PlasmoDB
+      - SchistoDB
+      - ToxoDB
+      - TrichDB
+      - TritrypDB
+      - Vectorbase
+

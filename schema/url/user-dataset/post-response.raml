@@ -1,0 +1,14 @@
+#%RAML 1.0 Library
+
+uses:
+  common: ../../common.raml
+
+types:
+  PrepResponse:
+    additionalProperties: false
+    properties:
+      status:
+        type: string
+        enum:
+          - ok
+      token: common.UuidString
