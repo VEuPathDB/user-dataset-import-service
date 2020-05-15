@@ -24,4 +24,15 @@ types:
       - TrichDB
       - TritrypDB
       - Vectorbase
-
+  JobStatus:
+    type: string
+    enum:
+      - recieving-from-client
+      - sending-to-handler
+      - handler-unpacking
+      - handler-processing
+      - handler-packing
+      - recieving-from-handler
+      - sending-to-datastore
+      - success
+      - failed

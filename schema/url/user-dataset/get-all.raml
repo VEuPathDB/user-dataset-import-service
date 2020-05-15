@@ -1,0 +1,10 @@
+#%RAML 1.0 Library
+
+uses:
+  common: ../../common.raml
+  get: ./get-by-id.raml
+
+types:
+  AllJobResponse:
+    type: array
+    items: get.StatusResponse
