@@ -24,3 +24,12 @@ types:
         minItems: 1
         items:
           type: common.ProjectType
+  PrepResponse:
+    additionalProperties: false
+    properties:
+      status:
+        type: string
+        enum:
+          - ok
+      token: common.UuidString
+
