@@ -22,6 +22,7 @@ securitySchemes:
   displayName: User Dataset Uploading
   get:
     displayName: All User Dataset Uploads
+    securedBy: header-auth
     description: List user dataset uploads and their statuses
     responses:
       200:
@@ -35,6 +36,7 @@ securitySchemes:
           type: err.ServerError
   post:
     displayName: Start User Dataset Upload
+    securedBy: header-auth
     description: |
       Prepare a new upload process.
 
@@ -66,6 +68,7 @@ securitySchemes:
           will return 401.
     get:
       description: Shows status information for the job with the given ID
+      securedBy: header-auth
       responses:
         200:
           body:
@@ -77,6 +80,7 @@ securitySchemes:
           body:
             type: err.ServerError
     post:
+      securedBy: header-auth
       description: |
         Upload a dataset package to be processed and made available on the sites
         detailed in the prep request.
