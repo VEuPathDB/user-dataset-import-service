@@ -1,0 +1,29 @@
+#%RAML 1.0 Library
+
+uses:
+  common: ../../common.raml
+
+types:
+  AllJobResponse:
+    type: array
+    items: StatusResponse
+  StatusResponse:
+    additionalProperties: false
+    properties:
+      id: common.UuidString
+      name: string
+      description?: string
+      stepPercent:
+        displayName: Step Completion Percentage
+        description: |
+          Optional field avaible for process steps where the completion percent
+          is calculable, such as during file transfer.
+        type: integer
+        minimum: 0
+        maximum: 100
+      projects:
+        type: array
+        items: common.ProjectType
+      status: common.JobStatus
+      message: string
+      started: datetime

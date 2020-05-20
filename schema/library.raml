@@ -10,37 +10,7 @@
 types:
   AllJobResponse:
     type: array
-    uniqueItems: null
     items: StatusResponse
-    minItems: null
-    maxItems: null
-  AnotherType:
-    type: object
-    properties:
-      something?: string
-  HelloPostRequest:
-    type: object
-    properties:
-      greet:
-        type: string
-        description: Who do you want to say hello to?
-    additionalProperties: false
-  HelloPostResponse:
-    type: object
-    properties:
-      message:
-        type: string
-        description: Generated greeting
-    additionalProperties: false
-  HelloResponse:
-    type: object
-    properties:
-      anotherType: AnotherType
-      greeting:
-        type: string
-        enum:
-        - Hello World
-    additionalProperties: false
   JobStatus:
     type: string
     enum:
@@ -66,10 +36,8 @@ types:
       projects:
         type: array
         description: Target projects for which this user dataset should be made available for install.
-        uniqueItems: null
         items: ProjectType
         minItems: 1
-        maxItems: null
       summary:
         type: string
         description: Optional summary of the user dataset.
@@ -83,6 +51,16 @@ types:
         enum:
         - ok
       token: UuidString
+    additionalProperties: false
+  ProcessResponse:
+    type: object
+    properties:
+      id: UuidString
+      status:
+        type: string
+        description: Job completion status
+        enum:
+        - ok
     additionalProperties: false
   ProjectType:
     type: string
@@ -106,10 +84,34 @@ types:
   StatusResponse:
     type: object
     properties:
-      message: string
+      id:
+        description: User dataset upload process id
+        type: UuidString
+      name:
+        description: User provided name for the upload
+        type: string
+      description?:
+        description: Optional description of the user dataset.
+        type: string
+      projects:
+        description: Target projects for the dataset upload
+        type: array
+        items: ProjectType
       started:
+        description: Timestamp of the upload start
         type: datetime
-      status: JobStatus
+      status:
+        description: Current job status, may be a completed status.
+        type: JobStatus
+      stepPercent:
+        required: false
+        type: integer
+        displayName: Step Completion Percentage
+        description: |
+          Optional field avaible for process steps where the completion percent
+          is calculable, such as during file transfer.
+        minimum: 0
+        maximum: 100
     additionalProperties: false
   UuidString:
     type: string

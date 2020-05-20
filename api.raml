@@ -1,5 +1,5 @@
 #%RAML 1.0
-title: Example JaxRS Container Service
+title: User Dataset Upload Service
 version: v1.0.0
 mediaType: application/json
 
@@ -7,7 +7,6 @@ uses:
   err: .tools/raml/errors.raml
   lib: schema/library.raml
 
-# TODO: THIS SHOULD BE HEADER
 securitySchemes:
   header-auth:
     description: Authentication based on a WDK auth cookie.
@@ -19,34 +18,81 @@ securitySchemes:
           description: Authorization header.
           type: string
 
-
-#
-# Example Endpoints
-#
-
-/hello:
-  displayName: Hello World
+/user-datasets:
+  displayName: User Dataset Uploading
   get:
+    displayName: All User Dataset Uploads
+    description: List user dataset uploads and their statuses
     responses:
       200:
         body:
-          application/json:
-            type: lib.HelloResponse
-  post:
-    securedBy: header-auth
-    body:
-      application/json:
-        type: lib.HelloPostRequest
-    responses:
-      200:
-        body:
-          application/json:
-            type: lib.HelloPostResponse
+          type: lib.AllJobResponse
       401:
         body:
-          application/json:
-            type: err.UnauthorizedError
+          type: err.UnauthorizedError
       500:
         body:
-          application/json:
+          type: err.ServerError
+  post:
+    displayName: Start User Dataset Upload
+    description: Prepare a new upload process
+    body: lib.PrepRequest
+    responses:
+      200:
+        body:
+          type: lib.PrepResponse
+      400:
+        body:
+          type: err.BadRequestError
+      401:
+        body:
+          type: err.UnauthorizedError
+      422:
+        body:
+          type: err.InvalidInputError
+      500:
+        body:
+          type: err.ServerError
+
+  /{processId}:
+    uriParameters:
+      processId:
+        description: |
+          ID of the specific upload process for which details should be
+          returned.  The user making the request must own the resource or this
+          will return 401.
+    get:
+      description: Shows status information for the job with the given ID
+      responses:
+        200:
+          body:
+            type: lib.StatusResponse
+        401:
+          body:
+            type: err.UnauthorizedError
+        500:
+          body:
+            type: err.ServerError
+    post:
+      description: |
+        Upload a dataset package to be processed and made available on the sites
+        detailed in the prep request.
+      body:
+        application/binary:
+          type: file
+      responses:
+        200:
+          body:
+            type: lib.ProcessResponse
+        400:
+          body:
+            type: err.BadRequestError
+        401:
+          body:
+            type: err.UnauthorizedError
+        422:
+          body:
+            type: err.InvalidInputError
+        500:
+          body:
             type: err.ServerError
