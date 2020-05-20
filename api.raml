@@ -38,7 +38,7 @@ securitySchemes:
     description: |
       Prepare a new upload process.
 
-      Note: users are limited to one upload process at a time.
+      **Note**: users are limited to one upload process at a time.
     body: lib.PrepRequest
     responses:
       200:
@@ -81,7 +81,7 @@ securitySchemes:
         Upload a dataset package to be processed and made available on the sites
         detailed in the prep request.
 
-        Note: Users are limited to one upload process at a time.
+        **Note**: Users are limited to one upload process at a time.
       body:
         application/binary:
           type: file
