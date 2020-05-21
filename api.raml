@@ -1,5 +1,5 @@
 #%RAML 1.0
-title: User Dataset Upload Service
+title: User Dataset Import Service
 version: v1.0.0
 mediaType: application/json
 
@@ -38,9 +38,9 @@ securitySchemes:
     displayName: Start User Dataset Upload
     securedBy: header-auth
     description: |
-      Prepare a new upload process.
+      Create an import job.
 
-      **Note**: users are limited to one upload process at a time.
+      **Note**: users are limited to one import job at a time.
     body: lib.PrepRequest
     responses:
       200:
@@ -63,9 +63,9 @@ securitySchemes:
     uriParameters:
       processId:
         description: |
-          ID of the specific upload process for which details should be
-          returned.  The user making the request must own the resource or this
-          will return 401.
+          ID of the specific import job for which details should be returned.
+          The user making the request must own the resource or this will return
+          401.
     get:
       description: Shows status information for the job with the given ID
       securedBy: header-auth

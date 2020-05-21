@@ -76,10 +76,10 @@ install-dev-env:
 fix-path:
 	@$(BIN_DIR)/fix-path.sh $(EXAMPLE_DIR) $(MAIN_DIR)
 
-gen-jaxrs: api.raml #merge-raml
+gen-jaxrs: api.raml merge-raml
 	@$(BIN_DIR)/generate-jaxrs.sh $(APP_PACKAGE)
 
-gen-docs: api.raml #merge-raml
+gen-docs: api.raml merge-raml
 	@$(BIN_DIR)/generate-docs.sh
 
 merge-raml:

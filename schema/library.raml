@@ -1,4 +1,5 @@
 #%RAML 1.0 Library
+---
 
 ################################################################################
 #                                                                              #
@@ -8,113 +9,105 @@
 ################################################################################
 
 types:
-  AllJobResponse:
-    type: array
-    items: StatusResponse
-  JobStatus:
-    type: string
-    enum:
-    - recieving-from-client
-    - sending-to-handler
-    - handler-unpacking
-    - handler-processing
-    - handler-packing
-    - recieving-from-handler
-    - sending-to-datastore
-    - success
-    - failed
   PrepRequest:
     type: object
+    additionalProperties: false
     properties:
       datasetName:
-        type: string
         description: Name for the user dataset.  Will be visible in the site(s).
-      description:
         type: string
+      description:
         description: Optional description for the user dataset.
+        type: string
+        required: false
+      summary:
+        description: Optional summary of the user dataset.
+        type: string
         required: false
       projects:
-        type: array
         description: Target projects for which this user dataset should be made available for install.
-        items: ProjectType
+        type: array
         minItems: 1
-      summary:
-        type: string
-        description: Optional summary of the user dataset.
-        required: false
-    additionalProperties: false
+        items: ProjectType
   PrepResponse:
     type: object
+    additionalProperties: false
     properties:
       status:
         type: string
         enum:
-        - ok
+          - ok
       token: UuidString
-    additionalProperties: false
   ProcessResponse:
     type: object
-    properties:
-      id: UuidString
-      status:
-        type: string
-        description: Job completion status
-        enum:
-        - ok
     additionalProperties: false
+    properties:
+      id:
+        description: ID of the upload that completed.
+        type: UuidString
+      status:
+        description: Job completion status
+        type: string
+        enum:
+          - ok
+  UuidString:
+    displayName: UUID v4 String
+    type: string
+    pattern: ^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}$
   ProjectType:
     type: string
     enum:
-    - AmoebaDB
-    - ClinepiDB
-    - CryptoDB
-    - FungiDB
-    - GiardiaDB
-    - HostDB
-    - MicrobiomeDB
-    - MicrosporidiaDB
-    - Orthomcl
-    - PiroplasmaDB
-    - PlasmoDB
-    - SchistoDB
-    - ToxoDB
-    - TrichDB
-    - TritrypDB
-    - Vectorbase
+      - AmoebaDB
+      - ClinepiDB
+      - CryptoDB
+      - FungiDB
+      - GiardiaDB
+      - HostDB
+      - MicrobiomeDB
+      - MicrosporidiaDB
+      - Orthomcl
+      - PiroplasmaDB
+      - PlasmoDB
+      - SchistoDB
+      - ToxoDB
+      - TrichDB
+      - TritrypDB
+      - Vectorbase
+  JobStatus:
+    type: string
+    enum:
+      - recieving-from-client
+      - sending-to-handler
+      - handler-unpacking
+      - handler-processing
+      - handler-packing
+      - recieving-from-handler
+      - sending-to-datastore
+      - success
+      - failed
+  AllJobResponse:
+    type: array
+    items: StatusResponse
   StatusResponse:
     type: object
+    additionalProperties: false
     properties:
-      id:
-        description: User dataset upload process id
-        type: UuidString
-      name:
-        description: User provided name for the upload
-        type: string
-      description?:
-        description: Optional description of the user dataset.
-        type: string
-      projects:
-        description: Target projects for the dataset upload
-        type: array
-        items: ProjectType
-      started:
-        description: Timestamp of the upload start
-        type: datetime
-      status:
-        description: Current job status, may be a completed status.
-        type: JobStatus
+      id: UuidString
+      dataset: string
+      description?: string
+      summary?: string
       stepPercent:
-        required: false
-        type: integer
         displayName: Step Completion Percentage
         description: |
           Optional field avaible for process steps where the completion percent
           is calculable, such as during file transfer.
+        type: integer
         minimum: 0
         maximum: 100
-    additionalProperties: false
-  UuidString:
-    type: string
-    displayName: UUID v4 String
-    pattern: ^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}$
+      projects:
+        type: array
+        items: ProjectType
+      status: JobStatus
+      message: string
+      started: datetime
 
