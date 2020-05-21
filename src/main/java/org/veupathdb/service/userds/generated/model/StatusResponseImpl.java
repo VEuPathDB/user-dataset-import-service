@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Date;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
     "stepPercent",
     "projects",
     "status",
-    "message",
+    "statusDetails",
     "started"
 })
 public class StatusResponseImpl implements StatusResponse {
@@ -42,9 +43,10 @@ public class StatusResponseImpl implements StatusResponse {
   @JsonProperty("status")
   private JobStatus status;
 
-  @JsonProperty("message")
-  private String message;
+  @JsonProperty("statusDetails")
+  private StatusResponse.StatusDetailsType statusDetails;
 
+  @JsonProperty("started")
   @JsonFormat(
       shape = JsonFormat.Shape.STRING,
       pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
@@ -52,7 +54,6 @@ public class StatusResponseImpl implements StatusResponse {
   @JsonDeserialize(
       using = TimestampDeserializer.class
   )
-  @JsonProperty("started")
   private Date started;
 
   @JsonProperty("id")
@@ -125,14 +126,14 @@ public class StatusResponseImpl implements StatusResponse {
     this.status = status;
   }
 
-  @JsonProperty("message")
-  public String getMessage() {
-    return this.message;
+  @JsonProperty("statusDetails")
+  public StatusResponse.StatusDetailsType getStatusDetails() {
+    return this.statusDetails;
   }
 
-  @JsonProperty("message")
-  public void setMessage(String message) {
-    this.message = message;
+  @JsonProperty("statusDetails")
+  public void setStatusDetails(StatusResponse.StatusDetailsType statusDetails) {
+    this.statusDetails = statusDetails;
   }
 
   @JsonProperty("started")
@@ -143,5 +144,45 @@ public class StatusResponseImpl implements StatusResponse {
   @JsonProperty("started")
   public void setStarted(Date started) {
     this.started = started;
+  }
+
+  @JsonDeserialize(
+      using = StatusDetailsType.StatusDetailsDeserializer.class
+  )
+  @JsonSerialize(
+      using = StatusDetailsType.Serializer.class
+  )
+  public static class StatusDetailsTypeImpl implements StatusResponse.StatusDetailsType {
+    private Object anyType;
+
+    private StatusDetailsTypeImpl() {
+      this.anyType = null;
+    }
+
+    public StatusDetailsTypeImpl(ValidationErrors validationErrors) {
+      this.anyType = validationErrors;
+    }
+
+    public StatusDetailsTypeImpl(JobError jobError) {
+      this.anyType = jobError;
+    }
+
+    public ValidationErrors getValidationErrors() {
+      if ( !(anyType instanceof  ValidationErrors)) throw new IllegalStateException("fetching wrong type out of the union: org.veupathdb.service.userds.generated.model.ValidationErrors");
+      return (ValidationErrors) anyType;
+    }
+
+    public boolean isValidationErrors() {
+      return anyType instanceof ValidationErrors;
+    }
+
+    public JobError getJobError() {
+      if ( !(anyType instanceof  JobError)) throw new IllegalStateException("fetching wrong type out of the union: org.veupathdb.service.userds.generated.model.JobError");
+      return (JobError) anyType;
+    }
+
+    public boolean isJobError() {
+      return anyType instanceof JobError;
+    }
   }
 }

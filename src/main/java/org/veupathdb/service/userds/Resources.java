@@ -1,8 +1,7 @@
-package org.veupathdb.service.demo;
+package org.veupathdb.service.userds;
 
 import org.veupathdb.lib.container.jaxrs.config.Options;
 import org.veupathdb.lib.container.jaxrs.server.ContainerResources;
-import org.veupathdb.service.demo.service.HelloWorld;
 
 /**
  * Service Resource Registration.
@@ -23,7 +22,6 @@ public class Resources extends ContainerResources {
   @Override
   protected Object[] resources() {
     return new Object[] {
-      HelloWorld.class,
     };
   }
 }

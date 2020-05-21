@@ -9,6 +9,55 @@
 ################################################################################
 
 types:
+  AllJobResponse:
+    type: array
+    items: StatusResponse
+  StatusResponse:
+    type: object
+    additionalProperties: false
+    properties:
+      id: UuidString
+      dataset: string
+      description?: string
+      summary?: string
+      stepPercent:
+        displayName: Step Completion Percentage
+        description: |
+          Optional field avaible for process steps where the completion percent
+          is calculable, such as during file transfer.
+        type: integer
+        minimum: 0
+        maximum: 100
+      projects:
+        type: array
+        items: ProjectType
+      status: JobStatus
+      statusDetails:
+        description: |
+          Optional property containing additional details about the job status.
+
+          Will contain error messages, warnings, or validation failure reasons.
+        type: ValidationErrors | JobError
+        required: false
+      started: datetime
+  ValidationErrors:
+    type: object
+    properties:
+      errors:
+        type: object
+        additionalProperties: false
+        properties:
+          general:
+            type: array
+            items: string
+          byKey:
+            type: object
+            properties:
+              //: string
+  JobError:
+    type: object
+    properties:
+      message: string
   PrepRequest:
     type: object
     additionalProperties: false
@@ -46,7 +95,7 @@ types:
         description: ID of the upload that completed.
         type: UuidString
       status:
-        description: Job completion status
+        description: Upload completion status
         type: string
         enum:
           - ok
@@ -85,29 +134,5 @@ types:
       - sending-to-datastore
       - success
       - failed
-  AllJobResponse:
-    type: array
-    items: StatusResponse
-  StatusResponse:
-    type: object
-    additionalProperties: false
-    properties:
-      id: UuidString
-      dataset: string
-      description?: string
-      summary?: string
-      stepPercent:
-        displayName: Step Completion Percentage
-        description: |
-          Optional field avaible for process steps where the completion percent
-          is calculable, such as during file transfer.
-        type: integer
-        minimum: 0
-        maximum: 100
-      projects:
-        type: array
-        items: ProjectType
-      status: JobStatus
-      message: string
-      started: datetime
+      - errored
 

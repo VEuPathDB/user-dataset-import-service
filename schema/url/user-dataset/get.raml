@@ -26,5 +26,27 @@ types:
         type: array
         items: common.ProjectType
       status: common.JobStatus
-      message: string
+      statusDetails:
+        description: |
+          Optional property containing additional details about the job status.
+
+          Will contain error messages, warnings, or validation failure reasons.
+        required: false
+        type: ValidationErrors | JobError
+
       started: datetime
+  ValidationErrors:
+    properties:
+      errors:
+        additionalProperties: false
+        properties:
+          general:
+            type: array
+            items: string
+          byKey:
+            properties:
+              //:
+                type: string
+  JobError:
+    properties:
+      message: string

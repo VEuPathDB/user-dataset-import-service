@@ -28,7 +28,10 @@ public enum JobStatus {
   SUCCESS("success"),
 
   @JsonProperty("failed")
-  FAILED("failed");
+  FAILED("failed"),
+
+  @JsonProperty("errored")
+  ERRORED("errored");
 
   private String name;
 
