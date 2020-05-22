@@ -3,8 +3,8 @@ package org.veupathdb.service.userds.generated.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum JobStatus {
-  @JsonProperty("recieving-from-client")
-  RECIEVINGFROMCLIENT("recieving-from-client"),
+  @JsonProperty("receiving-from-client")
+  RECEIVINGFROMCLIENT("receiving-from-client"),
 
   @JsonProperty("sending-to-handler")
   SENDINGTOHANDLER("sending-to-handler"),

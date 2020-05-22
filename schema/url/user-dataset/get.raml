@@ -11,10 +11,11 @@ types:
     additionalProperties: false
     properties:
       id: common.UuidString
-      dataset: string
+      datasetName: string
       description?: string
       summary?: string
       stepPercent:
+        required: false
         displayName: Step Completion Percentage
         description: |
           Optional field avaible for process steps where the completion percent
@@ -33,8 +34,37 @@ types:
           Will contain error messages, warnings, or validation failure reasons.
         required: false
         type: ValidationErrors | JobError
-
       started: datetime
+    examples:
+      uploading:
+        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
+        datasetName: my-dataset
+        stepPercent: 43
+        projects:
+          - PlasmoDB
+        status: receiving-from-client
+        started: 2020-05-20T09:43:27-0500
+      errored:
+        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
+        datasetName: my-dataset
+        projects:
+          - PlasmoDB
+        status: errored
+        started: 2020-05-20T09:43:27-0500
+        statusDetails:
+          message: Dataset handler failed to process uploaded user dataset.
+      failed:
+        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
+        datasetName: my-dataset
+        projects:
+          - PlasmoDB
+        status: failed
+        started: 2020-05-20T09:43:27-0500
+        statusDetails:
+          errors:
+            general: []
+            byKey:
+              datasetName: Dataset name is required
   ValidationErrors:
     properties:
       errors:

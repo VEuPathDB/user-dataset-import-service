@@ -9,55 +9,6 @@
 ################################################################################
 
 types:
-  AllJobResponse:
-    type: array
-    items: StatusResponse
-  StatusResponse:
-    type: object
-    additionalProperties: false
-    properties:
-      id: UuidString
-      dataset: string
-      description?: string
-      summary?: string
-      stepPercent:
-        displayName: Step Completion Percentage
-        description: |
-          Optional field avaible for process steps where the completion percent
-          is calculable, such as during file transfer.
-        type: integer
-        minimum: 0
-        maximum: 100
-      projects:
-        type: array
-        items: ProjectType
-      status: JobStatus
-      statusDetails:
-        description: |
-          Optional property containing additional details about the job status.
-
-          Will contain error messages, warnings, or validation failure reasons.
-        type: ValidationErrors | JobError
-        required: false
-      started: datetime
-  ValidationErrors:
-    type: object
-    properties:
-      errors:
-        type: object
-        additionalProperties: false
-        properties:
-          general:
-            type: array
-            items: string
-          byKey:
-            type: object
-            properties:
-              //: string
-  JobError:
-    type: object
-    properties:
-      message: string
   PrepRequest:
     type: object
     additionalProperties: false
@@ -99,10 +50,24 @@ types:
         type: string
         enum:
           - ok
+  JobStatus:
+    type: string
+    enum:
+      - receiving-from-client
+      - sending-to-handler
+      - handler-unpacking
+      - handler-processing
+      - handler-packing
+      - recieving-from-handler
+      - sending-to-datastore
+      - success
+      - failed
+      - errored
   UuidString:
     displayName: UUID v4 String
     type: string
     pattern: ^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}$
+    example: b296c3d9-4032-41b1-906e-c97ccfc447e3
   ProjectType:
     type: string
     enum:
@@ -122,17 +87,84 @@ types:
       - TrichDB
       - TritrypDB
       - Vectorbase
-  JobStatus:
-    type: string
-    enum:
-      - recieving-from-client
-      - sending-to-handler
-      - handler-unpacking
-      - handler-processing
-      - handler-packing
-      - recieving-from-handler
-      - sending-to-datastore
-      - success
-      - failed
-      - errored
+  AllJobResponse:
+    type: array
+    items: StatusResponse
+  StatusResponse:
+    type: object
+    additionalProperties: false
+    properties:
+      id: UuidString
+      datasetName: string
+      description?: string
+      summary?: string
+      stepPercent:
+        displayName: Step Completion Percentage
+        description: |
+          Optional field avaible for process steps where the completion percent
+          is calculable, such as during file transfer.
+        type: integer
+        required: false
+        minimum: 0
+        maximum: 100
+      projects:
+        type: array
+        items: ProjectType
+      status: JobStatus
+      statusDetails:
+        description: |
+          Optional property containing additional details about the job status.
+
+          Will contain error messages, warnings, or validation failure reasons.
+        type: ValidationErrors | JobError
+        required: false
+      started: datetime
+    examples:
+      uploading:
+        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
+        datasetName: my-dataset
+        stepPercent: 43
+        projects:
+          - PlasmoDB
+        status: receiving-from-client
+        started: 2020-05-20T09:43:27-0500
+      errored:
+        started: 2020-05-20T09:43:27-0500
+        statusDetails:
+          message: Dataset handler failed to process uploaded user dataset.
+        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
+        datasetName: my-dataset
+        projects:
+          - PlasmoDB
+        status: errored
+      failed:
+        started: 2020-05-20T09:43:27-0500
+        statusDetails:
+          errors:
+            general: []
+            byKey:
+              datasetName: Dataset name is required
+        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
+        datasetName: my-dataset
+        projects:
+          - PlasmoDB
+        status: failed
+  ValidationErrors:
+    type: object
+    properties:
+      errors:
+        type: object
+        additionalProperties: false
+        properties:
+          general:
+            type: array
+            items: string
+          byKey:
+            type: object
+            properties:
+              //: string
+  JobError:
+    type: object
+    properties:
+      message: string
 

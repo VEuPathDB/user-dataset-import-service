@@ -12,7 +12,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "id",
-    "dataset",
+    "datasetName",
     "description",
     "summary",
     "stepPercent",
@@ -25,8 +25,8 @@ public class StatusResponseImpl implements StatusResponse {
   @JsonProperty("id")
   private String id;
 
-  @JsonProperty("dataset")
-  private String dataset;
+  @JsonProperty("datasetName")
+  private String datasetName;
 
   @JsonProperty("description")
   private String description;
@@ -46,7 +46,6 @@ public class StatusResponseImpl implements StatusResponse {
   @JsonProperty("statusDetails")
   private StatusResponse.StatusDetailsType statusDetails;
 
-  @JsonProperty("started")
   @JsonFormat(
       shape = JsonFormat.Shape.STRING,
       pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
@@ -54,6 +53,7 @@ public class StatusResponseImpl implements StatusResponse {
   @JsonDeserialize(
       using = TimestampDeserializer.class
   )
+  @JsonProperty("started")
   private Date started;
 
   @JsonProperty("id")
@@ -66,14 +66,14 @@ public class StatusResponseImpl implements StatusResponse {
     this.id = id;
   }
 
-  @JsonProperty("dataset")
-  public String getDataset() {
-    return this.dataset;
+  @JsonProperty("datasetName")
+  public String getDatasetName() {
+    return this.datasetName;
   }
 
-  @JsonProperty("dataset")
-  public void setDataset(String dataset) {
-    this.dataset = dataset;
+  @JsonProperty("datasetName")
+  public void setDatasetName(String datasetName) {
+    this.datasetName = datasetName;
   }
 
   @JsonProperty("description")

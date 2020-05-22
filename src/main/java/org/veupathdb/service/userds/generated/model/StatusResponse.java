@@ -27,11 +27,11 @@ public interface StatusResponse {
   @JsonProperty("id")
   void setId(String id);
 
-  @JsonProperty("dataset")
-  String getDataset();
+  @JsonProperty("datasetName")
+  String getDatasetName();
 
-  @JsonProperty("dataset")
-  void setDataset(String dataset);
+  @JsonProperty("datasetName")
+  void setDatasetName(String datasetName);
 
   @JsonProperty("description")
   String getDescription();
