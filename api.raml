@@ -27,7 +27,8 @@ securitySchemes:
     responses:
       200:
         body:
-          type: lib.AllJobResponse
+          type: array
+          items: lib.StatusResponse
       401:
         body:
           type: err.UnauthorizedError
@@ -105,3 +106,44 @@ securitySchemes:
         500:
           body:
             type: err.ServerError
+
+/projects:
+  displayName: List Projects
+  get:
+    displayName: Get Project List
+    description: |
+      Returns a list of projects currently supported by the import service.
+    responses:
+      200:
+        body:
+          type: string[]
+
+  /{projectType}/datasetTypes:
+    uriParameters:
+      projectType:
+        type: lib.ProjectType
+    displayName: List project dataset types
+    get:
+      displayName: Get project dataset types
+      description: |
+        Returns a list of the dataset types that are supported by the selected
+        project type.
+      responses:
+        200:
+          body:
+            type: array
+
+    /{datasetType}/fileTypes:
+      uriParameters:
+        datasetType:
+          type: string
+      displayName: List dataset allowed file types.
+      get:
+        displayName: Get dataset allowed file types.
+        description: |
+          Returns a list of the allowable file types to upload for the selected
+          dataset type.
+        responses:
+          200:
+            body:
+              type: array

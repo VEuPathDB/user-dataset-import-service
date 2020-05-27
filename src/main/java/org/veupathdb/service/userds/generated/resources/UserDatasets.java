@@ -1,6 +1,7 @@
 package org.veupathdb.service.userds.generated.resources;
 
 import java.io.File;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -9,7 +10,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
-import org.veupathdb.service.userds.generated.model.AllJobResponse;
 import org.veupathdb.service.userds.generated.model.BadRequestError;
 import org.veupathdb.service.userds.generated.model.InvalidInputError;
 import org.veupathdb.service.userds.generated.model.PrepRequest;
@@ -53,9 +53,10 @@ public interface UserDatasets {
       super(response);
     }
 
-    public static GetUserDatasetsResponse respond200WithApplicationJson(AllJobResponse entity) {
+    public static GetUserDatasetsResponse respond200WithApplicationJson(
+        List<StatusResponse> entity) {
       Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
-      GenericEntity<AllJobResponse> wrappedEntity = new GenericEntity<AllJobResponse>(entity){};
+      GenericEntity<List<StatusResponse>> wrappedEntity = new GenericEntity<List<StatusResponse>>(entity){};
       responseBuilder.entity(wrappedEntity);
       return new GetUserDatasetsResponse(responseBuilder.build(), wrappedEntity);
     }

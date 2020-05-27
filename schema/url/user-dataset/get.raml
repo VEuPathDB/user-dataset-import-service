@@ -4,9 +4,6 @@ uses:
   common: ../../common.raml
 
 types:
-  AllJobResponse:
-    type: array
-    items: StatusResponse
   StatusResponse:
     additionalProperties: false
     properties:
@@ -53,12 +50,12 @@ types:
         started: 2020-05-20T09:43:27-0500
         statusDetails:
           message: Dataset handler failed to process uploaded user dataset.
-      failed:
+      rejected:
         id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
         datasetName: my-dataset
         projects:
           - PlasmoDB
-        status: failed
+        status: rejected
         started: 2020-05-20T09:43:27-0500
         statusDetails:
           errors:

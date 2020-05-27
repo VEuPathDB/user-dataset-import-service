@@ -50,19 +50,6 @@ types:
         type: string
         enum:
           - ok
-  JobStatus:
-    type: string
-    enum:
-      - receiving-from-client
-      - sending-to-handler
-      - handler-unpacking
-      - handler-processing
-      - handler-packing
-      - recieving-from-handler
-      - sending-to-datastore
-      - success
-      - failed
-      - errored
   UuidString:
     displayName: UUID v4 String
     type: string
@@ -87,9 +74,37 @@ types:
       - TrichDB
       - TritrypDB
       - Vectorbase
-  AllJobResponse:
-    type: array
-    items: StatusResponse
+  JobStatus:
+    type: string
+    enum:
+      - receiving-from-client
+      - sending-to-handler
+      - handler-unpacking
+      - handler-processing
+      - handler-packing
+      - recieving-from-handler
+      - sending-to-datastore
+      - success
+      - rejected
+      - errored
+  ValidationErrors:
+    type: object
+    properties:
+      errors:
+        type: object
+        additionalProperties: false
+        properties:
+          general:
+            type: array
+            items: string
+          byKey:
+            type: object
+            properties:
+              //: string
+  JobError:
+    type: object
+    properties:
+      message: string
   StatusResponse:
     type: object
     additionalProperties: false
@@ -129,15 +144,15 @@ types:
         status: receiving-from-client
         started: 2020-05-20T09:43:27-0500
       errored:
-        started: 2020-05-20T09:43:27-0500
-        statusDetails:
-          message: Dataset handler failed to process uploaded user dataset.
         id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
         datasetName: my-dataset
         projects:
           - PlasmoDB
         status: errored
-      failed:
+        started: 2020-05-20T09:43:27-0500
+        statusDetails:
+          message: Dataset handler failed to process uploaded user dataset.
+      rejected:
         started: 2020-05-20T09:43:27-0500
         statusDetails:
           errors:
@@ -148,23 +163,5 @@ types:
         datasetName: my-dataset
         projects:
           - PlasmoDB
-        status: failed
-  ValidationErrors:
-    type: object
-    properties:
-      errors:
-        type: object
-        additionalProperties: false
-        properties:
-          general:
-            type: array
-            items: string
-          byKey:
-            type: object
-            properties:
-              //: string
-  JobError:
-    type: object
-    properties:
-      message: string
+        status: rejected
 

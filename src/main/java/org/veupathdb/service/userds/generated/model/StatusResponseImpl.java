@@ -46,6 +46,7 @@ public class StatusResponseImpl implements StatusResponse {
   @JsonProperty("statusDetails")
   private StatusResponse.StatusDetailsType statusDetails;
 
+  @JsonProperty("started")
   @JsonFormat(
       shape = JsonFormat.Shape.STRING,
       pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
@@ -53,7 +54,6 @@ public class StatusResponseImpl implements StatusResponse {
   @JsonDeserialize(
       using = TimestampDeserializer.class
   )
-  @JsonProperty("started")
   private Date started;
 
   @JsonProperty("id")
