@@ -1,0 +1,14 @@
+{
+  "services": [
+    {
+      "dsType": "biom",
+      "projects": [
+        "MicroBiomeDB"
+      ],
+      "fileTypes": [
+        "biom"
+      ],
+      "url": ""
+    }
+  ]
+}

@@ -12,6 +12,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import org.veupathdb.service.userds.generated.model.BadRequestError;
 import org.veupathdb.service.userds.generated.model.InvalidInputError;
+import org.veupathdb.service.userds.generated.model.NotFoundError;
 import org.veupathdb.service.userds.generated.model.PrepRequest;
 import org.veupathdb.service.userds.generated.model.PrepResponse;
 import org.veupathdb.service.userds.generated.model.ProcessResponse;
@@ -144,6 +145,13 @@ public interface UserDatasets {
       return new PostUserDatasetsByProcessIdResponse(responseBuilder.build(), entity);
     }
 
+    public static PostUserDatasetsByProcessIdResponse respond404WithApplicationJson(
+        NotFoundError entity) {
+      Response.ResponseBuilder responseBuilder = Response.status(404).header("Content-Type", "application/json");
+      responseBuilder.entity(entity);
+      return new PostUserDatasetsByProcessIdResponse(responseBuilder.build(), entity);
+    }
+
     public static PostUserDatasetsByProcessIdResponse respond422WithApplicationJson(
         InvalidInputError entity) {
       Response.ResponseBuilder responseBuilder = Response.status(422).header("Content-Type", "application/json");
@@ -178,6 +186,13 @@ public interface UserDatasets {
     public static GetUserDatasetsByProcessIdResponse respond401WithApplicationJson(
         UnauthorizedError entity) {
       Response.ResponseBuilder responseBuilder = Response.status(401).header("Content-Type", "application/json");
+      responseBuilder.entity(entity);
+      return new GetUserDatasetsByProcessIdResponse(responseBuilder.build(), entity);
+    }
+
+    public static GetUserDatasetsByProcessIdResponse respond404WithApplicationJson(
+        NotFoundError entity) {
+      Response.ResponseBuilder responseBuilder = Response.status(404).header("Content-Type", "application/json");
       responseBuilder.entity(entity);
       return new GetUserDatasetsByProcessIdResponse(responseBuilder.build(), entity);
     }

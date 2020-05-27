@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 )
 @JsonSubTypes({
     @JsonSubTypes.Type(org.veupathdb.service.userds.generated.model.InvalidInputError.class),
+    @JsonSubTypes.Type(org.veupathdb.service.userds.generated.model.NotFoundError.class),
     @JsonSubTypes.Type(org.veupathdb.service.userds.generated.model.BadRequestError.class),
     @JsonSubTypes.Type(org.veupathdb.service.userds.generated.model.UnauthorizedError.class),
     @JsonSubTypes.Type(org.veupathdb.service.userds.generated.model.ServerError.class),

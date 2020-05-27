@@ -51,9 +51,13 @@ public enum ProjectType {
   @JsonProperty("Vectorbase")
   VECTORBASE("Vectorbase");
 
-  private String name;
+  private final String name;
 
   ProjectType(String name) {
     this.name = name;
+  }
+
+  public String getName() {
+    return name;
   }
 }

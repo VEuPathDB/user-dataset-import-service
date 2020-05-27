@@ -7,6 +7,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
+import org.veupathdb.service.userds.generated.model.NotFoundError;
 import org.veupathdb.service.userds.generated.model.ProjectType;
 import org.veupathdb.service.userds.generated.support.ResponseDelegate;
 
@@ -62,6 +63,13 @@ public interface Projects {
       responseBuilder.entity(wrappedEntity);
       return new GetProjectsDatasetTypesByProjectTypeResponse(responseBuilder.build(), wrappedEntity);
     }
+
+    public static GetProjectsDatasetTypesByProjectTypeResponse respond404WithApplicationJson(
+        NotFoundError entity) {
+      Response.ResponseBuilder responseBuilder = Response.status(404).header("Content-Type", "application/json");
+      responseBuilder.entity(entity);
+      return new GetProjectsDatasetTypesByProjectTypeResponse(responseBuilder.build(), entity);
+    }
   }
 
   class GetProjectsDatasetTypesFileTypesByProjectTypeAndDatasetTypeResponse extends ResponseDelegate {
@@ -80,6 +88,13 @@ public interface Projects {
       GenericEntity<List<Object>> wrappedEntity = new GenericEntity<List<Object>>(entity){};
       responseBuilder.entity(wrappedEntity);
       return new GetProjectsDatasetTypesFileTypesByProjectTypeAndDatasetTypeResponse(responseBuilder.build(), wrappedEntity);
+    }
+
+    public static GetProjectsDatasetTypesFileTypesByProjectTypeAndDatasetTypeResponse respond404WithApplicationJson(
+        NotFoundError entity) {
+      Response.ResponseBuilder responseBuilder = Response.status(404).header("Content-Type", "application/json");
+      responseBuilder.entity(entity);
+      return new GetProjectsDatasetTypesFileTypesByProjectTypeAndDatasetTypeResponse(responseBuilder.build(), entity);
     }
   }
 }

@@ -77,6 +77,9 @@ securitySchemes:
         401:
           body:
             type: err.UnauthorizedError
+        404:
+          body:
+            type: err.NotFoundError
         500:
           body:
             type: err.ServerError
@@ -100,6 +103,9 @@ securitySchemes:
         401:
           body:
             type: err.UnauthorizedError
+        404:
+          body:
+            type: err.NotFoundError
         422:
           body:
             type: err.InvalidInputError
@@ -132,6 +138,9 @@ securitySchemes:
         200:
           body:
             type: array
+        404:
+          body:
+            type: err.NotFoundError
 
     /{datasetType}/fileTypes:
       uriParameters:
@@ -147,3 +156,6 @@ securitySchemes:
           200:
             body:
               type: array
+          404:
+            body:
+              type: err.NotFoundError

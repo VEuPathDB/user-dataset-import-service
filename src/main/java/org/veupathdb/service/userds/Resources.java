@@ -2,6 +2,7 @@ package org.veupathdb.service.userds;
 
 import org.veupathdb.lib.container.jaxrs.config.Options;
 import org.veupathdb.lib.container.jaxrs.server.ContainerResources;
+import org.veupathdb.service.userds.service.ProjectSvc;
 
 /**
  * Service Resource Registration.
@@ -10,8 +11,10 @@ import org.veupathdb.lib.container.jaxrs.server.ContainerResources;
  * should be registered.
  */
 public class Resources extends ContainerResources {
+
   public Resources(Options opts) {
     super(opts);
+
   }
 
   /**
@@ -22,6 +25,7 @@ public class Resources extends ContainerResources {
   @Override
   protected Object[] resources() {
     return new Object[] {
+      ProjectSvc.class
     };
   }
 }
