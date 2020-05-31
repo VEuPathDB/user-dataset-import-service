@@ -31,4 +31,10 @@ public interface PrepRequest {
 
   @JsonProperty("projects")
   void setProjects(List<String> projects);
+
+  @JsonProperty("datasetType")
+  String getDatasetType();
+
+  @JsonProperty("datasetType")
+  void setDatasetType(String dsType);
 }

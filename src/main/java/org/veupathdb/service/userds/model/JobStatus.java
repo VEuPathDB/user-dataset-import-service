@@ -5,6 +5,7 @@ import java.util.Optional;
 
 public enum JobStatus
 {
+  AWAITING_UPLOAD("awaiting-upload"),
   SENDING_TO_HANDLER("sending-to-handler"),
   HANDLER_UNPACKING("handler-unpacking"),
   HANDLER_PROCESSING("handler-processing"),

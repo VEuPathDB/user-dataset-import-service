@@ -13,158 +13,158 @@ import org.veupathdb.service.userds.generated.support.ResponseDelegate;
 public interface UserDatasets {
   @GET
   @Produces("application/json")
-  GetUserDatasetsResponse getUserDatasets();
+  GetResponse getUserDatasets();
 
   @POST
   @Produces("application/json")
   @Consumes("application/json")
-  PostUserDatasetsResponse postUserDatasets(PrepRequest entity);
+  PostResponse postUserDatasets(PrepRequest entity);
 
   @GET
   @Path("/{jobId}")
   @Produces("application/json")
-  GetUserDatasetsByJobIdResponse getUserDatasetsByJobId(@PathParam("jobId") String jobId);
+  GetByJobIdResponse getUserDatasetsByJobId(@PathParam("jobId") String jobId);
 
   @POST
   @Path("/{jobId}")
   @Produces("application/json")
   @Consumes("multipart/form-data")
-  PostUserDatasetsByJobIdResponse postUserDatasetsByJobId(
+  PostByJobIdResponse postUserDatasetsByJobId(
     @PathParam("jobId")    String jobId,
     InputStream body
   );
 
-  class GetUserDatasetsResponse extends ResponseDelegate {
-    private GetUserDatasetsResponse(Response response, Object entity) {
+  class GetResponse extends ResponseDelegate {
+    private GetResponse(Response response, Object entity) {
       super(response, entity);
     }
 
-    private GetUserDatasetsResponse(Response response) {
+    private GetResponse(Response response) {
       super(response);
     }
 
-    public static GetUserDatasetsResponse respond200WithApplicationJson(
+    public static GetResponse respond200(
         List<StatusResponse> entity) {
       Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
       GenericEntity<List<StatusResponse>> wrappedEntity = new GenericEntity<List<StatusResponse>>(entity){};
       responseBuilder.entity(wrappedEntity);
-      return new GetUserDatasetsResponse(responseBuilder.build(), wrappedEntity);
+      return new GetResponse(responseBuilder.build(), wrappedEntity);
     }
 
-    public static GetUserDatasetsResponse respond401WithApplicationJson(UnauthorizedError entity) {
+    public static GetResponse respond401WithApplicationJson(UnauthorizedError entity) {
       Response.ResponseBuilder responseBuilder = Response.status(401).header("Content-Type", "application/json");
       responseBuilder.entity(entity);
-      return new GetUserDatasetsResponse(responseBuilder.build(), entity);
+      return new GetResponse(responseBuilder.build(), entity);
     }
 
-    public static GetUserDatasetsResponse respond500WithApplicationJson(ServerError entity) {
+    public static GetResponse respond500(ServerError entity) {
       Response.ResponseBuilder responseBuilder = Response.status(500).header("Content-Type", "application/json");
       responseBuilder.entity(entity);
-      return new GetUserDatasetsResponse(responseBuilder.build(), entity);
+      return new GetResponse(responseBuilder.build(), entity);
     }
   }
 
-  class PostUserDatasetsResponse extends ResponseDelegate {
-    private PostUserDatasetsResponse(Response response, Object entity) {
+  class PostResponse extends ResponseDelegate {
+    private PostResponse(Response response, Object entity) {
       super(response, entity);
     }
 
-    private PostUserDatasetsResponse(Response response) {
+    private PostResponse(Response response) {
       super(response);
     }
 
-    public static PostUserDatasetsResponse respond200WithApplicationJson(PrepResponse entity) {
+    public static PostResponse respond200(PrepResponse entity) {
       Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
       responseBuilder.entity(entity);
-      return new PostUserDatasetsResponse(responseBuilder.build(), entity);
+      return new PostResponse(responseBuilder.build(), entity);
     }
 
-    public static PostUserDatasetsResponse respond400WithApplicationJson(BadRequestError entity) {
+    public static PostResponse respond400WithApplicationJson(BadRequestError entity) {
       Response.ResponseBuilder responseBuilder = Response.status(400).header("Content-Type", "application/json");
       responseBuilder.entity(entity);
-      return new PostUserDatasetsResponse(responseBuilder.build(), entity);
+      return new PostResponse(responseBuilder.build(), entity);
     }
 
-    public static PostUserDatasetsResponse respond401WithApplicationJson(UnauthorizedError entity) {
+    public static PostResponse respond401WithApplicationJson(UnauthorizedError entity) {
       Response.ResponseBuilder responseBuilder = Response.status(401).header("Content-Type", "application/json");
       responseBuilder.entity(entity);
-      return new PostUserDatasetsResponse(responseBuilder.build(), entity);
+      return new PostResponse(responseBuilder.build(), entity);
     }
 
-    public static PostUserDatasetsResponse respond422WithApplicationJson(InvalidInputError entity) {
+    public static PostResponse respond422(InvalidInputError entity) {
       Response.ResponseBuilder responseBuilder = Response.status(422).header("Content-Type", "application/json");
       responseBuilder.entity(entity);
-      return new PostUserDatasetsResponse(responseBuilder.build(), entity);
+      return new PostResponse(responseBuilder.build(), entity);
     }
 
-    public static PostUserDatasetsResponse respond500WithApplicationJson(ServerError entity) {
+    public static PostResponse respond500(ServerError entity) {
       Response.ResponseBuilder responseBuilder = Response.status(500).header("Content-Type", "application/json");
       responseBuilder.entity(entity);
-      return new PostUserDatasetsResponse(responseBuilder.build(), entity);
+      return new PostResponse(responseBuilder.build(), entity);
     }
   }
 
-  class GetUserDatasetsByJobIdResponse extends ResponseDelegate {
-    private GetUserDatasetsByJobIdResponse(Response response, Object entity) {
+  class GetByJobIdResponse extends ResponseDelegate {
+    private GetByJobIdResponse(Response response, Object entity) {
       super(response, entity);
     }
 
-    private GetUserDatasetsByJobIdResponse(Response response) {
+    private GetByJobIdResponse(Response response) {
       super(response);
     }
 
-    public static GetUserDatasetsByJobIdResponse respond200WithApplicationJson(
+    public static GetByJobIdResponse respond200(
         StatusResponse entity) {
       Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
       responseBuilder.entity(entity);
-      return new GetUserDatasetsByJobIdResponse(responseBuilder.build(), entity);
+      return new GetByJobIdResponse(responseBuilder.build(), entity);
     }
 
-    public static GetUserDatasetsByJobIdResponse respond401WithApplicationJson(
+    public static GetByJobIdResponse respond401WithApplicationJson(
         UnauthorizedError entity) {
       Response.ResponseBuilder responseBuilder = Response.status(401).header("Content-Type", "application/json");
       responseBuilder.entity(entity);
-      return new GetUserDatasetsByJobIdResponse(responseBuilder.build(), entity);
+      return new GetByJobIdResponse(responseBuilder.build(), entity);
     }
 
-    public static GetUserDatasetsByJobIdResponse respond404WithApplicationJson(
+    public static GetByJobIdResponse respond404(
         NotFoundError entity) {
       Response.ResponseBuilder responseBuilder = Response.status(404).header("Content-Type", "application/json");
       responseBuilder.entity(entity);
-      return new GetUserDatasetsByJobIdResponse(responseBuilder.build(), entity);
+      return new GetByJobIdResponse(responseBuilder.build(), entity);
     }
 
-    public static GetUserDatasetsByJobIdResponse respond500WithApplicationJson(ServerError entity) {
+    public static GetByJobIdResponse respond500(ServerError entity) {
       Response.ResponseBuilder responseBuilder = Response.status(500).header("Content-Type", "application/json");
       responseBuilder.entity(entity);
-      return new GetUserDatasetsByJobIdResponse(responseBuilder.build(), entity);
+      return new GetByJobIdResponse(responseBuilder.build(), entity);
     }
   }
 
-  class PostUserDatasetsByJobIdResponse extends ResponseDelegate {
-    private PostUserDatasetsByJobIdResponse(Response response, Object entity) {
+  class PostByJobIdResponse extends ResponseDelegate {
+    private PostByJobIdResponse(Response response, Object entity) {
       super(response, entity);
     }
 
-    public static PostUserDatasetsByJobIdResponse respond200WithApplicationJson(
+    public static PostByJobIdResponse respond200(
         ProcessResponse entity) {
       Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
       responseBuilder.entity(entity);
-      return new PostUserDatasetsByJobIdResponse(responseBuilder.build(), entity);
+      return new PostByJobIdResponse(responseBuilder.build(), entity);
     }
 
-    public static PostUserDatasetsByJobIdResponse respond404WithApplicationJson(
+    public static PostByJobIdResponse respond404(
         NotFoundError entity) {
       Response.ResponseBuilder responseBuilder = Response.status(404).header("Content-Type", "application/json");
       responseBuilder.entity(entity);
-      return new PostUserDatasetsByJobIdResponse(responseBuilder.build(), entity);
+      return new PostByJobIdResponse(responseBuilder.build(), entity);
     }
 
-    public static PostUserDatasetsByJobIdResponse respond500WithApplicationJson(
+    public static PostByJobIdResponse respond500(
         ServerError entity) {
       Response.ResponseBuilder responseBuilder = Response.status(500).header("Content-Type", "application/json");
       responseBuilder.entity(entity);
-      return new PostUserDatasetsByJobIdResponse(responseBuilder.build(), entity);
+      return new PostByJobIdResponse(responseBuilder.build(), entity);
     }
   }
 }

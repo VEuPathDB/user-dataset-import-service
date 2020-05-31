@@ -17,8 +17,6 @@ public class JobRow
   private final LocalDateTime   started;
   private final LocalDateTime   finished;
   private final String          message;
-  private final String          fileName;
-  private final Long            fileSize;
   private final List < String > projects;
 
   public JobRow(
@@ -32,8 +30,6 @@ public class JobRow
     LocalDateTime started,
     LocalDateTime finished,
     String message,
-    String fileName,
-    Long fileSize,
     List < String > projects
   ) {
     this.dbId = dbId;
@@ -46,8 +42,6 @@ public class JobRow
     this.started = started;
     this.finished = finished;
     this.message = message;
-    this.fileName = fileName;
-    this.fileSize = fileSize;
     this.projects = projects;
   }
 
@@ -89,14 +83,6 @@ public class JobRow
 
   public Optional < String > getMessage() {
     return Optional.ofNullable(message);
-  }
-
-  public Optional < String > getFileName() {
-    return Optional.ofNullable(fileName);
-  }
-
-  public Optional < Long > getFileSize() {
-    return Optional.ofNullable(fileSize);
   }
 
   public List < String > getProjects() {

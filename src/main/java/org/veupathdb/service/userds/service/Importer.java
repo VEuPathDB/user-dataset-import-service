@@ -17,13 +17,13 @@ import org.veupathdb.service.userds.util.Errors;
 
 import static org.veupathdb.service.userds.util.Format.Json;
 
-public class DatasetProcessor
+public class Importer implements Runnable
 {
   private final Logger      log;
   private final JobRow      job;
   private final InputStream reader;
 
-  public DatasetProcessor(
+  public Importer(
     JobRow job,
     InputStream reader
   ) {
@@ -32,7 +32,7 @@ public class DatasetProcessor
     this.log = LogProvider.logger(getClass());
   }
 
-  public void process() {
+  public void run() {
     try {
       final var hand = Handler.getHandler("biom").orElseThrow();
 

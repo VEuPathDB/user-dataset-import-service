@@ -62,8 +62,9 @@ public class StatusResponseImpl implements StatusResponse {
   }
 
   @JsonProperty("id")
-  public void setId(String id) {
+  public StatusResponse setId(String id) {
     this.id = id;
+    return this;
   }
 
   @JsonProperty("datasetName")
@@ -72,8 +73,9 @@ public class StatusResponseImpl implements StatusResponse {
   }
 
   @JsonProperty("datasetName")
-  public void setDatasetName(String datasetName) {
+  public StatusResponse setDatasetName(String datasetName) {
     this.datasetName = datasetName;
+    return this;
   }
 
   @JsonProperty("description")
@@ -82,8 +84,9 @@ public class StatusResponseImpl implements StatusResponse {
   }
 
   @JsonProperty("description")
-  public void setDescription(String description) {
+  public StatusResponse setDescription(String description) {
     this.description = description;
+    return this;
   }
 
   @JsonProperty("summary")
@@ -92,8 +95,9 @@ public class StatusResponseImpl implements StatusResponse {
   }
 
   @JsonProperty("summary")
-  public void setSummary(String summary) {
+  public StatusResponse setSummary(String summary) {
     this.summary = summary;
+    return this;
   }
 
   @JsonProperty("stepPercent")
@@ -102,8 +106,9 @@ public class StatusResponseImpl implements StatusResponse {
   }
 
   @JsonProperty("stepPercent")
-  public void setStepPercent(int stepPercent) {
+  public StatusResponse setStepPercent(int stepPercent) {
     this.stepPercent = stepPercent;
+    return this;
   }
 
   @JsonProperty("projects")
@@ -112,8 +117,9 @@ public class StatusResponseImpl implements StatusResponse {
   }
 
   @JsonProperty("projects")
-  public void setProjects(List<String> projects) {
+  public StatusResponse setProjects(List<String> projects) {
     this.projects = projects;
+    return this;
   }
 
   @JsonProperty("status")
@@ -122,8 +128,9 @@ public class StatusResponseImpl implements StatusResponse {
   }
 
   @JsonProperty("status")
-  public void setStatus(String status) {
+  public StatusResponse setStatus(String status) {
     this.status = status;
+    return this;
   }
 
   @JsonProperty("statusDetails")
@@ -132,8 +139,9 @@ public class StatusResponseImpl implements StatusResponse {
   }
 
   @JsonProperty("statusDetails")
-  public void setStatusDetails(StatusResponse.StatusDetailsType statusDetails) {
+  public StatusResponse setStatusDetails(StatusResponse.StatusDetailsType statusDetails) {
     this.statusDetails = statusDetails;
+    return this;
   }
 
   @JsonProperty("started")
@@ -142,8 +150,9 @@ public class StatusResponseImpl implements StatusResponse {
   }
 
   @JsonProperty("started")
-  public void setStarted(Date started) {
+  public StatusResponse setStarted(Date started) {
     this.started = started;
+    return this;
   }
 
   @JsonDeserialize(

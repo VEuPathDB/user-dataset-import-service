@@ -1,67 +1,70 @@
 package org.veupathdb.service.userds.generated.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-    "datasetName",
-    "description",
-    "summary",
-    "projects"
-})
 public class PrepRequestImpl implements PrepRequest {
-  @JsonProperty("datasetName")
   private String datasetName;
 
-  @JsonProperty("description")
   private String description;
 
-  @JsonProperty("summary")
   private String summary;
 
-  @JsonProperty("projects")
   private List<String> projects;
 
-  @JsonProperty("datasetName")
+  private String dsType;
+
+  @JsonGetter
   public String getDatasetName() {
     return this.datasetName;
   }
 
-  @JsonProperty("datasetName")
+  @JsonSetter
   public void setDatasetName(String datasetName) {
     this.datasetName = datasetName;
   }
 
-  @JsonProperty("description")
+  @JsonGetter
   public String getDescription() {
     return this.description;
   }
 
-  @JsonProperty("description")
+  @JsonSetter
   public void setDescription(String description) {
     this.description = description;
   }
 
-  @JsonProperty("summary")
+  @JsonGetter
   public String getSummary() {
     return this.summary;
   }
 
-  @JsonProperty("summary")
+  @JsonSetter
   public void setSummary(String summary) {
     this.summary = summary;
   }
 
-  @JsonProperty("projects")
+  @JsonGetter
   public List<String> getProjects() {
     return this.projects;
   }
 
-  @JsonProperty("projects")
+  @JsonSetter
   public void setProjects(List<String> projects) {
     this.projects = projects;
+  }
+
+  @JsonGetter
+  public String getDatasetType() {
+    return dsType;
+  }
+
+  @JsonSetter
+  public void setDatasetType(String dsType) {
+    this.dsType = dsType;
   }
 }

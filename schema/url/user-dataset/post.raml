@@ -10,6 +10,11 @@ types:
       datasetName:
         description: Name for the user dataset.  Will be visible in the site(s).
         type: string
+      datasetType:
+        description: Type of the dataset job.
+        type: string
+        enum:
+        - biom
       description:
         description: Optional description for the user dataset.
         type: string

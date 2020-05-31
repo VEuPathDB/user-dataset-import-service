@@ -8,25 +8,11 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 )
 public interface PrepResponse {
   @JsonProperty("status")
-  StatusType getStatus();
-
-  @JsonProperty("status")
-  void setStatus(StatusType status);
+  String getStatus();
 
   @JsonProperty("jobId")
   String getJobId();
 
   @JsonProperty("jobId")
-  void setJobId(String jobId);
-
-  enum StatusType {
-    @JsonProperty("ok")
-    OK("ok");
-
-    private String name;
-
-    StatusType(String name) {
-      this.name = name;
-    }
-  }
+  PrepResponse setJobId(String jobId);
 }

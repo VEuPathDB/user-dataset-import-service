@@ -25,55 +25,55 @@ public interface StatusResponse {
   String getId();
 
   @JsonProperty("id")
-  void setId(String id);
+  StatusResponse setId(String id);
 
   @JsonProperty("datasetName")
   String getDatasetName();
 
   @JsonProperty("datasetName")
-  void setDatasetName(String datasetName);
+  StatusResponse setDatasetName(String datasetName);
 
   @JsonProperty("description")
   String getDescription();
 
   @JsonProperty("description")
-  void setDescription(String description);
+  StatusResponse setDescription(String description);
 
   @JsonProperty("summary")
   String getSummary();
 
   @JsonProperty("summary")
-  void setSummary(String summary);
+  StatusResponse setSummary(String summary);
 
   @JsonProperty("stepPercent")
   int getStepPercent();
 
   @JsonProperty("stepPercent")
-  void setStepPercent(int stepPercent);
+  StatusResponse setStepPercent(int stepPercent);
 
   @JsonProperty("projects")
   List<String> getProjects();
 
   @JsonProperty("projects")
-  void setProjects(List<String> projects);
+  StatusResponse setProjects(List<String> projects);
 
   @JsonProperty("status")
   String getStatus();
 
   @JsonProperty("status")
-  void setStatus(String status);
+  StatusResponse setStatus(String status);
 
   @JsonProperty("statusDetails")
   StatusDetailsType getStatusDetails();
 
   @JsonProperty("statusDetails")
-  void setStatusDetails(StatusDetailsType statusDetails);
+  StatusResponse setStatusDetails(StatusDetailsType statusDetails);
 
   @JsonProperty("started")
   Date getStarted();
 
   @JsonProperty("started")
-  void setStarted(Date started);
+  StatusResponse setStarted(Date started);
 
   @JsonDeserialize(
       using = StatusDetailsType.StatusDetailsDeserializer.class
