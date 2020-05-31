@@ -2,7 +2,7 @@ package org.veupathdb.service.userds;
 
 import org.veupathdb.lib.container.jaxrs.config.Options;
 import org.veupathdb.lib.container.jaxrs.server.ContainerResources;
-import org.veupathdb.service.userds.service.ProjectSvc;
+import org.veupathdb.service.userds.controller.ProjectSvc;
 
 /**
  * Service Resource Registration.

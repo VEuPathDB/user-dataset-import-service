@@ -60,9 +60,9 @@ securitySchemes:
         body:
           type: err.ServerError
 
-  /{processId}:
+  /{jobId}:
     uriParameters:
-      processId:
+      jobId:
         description: |
           ID of the specific import job for which details should be returned.
           The user making the request must own the resource or this will return
@@ -91,8 +91,10 @@ securitySchemes:
 
         **Note**: Users are limited to one upload process at a time.
       body:
-        application/binary:
-          type: file
+        multipart/form-data:
+          type: object
+          properties:
+            file: file
       responses:
         200:
           body:
@@ -124,9 +126,9 @@ securitySchemes:
         body:
           type: string[]
 
-  /{projectType}/datasetTypes:
+  /{project}/datasetTypes:
     uriParameters:
-      projectType:
+      project:
         type: lib.ProjectType
     displayName: List project dataset types
     get:
@@ -142,9 +144,9 @@ securitySchemes:
           body:
             type: err.NotFoundError
 
-    /{datasetType}/fileTypes:
+    /{dsType}/fileTypes:
       uriParameters:
-        datasetType:
+        dsType:
           type: string
       displayName: List dataset allowed file types.
       get:

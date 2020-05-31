@@ -23,7 +23,7 @@ public class PrepRequestImpl implements PrepRequest {
   private String summary;
 
   @JsonProperty("projects")
-  private List<ProjectType> projects;
+  private List<String> projects;
 
   @JsonProperty("datasetName")
   public String getDatasetName() {
@@ -56,12 +56,12 @@ public class PrepRequestImpl implements PrepRequest {
   }
 
   @JsonProperty("projects")
-  public List<ProjectType> getProjects() {
+  public List<String> getProjects() {
     return this.projects;
   }
 
   @JsonProperty("projects")
-  public void setProjects(List<ProjectType> projects) {
+  public void setProjects(List<String> projects) {
     this.projects = projects;
   }
 }

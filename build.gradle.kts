@@ -16,10 +16,6 @@ val fullPack = "${buildProps["app.package.root"]}.${buildProps["app.package.serv
 group = buildProps["project.group"] ?: error("empty 1")
 version = buildProps["project.version"] ?: error("empty 2")
 
-repositories {
-  jcenter()
-}
-
 tasks.jar {
   manifest {
     attributes["Main-Class"] = "${fullPack}.${buildProps["app.main-class"]}"

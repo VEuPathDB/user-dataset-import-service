@@ -9,6 +9,16 @@ val runtimeOnly    by configurations
 val testImplementation by configurations
 val testRuntimeOnly    by configurations
 
+val annotationProcessor by configurations
+
+repositories {
+  jcenter()
+  mavenCentral()
+  maven {
+    url = uri("https://raw.githubusercontent.com/DICE-UNC/DICE-Maven/master/releases")
+  }
+}
+
 dependencies {
 
   //
@@ -45,15 +55,22 @@ dependencies {
     "vendor/xstreams.jar"
   ))
 
+  // Postgres
+  runtimeOnly("org.postgresql:postgresql:42.2.12")
+  implementation("com.zaxxer:HikariCP:3.4.5")
+  implementation("io.vulpine.lib:sql-import:0.2.1")
+
+  // iRODS
+  implementation("org.irods.jargon:jargon-core:4.3.1.0-RELEASE")
 
   // Core lib, prefers local checkout if available
   implementation(findProject(":core") ?: "org.veupathdb.lib:jaxrs-container-core:1.1.1")
-
 
   // Jersey
   implementation("org.glassfish.jersey.containers:jersey-container-grizzly2-http:${jersey}")
   implementation("org.glassfish.jersey.containers:jersey-container-grizzly2-servlet:${jersey}")
   implementation("org.glassfish.jersey.media:jersey-media-json-jackson:${jersey}")
+  implementation("org.glassfish.jersey.media:jersey-media-multipart:${jersey}")
   runtimeOnly("org.glassfish.jersey.inject:jersey-hk2:${jersey}")
 
   // Jackson
@@ -69,8 +86,13 @@ dependencies {
   implementation("io.prometheus:simpleclient:0.9.0")
   implementation("io.prometheus:simpleclient_common:0.9.0")
 
+  // CLI
+  implementation("info.picocli:picocli:4.2.0")
+  annotationProcessor("info.picocli:picocli-codegen:4.2.0")
+
   // Utils
   implementation("io.vulpine.lib:Jackfish:1.+")
+  implementation("io.vulpine.lib:iffy:1.0.1")
   implementation("com.devskiller.friendly-id:friendly-id:1.+")
 
   // Unit Testing

@@ -7,14 +7,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "status",
-    "token"
+    "jobId"
 })
 public class PrepResponseImpl implements PrepResponse {
   @JsonProperty("status")
   private PrepResponse.StatusType status;
 
-  @JsonProperty("token")
-  private String token;
+  @JsonProperty("jobId")
+  private String jobId;
 
   @JsonProperty("status")
   public PrepResponse.StatusType getStatus() {
@@ -26,13 +26,13 @@ public class PrepResponseImpl implements PrepResponse {
     this.status = status;
   }
 
-  @JsonProperty("token")
-  public String getToken() {
-    return this.token;
+  @JsonProperty("jobId")
+  public String getJobId() {
+    return this.jobId;
   }
 
-  @JsonProperty("token")
-  public void setToken(String token) {
-    this.token = token;
+  @JsonProperty("jobId")
+  public void setJobId(String jobId) {
+    this.jobId = jobId;
   }
 }

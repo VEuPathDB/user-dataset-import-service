@@ -8,33 +8,31 @@ types:
     example: b296c3d9-4032-41b1-906e-c97ccfc447e3
   ProjectType:
     type: string
-    enum:
-      - AmoebaDB
-      - ClinepiDB
-      - CryptoDB
-      - FungiDB
-      - GiardiaDB
-      - HostDB
-      - MicrobiomeDB
-      - MicrosporidiaDB
-      - Orthomcl
-      - PiroplasmaDB
-      - PlasmoDB
-      - SchistoDB
-      - ToxoDB
-      - TrichDB
-      - TritrypDB
-      - Vectorbase
+    examples:
+      AmoebaDB: AmoebaDB
+      ClinepiDB: ClinepiDB
+      CryptoDB: CryptoDB
+      FungiDB: FungiDB
+      GiardiaDB: GiardiaDB
+      HostDB: HostDB
+      MicrobiomeDB: MicrobiomeDB
+      MicrosporidiaDB: MicrosporidiaDB
+      Orthomcl: Orthomcl
+      PiroplasmaDB: PiroplasmaDB
+      PlasmoDB: PlasmoDB
+      SchistoDB: SchistoDB
+      ToxoDB: ToxoDB
+      TrichDB: TrichDB
+      TritrypDB: TritrypDB
+      Vectorbase: Vectorbase
   JobStatus:
     type: string
-    enum:
-      - receiving-from-client
-      - sending-to-handler
-      - handler-unpacking
-      - handler-processing
-      - handler-packing
-      - recieving-from-handler
-      - sending-to-datastore
-      - success
-      - rejected
-      - errored
+    examples:
+      sending-to-handler: sending-to-handler
+      handler-unpacking: handler-unpacking
+      handler-processing: handler-processing
+      handler-packing: handler-packing
+      sending-to-datastore: sending-to-datastore
+      success: success
+      rejected: rejected
+      errored: errored

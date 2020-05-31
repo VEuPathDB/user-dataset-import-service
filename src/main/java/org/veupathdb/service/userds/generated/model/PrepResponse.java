@@ -13,11 +13,11 @@ public interface PrepResponse {
   @JsonProperty("status")
   void setStatus(StatusType status);
 
-  @JsonProperty("token")
-  String getToken();
+  @JsonProperty("jobId")
+  String getJobId();
 
-  @JsonProperty("token")
-  void setToken(String token);
+  @JsonProperty("jobId")
+  void setJobId(String jobId);
 
   enum StatusType {
     @JsonProperty("ok")

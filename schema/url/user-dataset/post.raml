@@ -30,15 +30,13 @@ types:
         type: string
         enum:
           - ok
-      token: common.UuidString
+      jobId: common.UuidString
   ProcessResponse:
     additionalProperties: false
     properties:
-      id:
-        description: ID of the upload that completed.
-        type: common.UuidString
       status:
         description: Upload completion status
         type: string
         enum:
           - ok
+        default: ok

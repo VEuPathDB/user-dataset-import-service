@@ -52,16 +52,16 @@ public interface StatusResponse {
   void setStepPercent(int stepPercent);
 
   @JsonProperty("projects")
-  List<ProjectType> getProjects();
+  List<String> getProjects();
 
   @JsonProperty("projects")
-  void setProjects(List<ProjectType> projects);
+  void setProjects(List<String> projects);
 
   @JsonProperty("status")
-  JobStatus getStatus();
+  String getStatus();
 
   @JsonProperty("status")
-  void setStatus(JobStatus status);
+  void setStatus(String status);
 
   @JsonProperty("statusDetails")
   StatusDetailsType getStatusDetails();

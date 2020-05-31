@@ -7,16 +7,16 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
     as = ProcessResponseImpl.class
 )
 public interface ProcessResponse {
-  @JsonProperty("id")
-  String getId();
-
-  @JsonProperty("id")
-  void setId(String id);
-
-  @JsonProperty("status")
+  @JsonProperty(
+      value = "status",
+      defaultValue = "ok"
+  )
   StatusType getStatus();
 
-  @JsonProperty("status")
+  @JsonProperty(
+      value = "status",
+      defaultValue = "ok"
+  )
   void setStatus(StatusType status);
 
   enum StatusType {

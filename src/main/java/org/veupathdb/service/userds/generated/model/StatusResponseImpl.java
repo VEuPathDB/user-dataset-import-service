@@ -38,14 +38,15 @@ public class StatusResponseImpl implements StatusResponse {
   private int stepPercent;
 
   @JsonProperty("projects")
-  private List<ProjectType> projects;
+  private List<String> projects;
 
   @JsonProperty("status")
-  private JobStatus status;
+  private String status;
 
   @JsonProperty("statusDetails")
   private StatusResponse.StatusDetailsType statusDetails;
 
+  @JsonProperty("started")
   @JsonFormat(
       shape = JsonFormat.Shape.STRING,
       pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
@@ -53,7 +54,6 @@ public class StatusResponseImpl implements StatusResponse {
   @JsonDeserialize(
       using = TimestampDeserializer.class
   )
-  @JsonProperty("started")
   private Date started;
 
   @JsonProperty("id")
@@ -107,22 +107,22 @@ public class StatusResponseImpl implements StatusResponse {
   }
 
   @JsonProperty("projects")
-  public List<ProjectType> getProjects() {
+  public List<String> getProjects() {
     return this.projects;
   }
 
   @JsonProperty("projects")
-  public void setProjects(List<ProjectType> projects) {
+  public void setProjects(List<String> projects) {
     this.projects = projects;
   }
 
   @JsonProperty("status")
-  public JobStatus getStatus() {
+  public String getStatus() {
     return this.status;
   }
 
   @JsonProperty("status")
-  public void setStatus(JobStatus status) {
+  public void setStatus(String status) {
     this.status = status;
   }
 

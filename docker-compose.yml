@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:12-alpine
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+volumes:
+  pg-data:

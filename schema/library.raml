@@ -9,6 +9,101 @@
 ################################################################################
 
 types:
+  UuidString:
+    displayName: UUID v4 String
+    type: string
+    pattern: ^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}$
+    example: b296c3d9-4032-41b1-906e-c97ccfc447e3
+  ProjectType:
+    type: string
+    examples:
+      AmoebaDB: AmoebaDB
+      ClinepiDB: ClinepiDB
+      CryptoDB: CryptoDB
+      FungiDB: FungiDB
+      GiardiaDB: GiardiaDB
+      HostDB: HostDB
+      MicrobiomeDB: MicrobiomeDB
+      MicrosporidiaDB: MicrosporidiaDB
+      Orthomcl: Orthomcl
+      PiroplasmaDB: PiroplasmaDB
+      PlasmoDB: PlasmoDB
+      SchistoDB: SchistoDB
+      ToxoDB: ToxoDB
+      TrichDB: TrichDB
+      TritrypDB: TritrypDB
+      Vectorbase: Vectorbase
+  JobStatus:
+    type: string
+    examples:
+      sending-to-handler: sending-to-handler
+      handler-unpacking: handler-unpacking
+      handler-processing: handler-processing
+      handler-packing: handler-packing
+      sending-to-datastore: sending-to-datastore
+      success: success
+      rejected: rejected
+      errored: errored
+  StatusResponse:
+    type: object
+    additionalProperties: false
+    properties:
+      id: UuidString
+      datasetName: string
+      description?: string
+      summary?: string
+      projects:
+        type: array
+        items: ProjectType
+      status: JobStatus
+      statusDetails:
+        description: |
+          Optional property containing additional details about the job status.
+
+          Will contain error messages, warnings, or validation failure reasons.
+        type: ValidationErrors | JobError
+        required: false
+      started: datetime
+    examples:
+      errored:
+        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
+        datasetName: my-dataset
+        projects:
+          - PlasmoDB
+        status: errored
+        started: 2020-05-20T09:43:27-0500
+        statusDetails:
+          message: Dataset handler failed to process uploaded user dataset.
+      rejected:
+        projects:
+          - PlasmoDB
+        status: rejected
+        started: 2020-05-20T09:43:27-0500
+        statusDetails:
+          errors:
+            general: []
+            byKey:
+              datasetName: Dataset name is required
+        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
+        datasetName: my-dataset
+  ValidationErrors:
+    type: object
+    properties:
+      errors:
+        type: object
+        additionalProperties: false
+        properties:
+          general:
+            type: array
+            items: string
+          byKey:
+            type: object
+            properties:
+              //: string
+  JobError:
+    type: object
+    properties:
+      message: string
   PrepRequest:
     type: object
     additionalProperties: false
@@ -37,131 +132,15 @@ types:
         type: string
         enum:
           - ok
-      token: UuidString
+      jobId: UuidString
   ProcessResponse:
     type: object
     additionalProperties: false
     properties:
-      id:
-        description: ID of the upload that completed.
-        type: UuidString
       status:
         description: Upload completion status
         type: string
+        default: ok
         enum:
           - ok
-  ProjectType:
-    type: string
-    enum:
-      - AmoebaDB
-      - ClinepiDB
-      - CryptoDB
-      - FungiDB
-      - GiardiaDB
-      - HostDB
-      - MicrobiomeDB
-      - MicrosporidiaDB
-      - Orthomcl
-      - PiroplasmaDB
-      - PlasmoDB
-      - SchistoDB
-      - ToxoDB
-      - TrichDB
-      - TritrypDB
-      - Vectorbase
-  JobStatus:
-    type: string
-    enum:
-      - receiving-from-client
-      - sending-to-handler
-      - handler-unpacking
-      - handler-processing
-      - handler-packing
-      - recieving-from-handler
-      - sending-to-datastore
-      - success
-      - rejected
-      - errored
-  UuidString:
-    displayName: UUID v4 String
-    type: string
-    pattern: ^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}$
-    example: b296c3d9-4032-41b1-906e-c97ccfc447e3
-  JobError:
-    type: object
-    properties:
-      message: string
-  StatusResponse:
-    type: object
-    additionalProperties: false
-    properties:
-      id: UuidString
-      datasetName: string
-      description?: string
-      summary?: string
-      stepPercent:
-        displayName: Step Completion Percentage
-        description: |
-          Optional field avaible for process steps where the completion percent
-          is calculable, such as during file transfer.
-        type: integer
-        required: false
-        minimum: 0
-        maximum: 100
-      projects:
-        type: array
-        items: ProjectType
-      status: JobStatus
-      statusDetails:
-        description: |
-          Optional property containing additional details about the job status.
-
-          Will contain error messages, warnings, or validation failure reasons.
-        type: ValidationErrors | JobError
-        required: false
-      started: datetime
-    examples:
-      uploading:
-        datasetName: my-dataset
-        stepPercent: 43
-        projects:
-          - PlasmoDB
-        status: receiving-from-client
-        started: 2020-05-20T09:43:27-0500
-        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
-      errored:
-        started: 2020-05-20T09:43:27-0500
-        statusDetails:
-          message: Dataset handler failed to process uploaded user dataset.
-        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
-        datasetName: my-dataset
-        projects:
-          - PlasmoDB
-        status: errored
-      rejected:
-        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
-        datasetName: my-dataset
-        projects:
-          - PlasmoDB
-        status: rejected
-        started: 2020-05-20T09:43:27-0500
-        statusDetails:
-          errors:
-            general: []
-            byKey:
-              datasetName: Dataset name is required
-  ValidationErrors:
-    type: object
-    properties:
-      errors:
-        type: object
-        additionalProperties: false
-        properties:
-          general:
-            type: array
-            items: string
-          byKey:
-            type: object
-            properties:
-              //: string
 

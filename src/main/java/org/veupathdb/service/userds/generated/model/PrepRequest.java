@@ -27,8 +27,8 @@ public interface PrepRequest {
   void setSummary(String summary);
 
   @JsonProperty("projects")
-  List<ProjectType> getProjects();
+  List<String> getProjects();
 
   @JsonProperty("projects")
-  void setProjects(List<ProjectType> projects);
+  void setProjects(List<String> projects);
 }
