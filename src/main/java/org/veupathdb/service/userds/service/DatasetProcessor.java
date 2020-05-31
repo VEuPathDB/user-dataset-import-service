@@ -3,51 +3,131 @@ package org.veupathdb.service.userds.service;
 import java.io.InputStream;
 import java.util.Optional;
 
-import io.vulpine.lib.iffy.Either;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.apache.logging.log4j.Logger;
+import org.veupathdb.lib.container.jaxrs.providers.LogProvider;
 import org.veupathdb.service.userds.model.JobRow;
 import org.veupathdb.service.userds.model.JobStatus;
 import org.veupathdb.service.userds.model.handler.HandlerGeneralError;
+import org.veupathdb.service.userds.model.handler.HandlerJobResult;
 import org.veupathdb.service.userds.model.handler.HandlerValidationError;
+import org.veupathdb.service.userds.repo.InsertMessageQuery;
 import org.veupathdb.service.userds.repo.UpdateJobStatusQuery;
+import org.veupathdb.service.userds.util.Errors;
+
+import static org.veupathdb.service.userds.util.Format.Json;
 
 public class DatasetProcessor
 {
+  private final Logger      log;
   private final JobRow      job;
-  private final String      fileName;
   private final InputStream reader;
 
   public DatasetProcessor(
     JobRow job,
-    String fileName,
     InputStream reader
   ) {
-    this.job      = job;
-    this.fileName = fileName;
-    this.reader   = reader;
+    this.job = job;
+    this.reader = reader;
+    this.log = LogProvider.logger(getClass());
   }
 
-  public Optional< Either < HandlerGeneralError, HandlerValidationError > >
-  process() throws Exception {
-    final var hand = Handler.getHandler("biom").orElseThrow();
+  public void process() {
+    try {
+      final var hand = Handler.getHandler("biom").orElseThrow();
 
-    var res1 = hand.prepareJob(job);
-    if (res1.isPresent())
-      return res1;
+      if (!doPrep(hand))
+        return;
 
-    UpdateJobStatusQuery.run(job.getDbId(), JobStatus.SENDING_TO_HANDLER);
-    var res2 = hand.submitJob(job, fileName, reader);
-    if (res2.isRight())
-      return res2.right();
+      UpdateJobStatusQuery.run(job.getDbId(), JobStatus.SENDING_TO_HANDLER);
 
-    var data = res2.leftOrThrow();
-    try (var stream = data.getContent()) {
-      UpdateJobStatusQuery.run(job.getDbId(), JobStatus.SENDING_TO_DATASTORE);
-      Irods.writeDataset(data.getFileName(), stream);
-    } catch (Exception e) {
-      UpdateJobStatusQuery.run(job.getDbId(), JobStatus.ERRORED);
+      var result = doSubmit(hand);
+
+      if (result.isEmpty())
+        return;
+
+      try {
+        doStore(result.get());
+      } finally {
+        Errors.swallow(() -> result.get().getContent().close());
+      }
+
+      UpdateJobStatusQuery.run(job.getDbId(), JobStatus.SUCCESS);
+    } catch (Throwable e) {
+      log.error("Failed to submit job to handler", e);
+      Errors.swallow(() ->
+        UpdateJobStatusQuery.run(job.getDbId(), JobStatus.ERRORED));
+      Errors.swallow(() ->
+        InsertMessageQuery.run(job.getDbId(), e.getMessage()));
+    } finally {
+      Errors.swallow(reader::close);
+    }
+  }
+
+  private boolean doPrep(Handler hand) throws Exception {
+    var raw = hand.prepareJob(job);
+
+    if (raw.isEmpty())
+      return true;
+
+    var res = raw.get();
+
+    if (res.isLeft()) {
+      var val = res.leftOrThrow();
+      switch (val.getCode()) {
+        case 400, 401 -> do400(val);
+        default -> do500(val);
+      }
+      return false;
     }
 
-    UpdateJobStatusQuery.run(job.getDbId(), JobStatus.SUCCESS);
+    do422(res.rightOrThrow());
+    return false;
+  }
+
+  private Optional< HandlerJobResult > doSubmit(Handler hand) throws Exception {
+    var raw = hand.submitJob(job, reader);
+
+    if (raw.isLeft())
+      return Optional.of(raw.leftOrThrow());
+
+    var errs = raw.rightOrThrow();
+
+    if (errs.isLeft()) {
+      var val = errs.leftOrThrow();
+      switch (val.getCode()) {
+        case 400, 401 -> do400(val);
+        default -> do500(val);
+      }
+    } else {
+      do422(errs.rightOrThrow());
+    }
+
     return Optional.empty();
+  }
+
+  private void doStore(HandlerJobResult result) throws Exception {
+    Irods.writeDataset(result.getFileName(), result.getContent());
+    result.getContent().close();
+  }
+
+  private void do400(HandlerGeneralError err) throws Exception {
+    UpdateJobStatusQuery.run(job.getDbId(), JobStatus.REJECTED);
+    InsertMessageQuery.run(job.getDbId(), err.getMessage());
+  }
+
+  private void do422(HandlerValidationError err) throws Exception {
+    var js = Json.convertValue(err.getErrors(), JsonNode.class);
+    UpdateJobStatusQuery.run(job.getDbId(), JobStatus.ERRORED);
+    InsertMessageQuery.run(job.getDbId(), js);
+  }
+
+  private void do500(HandlerGeneralError err) throws Exception {
+    do500(err.getMessage());
+  }
+
+  private void do500(String err) throws Exception {
+    UpdateJobStatusQuery.run(job.getDbId(), JobStatus.ERRORED);
+    InsertMessageQuery.run(job.getDbId(), err);
   }
 }

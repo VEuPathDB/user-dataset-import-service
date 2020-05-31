@@ -1,17 +1,14 @@
 package org.veupathdb.service.userds.controller;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Request;
 
 import org.apache.logging.log4j.LogManager;
@@ -22,30 +19,26 @@ import org.veupathdb.lib.container.jaxrs.providers.UserProvider;
 import org.veupathdb.service.userds.generated.model.*;
 import org.veupathdb.service.userds.generated.resources.UserDatasets;
 import org.veupathdb.service.userds.model.JobRow;
-import org.veupathdb.service.userds.model.JobStatus;
-import org.veupathdb.service.userds.repo.InsertFileQuery;
 import org.veupathdb.service.userds.repo.SelectJobQuery;
 import org.veupathdb.service.userds.repo.SelectJobsQuery;
+import org.veupathdb.service.userds.service.DatasetProcessor;
 import org.veupathdb.service.userds.util.ErrFac;
+import org.veupathdb.service.userds.util.Errors;
+import org.veupathdb.service.userds.util.InputStreamNotifier;
 
 @AuthFilter.Authenticated
 public class UserDatasetSvc implements UserDatasets
 {
   static final String
-    errRowFetch    = "failed to fetch user's job rows",
-    errUploadFile  = "job state is receiving-from-client but no file name is set",
-    errUploadSize  = "job state is receiving-from-client but no file size is set",
-    errTmpFileGone = "job state is receiving-from-client but tmp file is missing";
+    errRowFetch    = "failed to fetch user's job rows";
 
 
   private final Logger      log;
   private final Request     req;
-  private final HttpHeaders headers;
 
-  public UserDatasetSvc(@Context Request req, @Context HttpHeaders headers) {
+  public UserDatasetSvc(@Context Request req) {
     this.req = req;
     this.log = LogManager.getLogger(getClass());
-    this.headers = headers;
   }
 
   @Override
@@ -92,43 +85,34 @@ public class UserDatasetSvc implements UserDatasets
 
   @Override
   public PostUserDatasetsByJobIdResponse postUserDatasetsByJobId(
-    String jobId,
-    InputStream body,
-    FormDataContentDisposition fileInfo
+    final String jobId,
+    final InputStream body
   ) {
     try {
-      final Optional < JobRow > optJob;
-      final Workspace           wk;
-
-      optJob = SelectJobQuery.run(jobId);
+      var optJob = SelectJobQuery.run(jobId);
 
       if (optJob.isEmpty())
         return PostUserDatasetsByJobIdResponse
           .respond404WithApplicationJson(ErrFac.new404());
 
-      var job      = optJob.get();
-      var fileName = fileInfo.getFileName();
-      var fileSize = fileInfo.getSize();
+      var pipeWrap = new InputStreamNotifier(body, this);
 
-      InsertFileQuery.run(job.getDbId(), fileName, fileSize);
+      new Thread(() -> new DatasetProcessor(optJob.get(), pipeWrap)
+        .process()
+      ).start();
 
-      wk = Workspace.create(job.getJobId());
-      wk.copyTo(fileName, body);
+      wait();
+
     } catch (Throwable e) {
       log.error(e);
       return PostUserDatasetsByJobIdResponse
         .respond500WithApplicationJson(ErrFac.new500(req, e));
     } finally {
-      try {
-        body.close();
-      } catch (IOException e) {
-        log.error(e);
-      }
+      Errors.swallow(body::close);
     }
 
-    var out = new ProcessResponseImpl();
-    out.setStatus(ProcessResponse.StatusType.OK);
-    return PostUserDatasetsByJobIdResponse.respond200WithApplicationJson(out);
+    return PostUserDatasetsByJobIdResponse
+      .respond200WithApplicationJson(new ProcessResponseImpl());
   }
 }
 
@@ -146,17 +130,6 @@ class UDSvcUtil
       row.getStarted()
         .atZone(ZoneId.systemDefault())
         .toInstant()));
-
-    if (row.getStatus() == JobStatus.RECEIVING_FROM_CLIENT) {
-      var fs = row.getFileSize()
-        .orElseThrow(() ->
-          new IllegalStateException(UserDatasetSvc.errUploadSize));
-      var fn = row.getFileName()
-        .orElseThrow(() ->
-          new IllegalStateException(UserDatasetSvc.errUploadFile));
-      var wk = Workspace.open(row.getJobId());
-      var cs = wk.sizeOf(fn);
-      out.setStepPercent((int) Math.round(((double) fs) / ((double) cs) * 100D));
-    }
+    return out;
   }
 }

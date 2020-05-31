@@ -9,23 +9,18 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.*;
 import javax.ws.rs.core.MediaType;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import io.vulpine.lib.iffy.Either;
 import org.apache.logging.log4j.Logger;
 import org.veupathdb.lib.container.jaxrs.providers.LogProvider;
 import org.veupathdb.service.userds.Main;
-import org.veupathdb.service.userds.model.handler.HandlerPayload;
 import org.veupathdb.service.userds.model.JobRow;
-import org.veupathdb.service.userds.model.JobStatus;
 import org.veupathdb.service.userds.model.Service;
 import org.veupathdb.service.userds.model.handler.HandlerGeneralError;
 import org.veupathdb.service.userds.model.handler.HandlerJobResult;
+import org.veupathdb.service.userds.model.handler.HandlerPayload;
 import org.veupathdb.service.userds.model.handler.HandlerValidationError;
-import org.veupathdb.service.userds.repo.InsertMessageQuery;
-import org.veupathdb.service.userds.repo.UpdateJobStatusQuery;
 import org.veupathdb.service.userds.util.Errors;
 import org.veupathdb.service.userds.util.http.Header;
-import org.veupathdb.service.userds.util.http.MultipartBodyPublisher;
 
 import static java.lang.String.format;
 import static org.veupathdb.service.userds.util.Format.Json;
@@ -33,11 +28,11 @@ import static org.veupathdb.service.userds.util.Format.Json;
 public class Handler
 {
   private static final String
-    jobEndpoint    = "http://%s/job/%s",
+    jobEndpoint = "http://%s/job/%s",
     statusEndpoint = jobEndpoint + "/status",
-    boundary       = "DATASET-CONTENT",
+    boundary = "DATASET-CONTENT",
     MULTIPART_HEAD = MediaType.MULTIPART_FORM_DATA + "; boundary=" + boundary,
-    fileName       = "filename=";
+    fileName = "filename=";
 
   private static final Map < String, Handler > handlers = Collections
     .synchronizedMap(new HashMap <>());
@@ -77,30 +72,22 @@ public class Handler
         BodyHandlers.ofString()
       );
 
-    if (res.statusCode() == 204) {
-      UpdateJobStatusQuery.run(job.getDbId(), JobStatus.HANDLER_PROCESSING);
-      return Optional.empty();
-    }
-
-    if (res.statusCode() == 422) {
-      final var raw = Json.readTree(res.body());
-      return Optional.of(Either.ofRight(do422(job.getDbId(), raw)));
-    }
-
-    final var msg = Json.readValue(res.body(), HandlerGeneralError.class);
-
-    return Optional.of(Either.ofLeft(
-      switch (res.statusCode()) {
-        case 400 -> do400(job.getDbId(), msg);
-        default -> do500(job.getDbId(), msg);
-      }
-    ));
+    return switch (res.statusCode()) {
+      case 204 -> Optional.empty();
+      case 422 -> Optional.of(Either.ofRight(Json.readValue(
+        res.body(),
+        HandlerValidationError.class
+      )));
+      default -> Optional.of(Either.ofLeft(Json.readValue(
+        res.body(),
+        HandlerGeneralError.class
+      )));
+    };
   }
 
   public Either < HandlerJobResult, Either < HandlerGeneralError, HandlerValidationError > >
   submitJob(
     final JobRow job,
-    final String fileName,
     final InputStream body
   ) throws Exception {
     try {
@@ -108,7 +95,7 @@ public class Handler
         HttpRequest.newBuilder(URI.create(
           format(jobEndpoint, svc.getUrl(), job.getJobId())))
           .header(Header.CONTENT_TYPE, MULTIPART_HEAD)
-          .POST(MultipartBodyPublisher.publish(fileName, body, boundary))
+          .POST(BodyPublishers.ofInputStream(() -> body))
           .build(),
         BodyHandlers.ofInputStream()
       );
@@ -131,21 +118,15 @@ public class Handler
         return Either.ofLeft(new HandlerJobResult(optName.get(), res.body()));
       }
 
-      if (res.statusCode() == 422) {
-        return Either.ofRight(Either.ofRight(do422(
-          job.getDbId(),
-          Json.readTree(res.body())
+      return res.statusCode() == 422
+        ? Either.ofRight(Either.ofRight(Json.readValue(
+          res.body(),
+          HandlerValidationError.class
+        )))
+        : Either.ofRight(Either.ofLeft(Json.readValue(
+          res.body(),
+          HandlerGeneralError.class
         )));
-      }
-
-      final var err = Json.readValue(res.body(), HandlerGeneralError.class);
-
-      return Either.ofRight(Either.ofLeft(
-        switch (res.statusCode()) {
-          case 400 -> do400(job.getDbId(), err);
-          default -> do500(job.getDbId(), err);
-        }
-      ));
     } finally {
       Errors.swallow(body::close);
     }
@@ -169,32 +150,5 @@ public class Handler
     var out = new Handler(optSvc.get());
     handlers.put(form, out);
     return Optional.of(out);
-  }
-
-  private HandlerGeneralError do400(int dbId, HandlerGeneralError err)
-  throws Exception {
-    UpdateJobStatusQuery.run(dbId, JobStatus.REJECTED);
-    InsertMessageQuery.run(dbId, err.getMessage());
-
-    return err;
-  }
-
-  private HandlerValidationError do422(int dbId, JsonNode err)
-  throws Exception {
-    UpdateJobStatusQuery.run(dbId, JobStatus.ERRORED);
-    InsertMessageQuery.run(dbId, err.get(HandlerValidationError.KEY_ERRORS));
-
-    return Json.convertValue(err, HandlerValidationError.class);
-  }
-
-  private HandlerGeneralError do500(int dbId, HandlerGeneralError err)
-  throws Exception {
-    do500(dbId, err.getMessage());
-    return err;
-  }
-
-  private void do500(int dbId, String err) throws Exception {
-    UpdateJobStatusQuery.run(dbId, JobStatus.ERRORED);
-    InsertMessageQuery.run(dbId, err);
   }
 }

@@ -1,6 +1,6 @@
 #%RAML 1.0
 title: User Dataset Import Service
-version: v1.0.0
+version: 1.0.0
 mediaType: application/json
 
 uses:
@@ -108,9 +108,6 @@ securitySchemes:
         404:
           body:
             type: err.NotFoundError
-        422:
-          body:
-            type: err.InvalidInputError
         500:
           body:
             type: err.ServerError

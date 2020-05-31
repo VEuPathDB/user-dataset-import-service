@@ -16,6 +16,7 @@ import org.veupathdb.service.userds.config.ExtOptions;
 import org.veupathdb.service.userds.model.Config;
 import org.veupathdb.service.userds.repo.SelectProjectQuery;
 import org.veupathdb.service.userds.repo.SelectStatusQuery;
+import org.veupathdb.service.userds.service.Irods;
 import org.veupathdb.service.userds.util.DatabaseDependency;
 import org.veupathdb.service.userds.util.DbMan;
 import org.veupathdb.service.userds.util.HandlerDependency;
@@ -37,6 +38,7 @@ public class Main extends Server {
     LOG.info("Initializing import datastore connection");
     importDB = DbMan.initImportDb();
 
+
     LOG.info("Populating type caches");
     SelectStatusQuery.run();
     SelectProjectQuery.run();
@@ -45,6 +47,12 @@ public class Main extends Server {
 
     server.enableAccountDB();
     server.start(args);
+  }
+
+  @Override
+  protected void postCliParse(Options opts) {
+    LOG.info("Initializing iRODS library");
+    Irods.initialize(options);
   }
 
   @Override

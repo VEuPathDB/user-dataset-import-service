@@ -3,7 +3,6 @@ package org.veupathdb.service.userds.repo;
 import java.sql.SQLException;
 
 import org.veupathdb.service.userds.model.ProjectCache;
-import org.veupathdb.service.userds.model.StatusCache;
 import org.veupathdb.service.userds.util.DbMan;
 
 /**

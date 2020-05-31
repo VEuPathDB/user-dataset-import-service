@@ -24,7 +24,7 @@ abstract class SelectJobBase
     }
 
     return new JobRow(
-      rs.getLong(Schema.Column.DB_ID),
+      rs.getInt(Schema.Column.DB_ID),
       rs.getString(Schema.Column.JOB_ID),
       rs.getLong(Schema.Column.USER_ID),
       JobStatus.fromString(rs.getString(Schema.Column.STATUS)).orElseThrow(),

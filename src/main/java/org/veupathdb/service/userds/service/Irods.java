@@ -41,15 +41,22 @@ public class Irods
     }
   }
 
+  public static void initialize(ExtOptions opts) {
+    try {
+      account = initAccount(opts);
+      system = initSystem();
+    } catch (Throwable e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   private static IRODSFileSystem initSystem() throws Exception {
     return IRODSFileSystem.instance();
   }
 
-  private static void initialize(ExtOptions opts) throws Exception {
-    account = initAccount(opts);
-    system = initSystem();
-  }
-
+  /**
+   * Initialize an iRODS account object.
+   */
   private static IRODSAccount initAccount(ExtOptions opts) throws Exception {
     final var csnp = new ClientServerNegotiationPolicy();
 
