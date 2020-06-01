@@ -7,8 +7,6 @@ public interface Schema
     String
       DB_ID       = "db_id",
       DESCRIPTION = "description",
-      FILE_NAME   = "file",
-      FILE_SIZE   = "total_size",
       FINISHED    = "finished",
       JOB_ID      = "job_id",
       MESSAGE     = "message",
