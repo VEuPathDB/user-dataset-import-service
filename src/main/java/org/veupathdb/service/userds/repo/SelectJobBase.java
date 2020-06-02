@@ -1,7 +1,6 @@
 package org.veupathdb.service.userds.repo;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -9,10 +8,11 @@ import java.util.Optional;
 import org.veupathdb.service.userds.model.JobRow;
 import org.veupathdb.service.userds.model.ProjectCache;
 import org.veupathdb.service.userds.model.StatusCache;
+import org.veupathdb.service.userds.util.Format;
 
 abstract class SelectJobBase
 {
-  protected static JobRow rsToJobRow(ResultSet rs) throws SQLException {
+  protected static JobRow rsToJobRow(ResultSet rs) throws Exception {
 
     var projects = new ArrayList <String>(1);
     try (var subRs = rs.getArray(Schema.Column.PROJECTS).getResultSet()) {
@@ -20,6 +20,11 @@ abstract class SelectJobBase
         projects.add(ProjectCache.getInstance().getKey(rs.getShort(1)));
       }
     }
+
+    var messageStr = rs.getString(Schema.Column.MESSAGE);
+    var message = messageStr != null
+      ? Format.Json.readTree(messageStr)
+      : null;
 
     return new JobRow(
       rs.getInt(Schema.Column.DB_ID),
@@ -35,7 +40,7 @@ abstract class SelectJobBase
         rs.getObject(Schema.Column.FINISHED, OffsetDateTime.class))
           .map(OffsetDateTime::toLocalDateTime)
         .orElse(null),
-      rs.getString(Schema.Column.MESSAGE),
+      message,
       projects
     );
   }

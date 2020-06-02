@@ -19,7 +19,6 @@ import static org.veupathdb.service.userds.util.Format.Json;
 
 public class Importer implements Runnable
 {
-  private final Logger      log;
   private final JobRow      job;
   private final InputStream reader;
 
@@ -29,7 +28,6 @@ public class Importer implements Runnable
   ) {
     this.job = job;
     this.reader = reader;
-    this.log = LogProvider.logger(getClass());
   }
 
   public void run() {
@@ -54,7 +52,8 @@ public class Importer implements Runnable
 
       UpdateJobStatusQuery.run(job.getDbId(), JobStatus.SUCCESS);
     } catch (Throwable e) {
-      log.error("Failed to submit job to handler", e);
+      LogProvider.logger(getClass())
+        .error("Failed to submit job to handler", e);
       Errors.swallow(() ->
         UpdateJobStatusQuery.run(job.getDbId(), JobStatus.ERRORED));
       Errors.swallow(() ->

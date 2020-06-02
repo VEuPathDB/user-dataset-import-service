@@ -101,6 +101,10 @@ public class Handler
       );
       Errors.swallow(body::close);
 
+      // Client connection should be closed with the body.close call.  From here
+      // on we need to make sure we log errors because Jersey won't do any
+      // reporting for us.
+
       if (res.statusCode() == 200) {
         var optName = res.headers()
           .allValues(Header.CONTENT_DISPOSITION)

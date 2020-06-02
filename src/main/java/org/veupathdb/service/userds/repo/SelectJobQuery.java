@@ -16,7 +16,7 @@ import org.veupathdb.service.userds.util.DbMan;
  */
 public class SelectJobQuery extends SelectJobBase
 {
-  public static Optional <JobRow> run(String jobId) throws SQLException {
+  public static Optional <JobRow> run(String jobId) throws Exception {
     try (
       var con = DbMan.getImportDb().getConnection();
       var ps  = prepare(con, jobId);

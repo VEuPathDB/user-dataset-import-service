@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 
 public class JobRow
 {
@@ -16,7 +18,7 @@ public class JobRow
   private final String          summary;
   private final LocalDateTime   started;
   private final LocalDateTime   finished;
-  private final String          message;
+  private final JsonNode        message;
   private final List < String > projects;
 
   public JobRow(
@@ -29,7 +31,7 @@ public class JobRow
     String summary,
     LocalDateTime started,
     LocalDateTime finished,
-    String message,
+    JsonNode message,
     List < String > projects
   ) {
     this.dbId = dbId;
@@ -81,7 +83,7 @@ public class JobRow
     return Optional.ofNullable(finished);
   }
 
-  public Optional < String > getMessage() {
+  public Optional < JsonNode > getMessage() {
     return Optional.ofNullable(message);
   }
 

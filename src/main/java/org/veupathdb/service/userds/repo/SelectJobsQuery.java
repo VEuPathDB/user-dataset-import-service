@@ -17,7 +17,7 @@ import org.veupathdb.service.userds.util.DbMan;
  */
 public class SelectJobsQuery extends SelectJobBase
 {
-  public static List <JobRow> run(long userId) throws SQLException {
+  public static List <JobRow> run(long userId) throws Exception {
     var out = new ArrayList<JobRow>(10);
 
     try (

@@ -3,6 +3,7 @@ package org.veupathdb.service.userds.controller;
 import java.io.InputStream;
 import java.sql.Date;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 
 import com.devskiller.friendly_id.FriendlyId;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.veupathdb.lib.container.jaxrs.server.annotations.Authenticated;
@@ -136,7 +138,7 @@ public class UserDatasetSvc implements UserDatasets
 class UDSvcUtil
 {
   static StatusResponse rowToStatus(JobRow row) {
-    return new StatusResponseImpl()
+    var out = new StatusResponseImpl()
       .setId(row.getJobId())
       .setDatasetName(row.getName())
       .setDescription(row.getDescription().orElse(null))
@@ -147,6 +149,34 @@ class UDSvcUtil
         row.getStarted()
           .atZone(ZoneId.systemDefault())
           .toInstant()));
+
+    if (row.getStatus() == JobStatus.ERRORED) {
+      var dets = new JobErrorImpl();
+      dets.setMessage(row.getMessage().map(JsonNode::textValue).orElse(null));
+      out.setStatusDetails(new StatusResponseImpl.StatusDetailsTypeImpl(dets));
+    } else if (row.getStatus() == JobStatus.REJECTED && row.getMessage().isPresent()) {
+      var dets  = new ValidationErrorsImpl();
+      var errs  = new ValidationErrorsImpl.ErrorsTypeImpl();
+      var byKey = new ValidationErrorsImpl.ErrorsTypeImpl.ByKeyTypeImpl();
+      var gener = new ArrayList <String>();
+      var raw   = row.getMessage().get();
+
+      if (raw.has("general")) {
+        raw.get("general")
+          .forEach(j -> gener.add(raw.textValue()));
+      }
+
+      if (raw.has("byKey")) {
+        var obj = raw.get("byKey");
+        obj.fieldNames().forEachRemaining(k ->
+          byKey.setAdditionalProperties(k, obj.get(k).textValue()));
+      }
+
+      dets.setErrors(errs);
+      out.setStatusDetails(new StatusResponseImpl.StatusDetailsTypeImpl(dets));
+    }
+
+    return out;
   }
 
   static JobRow prepToJob(PrepRequest body, String jobId, long userId) {
