@@ -64,9 +64,11 @@ public class InputStreamNotifier extends InputStream
   }
 
   @Override
-  public synchronized void close() throws IOException {
+  public void close() throws IOException {
     stream.close();
-    parent.notify();
+    synchronized (parent) {
+      parent.notifyAll();
+    }
   }
 
   @Override
