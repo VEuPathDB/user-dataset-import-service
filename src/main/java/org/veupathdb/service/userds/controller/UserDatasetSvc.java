@@ -184,7 +184,7 @@ class UDSvcUtil
     } else if (
       Arrays.stream(Main.jsonConfig.getServices())
         .map(Service::getDsType)
-        .anyMatch(body.getDatasetType()::equals)
+        .noneMatch(body.getDatasetType()::equals)
     ) {
       respond = true;
       out.getByKey().setAdditionalProperties(
