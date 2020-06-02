@@ -114,11 +114,14 @@ public class UserDatasetSvc implements UserDatasets
       if (optJob.isEmpty())
         return PostByJobIdResponse.respond404(ErrFac.new404());
 
-      var pipeWrap = new InputStreamNotifier(body, this);
+      var lock = new Object();
+      var pipeWrap = new InputStreamNotifier(body, lock);
 
       new Thread(new Importer(optJob.get(), pipeWrap)).start();
 
-      wait();
+      synchronized (lock) {
+        lock.wait();
+      }
 
     } catch (Throwable e) {
       log.error("Error when processing import: ", e);
