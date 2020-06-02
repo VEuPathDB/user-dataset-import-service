@@ -32,8 +32,8 @@ public class Main extends Server {
 
   public static void main(String[] args) throws Exception {
     LOG.info("Parsing service config");
-    Format.Json.readerFor(Config.class)
-      .readTree(new FileReader("config.json"));
+    jsonConfig = Format.Json.readerFor(Config.class)
+      .readValue(new FileReader("config.json"));
 
     LOG.info("Initializing import datastore connection");
     importDB = DbMan.initImportDb();

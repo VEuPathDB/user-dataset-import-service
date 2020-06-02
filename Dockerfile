@@ -9,23 +9,35 @@ LABEL service="user-dataset-import"
 
 WORKDIR /workspace
 RUN jlink --compress=2 --module-path /opt/jdk/jmods \
-       --add-modules java.base,java.logging,java.xml,java.desktop,java.management,java.sql \
+       --add-modules java.base,java.logging,java.xml,java.desktop,java.management,java.sql,java.naming,java.net.http \
        --output /jlinked \
     && apk add --no-cache git sed findutils coreutils make npm \
     && git config --global advice.detachedHead false
 
 ENV DOCKER=build
-COPY makefile .
+COPY makefile gradlew ./
+COPY gradle gradle
 
 RUN make install-dev-env
 
-COPY . .
+COPY [ \
+  "build.gradle.kts", \
+  "dependencies.gradle.kts", \
+  "settings.gradle.kts", \
+  "service.properties", \
+  "./" \
+]
 
 RUN mkdir -p vendor \
     && cp -n /jdbc/* vendor \
     && echo Installing Gradle \
-    && ./gradlew dependencies --info --configuration runtimeClasspath \
-    && make jar
+    && ./gradlew dependencies --info --configuration runtimeClasspath
+
+COPY api.raml .
+COPY schema schema
+COPY src src
+
+RUN make jar
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
@@ -41,5 +53,6 @@ ENV JAVA_HOME=/opt/jdk \
 
 COPY --from=prep /jlinked /opt/jdk
 COPY --from=prep /workspace/build/libs/service.jar /service.jar
+COPY config.json .
 
 CMD java -jar /service.jar

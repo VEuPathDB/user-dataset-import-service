@@ -11,9 +11,6 @@ public class Query
 
   // Prepopulate cache and check for missing queries.
   static {
-    deleteFile();
-
-    insertFile();
     insertJob();
     insertMessage();
 
@@ -23,16 +20,6 @@ public class Query
     selectStatuses();
 
     updateJobStatus();
-  }
-
-  public static String deleteFile() {
-    return loader.delete("file").orElseThrow(throwable("delete", "file"));
-  }
-
-
-  public static String insertFile() {
-    return loader.insert("file")
-      .orElseThrow(throwable("insert", "file"));
   }
 
   public static String insertJob() {

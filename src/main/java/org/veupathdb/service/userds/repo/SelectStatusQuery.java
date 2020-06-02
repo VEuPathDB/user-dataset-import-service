@@ -17,8 +17,11 @@ import org.veupathdb.service.userds.util.DbMan;
  */
 public class SelectStatusQuery
 {
-  static final String errOutOfSync = "database statuses are out of sync with " +
-    "status enum";
+  private static final String
+    errOutOfSyncKey = "database statuses are out of sync with status enum on" +
+    " key %s",
+    errOutOfSyncLen = "database statuses are out of sync, DB has %d enum has" +
+      " %d";
 
   public static void run() throws SQLException {
     var out = StatusCache.getInstance();
@@ -31,14 +34,17 @@ public class SelectStatusQuery
       var i = 0;
 
       while (rs.next()) {
-        var name = JobStatus.fromString(rs.getString(2))
-          .orElseThrow(() -> new RuntimeException(errOutOfSync));
+        var key  = rs.getString(2);
+        var name = JobStatus.fromString(key)
+          .orElseThrow(() -> new RuntimeException(String.format(errOutOfSyncKey,
+            key)));
         out.put(name, rs.getShort(1));
         i++;
       }
 
       if (i != JobStatus.values().length)
-        throw new RuntimeException(errOutOfSync);
+        throw new RuntimeException(String.format(errOutOfSyncLen, i,
+          JobStatus.values().length));
     }
   }
 }
