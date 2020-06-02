@@ -2,7 +2,6 @@ package org.veupathdb.service.userds.controller;
 
 import java.io.InputStream;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
@@ -55,7 +54,7 @@ public class UserDatasetSvc implements UserDatasets
 
     try {
       rows = SelectJobsQuery.run(user.getUserId());
-    } catch (SQLException e) {
+    } catch (Exception e) {
       log.error(errRowFetch, e);
       return GetResponse.respond500(ErrFac.new500(req, e));
     }
@@ -98,7 +97,7 @@ public class UserDatasetSvc implements UserDatasets
         return GetByJobIdResponse.respond404(ErrFac.new404());
 
       return GetByJobIdResponse.respond200(UDSvcUtil.rowToStatus(optJob.get()));
-    } catch (SQLException e) {
+    } catch (Exception e) {
       log.error(errRowFetch, e);
       return GetByJobIdResponse.respond500(ErrFac.new500(req, e));
     }

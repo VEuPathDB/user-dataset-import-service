@@ -2,12 +2,11 @@ package org.veupathdb.service.userds.repo;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.veupathdb.service.userds.model.JobRow;
-import org.veupathdb.service.userds.model.JobStatus;
 import org.veupathdb.service.userds.model.ProjectCache;
 import org.veupathdb.service.userds.model.StatusCache;
 
@@ -32,8 +31,10 @@ abstract class SelectJobBase
       rs.getString(Schema.Column.SUMMARY),
       rs.getObject(Schema.Column.STARTED, OffsetDateTime.class)
         .toLocalDateTime(),
-      rs.getObject(Schema.Column.FINISHED, OffsetDateTime.class)
-        .toLocalDateTime(),
+      Optional.ofNullable(
+        rs.getObject(Schema.Column.FINISHED, OffsetDateTime.class))
+          .map(OffsetDateTime::toLocalDateTime)
+        .orElse(null),
       rs.getString(Schema.Column.MESSAGE),
       projects
     );

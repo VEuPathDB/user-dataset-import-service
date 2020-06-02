@@ -66,6 +66,7 @@ types:
       started: datetime
     examples:
       errored:
+        status: errored
         started: 2020-05-20T09:43:27-0500
         statusDetails:
           message: Dataset handler failed to process uploaded user dataset.
@@ -73,19 +74,18 @@ types:
         datasetName: my-dataset
         projects:
           - PlasmoDB
-        status: errored
       rejected:
+        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
+        datasetName: my-dataset
+        projects:
+          - PlasmoDB
+        status: rejected
         started: 2020-05-20T09:43:27-0500
         statusDetails:
           errors:
             general: []
             byKey:
               datasetName: Dataset name is required
-        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
-        datasetName: my-dataset
-        projects:
-          - PlasmoDB
-        status: rejected
   ValidationErrors:
     type: object
     properties:
