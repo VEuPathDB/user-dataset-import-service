@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import org.veupathdb.service.userds.model.JobRow;
 import org.veupathdb.service.userds.model.JobStatus;
 import org.veupathdb.service.userds.model.ProjectCache;
+import org.veupathdb.service.userds.model.StatusCache;
 
 abstract class SelectJobBase
 {
@@ -24,7 +25,7 @@ abstract class SelectJobBase
       rs.getInt(Schema.Column.DB_ID),
       rs.getString(Schema.Column.JOB_ID),
       rs.getLong(Schema.Column.USER_ID),
-      JobStatus.fromString(rs.getString(Schema.Column.STATUS)).orElseThrow(),
+      StatusCache.getInstance().getKey(rs.getShort(Schema.Column.STATUS)),
       rs.getString(Schema.Column.NAME),
       rs.getString(Schema.Column.DESCRIPTION),
       rs.getString(Schema.Column.SUMMARY),
