@@ -1,6 +1,9 @@
-package org.veupathdb.service.userds.model;
+package org.veupathdb.service.userds.model.config;
 
-public class Config {
+import org.veupathdb.service.userds.model.Service;
+
+public class HandlerConfig
+{
   private Service[] services;
 
   public Service[] getServices() {

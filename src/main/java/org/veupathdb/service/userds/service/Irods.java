@@ -7,7 +7,7 @@ import org.irods.jargon.core.connection.ClientServerNegotiationPolicy;
 import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.packinstr.DataObjInp;
 import org.irods.jargon.core.pub.IRODSFileSystem;
-import org.veupathdb.service.userds.config.ExtOptions;
+import org.veupathdb.service.userds.model.config.ExtOptions;
 
 public class Irods
 {

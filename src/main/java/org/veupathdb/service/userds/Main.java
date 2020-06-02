@@ -12,8 +12,8 @@ import org.veupathdb.lib.container.jaxrs.config.Options;
 import org.veupathdb.lib.container.jaxrs.health.Dependency;
 import org.veupathdb.lib.container.jaxrs.server.ContainerResources;
 import org.veupathdb.lib.container.jaxrs.server.Server;
-import org.veupathdb.service.userds.config.ExtOptions;
-import org.veupathdb.service.userds.model.Config;
+import org.veupathdb.service.userds.model.config.ExtOptions;
+import org.veupathdb.service.userds.model.config.HandlerConfig;
 import org.veupathdb.service.userds.repo.SelectProjectQuery;
 import org.veupathdb.service.userds.repo.SelectStatusQuery;
 import org.veupathdb.service.userds.service.Irods;
@@ -27,12 +27,12 @@ public class Main extends Server {
 
   public static final ExtOptions options = new ExtOptions();
 
-  private static DataSource importDB;
-  public static Config jsonConfig;
+  private static DataSource    importDB;
+  public static  HandlerConfig jsonConfig;
 
   public static void main(String[] args) throws Exception {
     LOG.info("Parsing service config");
-    jsonConfig = Format.Json.readerFor(Config.class)
+    jsonConfig = Format.Json.readerFor(HandlerConfig.class)
       .readValue(new FileReader("config.json"));
 
     LOG.info("Initializing import datastore connection");
@@ -70,7 +70,7 @@ public class Main extends Server {
   @Override
   protected Dependency[] dependencies() {
     final var deps = Arrays.stream(jsonConfig.getServices())
-      .map(svc -> new HandlerDependency(svc.getDsType(), svc.getUrl(), 80))
+      .map(svc -> new HandlerDependency(svc.getDsType(), svc.getName(), 80))
       .map(Dependency.class::cast)
       .collect(Collectors.toList());
 

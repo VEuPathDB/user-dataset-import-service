@@ -19,8 +19,8 @@ public class HandlerDependency extends ServiceDependency {
 
   private static final String health = "health";
 
-  public HandlerDependency(String name, String url, int port) {
-    super(name, url, port);
+  public HandlerDependency(String dsType, String name, int port) {
+    super(dsType, name, port);
   }
 
   @Override
@@ -51,8 +51,8 @@ public class HandlerDependency extends ServiceDependency {
   }
 
   private String healthEndpoint() {
-    return getUrl().endsWith("/")
+    return "http://" + (getUrl().endsWith("/")
       ? getUrl() + health
-      : getUrl() + "/" + health;
+      : getUrl() + "/" + health);
   }
 }

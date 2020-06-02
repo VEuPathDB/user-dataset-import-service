@@ -64,7 +64,7 @@ dependencies {
   implementation("org.irods.jargon:jargon-core:4.3.1.0-RELEASE")
 
   // Core lib, prefers local checkout if available
-  implementation(findProject(":core") ?: "org.veupathdb.lib:jaxrs-container-core:1.1.5")
+  implementation(findProject(":core") ?: "org.veupathdb.lib:jaxrs-container-core:1.1.6")
 
   // Jersey
   implementation("org.glassfish.jersey.containers:jersey-container-grizzly2-http:${jersey}")

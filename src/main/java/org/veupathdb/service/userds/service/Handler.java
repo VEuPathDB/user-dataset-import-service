@@ -53,7 +53,7 @@ public class Handler
       .send(
         HttpRequest.newBuilder(
           URI.create(
-            format(jobEndpoint, svc.getUrl(), job.getJobId())
+            format(jobEndpoint, svc.getName(), job.getJobId())
           )
         )
           .PUT(
@@ -93,7 +93,7 @@ public class Handler
     try {
       final var res = HttpClient.newHttpClient().send(
         HttpRequest.newBuilder(URI.create(
-          format(jobEndpoint, svc.getUrl(), job.getJobId())))
+          format(jobEndpoint, svc.getName(), job.getJobId())))
           .header(Header.CONTENT_TYPE, MULTIPART_HEAD)
           .POST(BodyPublishers.ofInputStream(() -> body))
           .build(),

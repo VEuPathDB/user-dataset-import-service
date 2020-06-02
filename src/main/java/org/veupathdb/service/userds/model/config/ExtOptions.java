@@ -1,4 +1,4 @@
-package org.veupathdb.service.userds.config;
+package org.veupathdb.service.userds.model.config;
 
 import java.util.Optional;
 
