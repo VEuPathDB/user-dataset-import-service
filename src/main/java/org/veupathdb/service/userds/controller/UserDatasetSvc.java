@@ -15,7 +15,7 @@ import javax.ws.rs.core.Request;
 import com.devskiller.friendly_id.FriendlyId;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.veupathdb.lib.container.jaxrs.middleware.AuthFilter;
+import org.veupathdb.lib.container.jaxrs.server.annotations.Authenticated;
 import org.veupathdb.lib.container.jaxrs.providers.UserProvider;
 import org.veupathdb.service.userds.Main;
 import org.veupathdb.service.userds.generated.model.*;
@@ -31,7 +31,7 @@ import org.veupathdb.service.userds.util.ErrFac;
 import org.veupathdb.service.userds.util.Errors;
 import org.veupathdb.service.userds.util.InputStreamNotifier;
 
-@AuthFilter.Authenticated
+@Authenticated
 public class UserDatasetSvc implements UserDatasets
 {
   static final String
