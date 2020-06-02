@@ -13,7 +13,7 @@ public interface Schema
       NAME        = "name",
       PROJECTS    = "projects",
       STARTED     = "started",
-      STATUS      = "status",
+      STATUS      = "status_id",
       SUMMARY     = "summary",
       USER_ID     = "user_id";
   }

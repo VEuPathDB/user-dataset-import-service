@@ -122,7 +122,7 @@ public class UserDatasetSvc implements UserDatasets
       wait();
 
     } catch (Throwable e) {
-      log.error(e);
+      log.error("Error when processing import: ", e);
       return PostByJobIdResponse.respond500(ErrFac.new500(req, e));
     } finally {
       Errors.swallow(body::close);
