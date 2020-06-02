@@ -115,11 +115,10 @@ public class UserDatasetSvc implements UserDatasets
         return PostByJobIdResponse.respond404(ErrFac.new404());
 
       var lock = new Object();
-      var pipeWrap = new InputStreamNotifier(body, lock);
-
-      new Thread(new Importer(optJob.get(), pipeWrap)).start();
 
       synchronized (lock) {
+        var pipeWrap = new InputStreamNotifier(body, lock);
+        new Thread(new Importer(optJob.get(), pipeWrap)).start();
         lock.wait();
       }
 
