@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Request;
 
 import com.devskiller.friendly_id.FriendlyId;
@@ -41,9 +42,11 @@ public class UserDatasetSvc implements UserDatasets
 
   private final Logger  log;
   private final Request req;
+  private final HttpHeaders headers;
 
-  public UserDatasetSvc(@Context Request req) {
+  public UserDatasetSvc(@Context Request req, @Context HttpHeaders headers) {
     this.req = req;
+    this.headers = headers;
     this.log = LogManager.getLogger(getClass());
   }
 
@@ -118,9 +121,13 @@ public class UserDatasetSvc implements UserDatasets
 
       var lock = new Object();
 
+      var boundary = headers.getHeaderString("Content-Type")
+        .split("boundary=")[1]
+        .split(";")[0];
+
       synchronized (lock) {
         var pipeWrap = new InputStreamNotifier(body, lock);
-        new Thread(new Importer(optJob.get(), pipeWrap)).start();
+        new Thread(new Importer(optJob.get(), boundary, pipeWrap)).start();
         lock.wait();
       }
 

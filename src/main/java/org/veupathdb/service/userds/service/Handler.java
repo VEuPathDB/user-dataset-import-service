@@ -31,7 +31,7 @@ public class Handler
     jobEndpoint = "http://%s/job/%s",
     statusEndpoint = jobEndpoint + "/status",
     boundary = "DATASET-CONTENT",
-    MULTIPART_HEAD = MediaType.MULTIPART_FORM_DATA + "; boundary=" + boundary,
+    MULTIPART_HEAD = MediaType.MULTIPART_FORM_DATA + "; boundary=",
     fileName = "filename=";
 
   private static final Map < String, Handler > handlers = Collections
@@ -88,13 +88,14 @@ public class Handler
   public Either < HandlerJobResult, Either < HandlerGeneralError, HandlerValidationError > >
   submitJob(
     final JobRow job,
+    final String boundary,
     final InputStream body
   ) throws Exception {
     try {
       final var res = HttpClient.newHttpClient().send(
         HttpRequest.newBuilder(URI.create(
           format(jobEndpoint, svc.getName(), job.getJobId())))
-          .header(Header.CONTENT_TYPE, MULTIPART_HEAD)
+          .header(Header.CONTENT_TYPE, MULTIPART_HEAD + boundary)
           .POST(BodyPublishers.ofInputStream(() -> body))
           .build(),
         BodyHandlers.ofInputStream()

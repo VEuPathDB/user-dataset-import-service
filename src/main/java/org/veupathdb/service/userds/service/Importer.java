@@ -20,13 +20,16 @@ import static org.veupathdb.service.userds.util.Format.Json;
 public class Importer implements Runnable
 {
   private final JobRow      job;
+  private final String      boundary;
   private final InputStream reader;
 
   public Importer(
     JobRow job,
+    String boundary,
     InputStream reader
   ) {
     this.job = job;
+    this.boundary = boundary;
     this.reader = reader;
   }
 
@@ -85,7 +88,7 @@ public class Importer implements Runnable
   }
 
   private Optional< HandlerJobResult > doSubmit(Handler hand) throws Exception {
-    var raw = hand.submitJob(job, reader);
+    var raw = hand.submitJob(job, boundary, reader);
 
     if (raw.isLeft())
       return Optional.of(raw.leftOrThrow());
