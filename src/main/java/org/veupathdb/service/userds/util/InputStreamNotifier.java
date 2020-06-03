@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.veupathdb.lib.container.jaxrs.providers.LogProvider;
+
 /**
  * InputStream wrapper that calls {@link #notify()} on the given parent object
  * when the stream is closed.
@@ -30,17 +32,23 @@ public class InputStreamNotifier extends InputStream
 
   @Override
   public int read(byte[] b, int off, int len) throws IOException {
-    return stream.read(b, off, len);
+    var out = stream.read(b, off, len);
+    LogProvider.logger(getClass()).debug(new String(b));
+    return out;
   }
 
   @Override
   public byte[] readAllBytes() throws IOException {
-    return stream.readAllBytes();
+    var out = stream.readAllBytes();
+    LogProvider.logger(getClass()).debug(new String(out));
+    return out;
   }
 
   @Override
   public byte[] readNBytes(int len) throws IOException {
-    return stream.readNBytes(len);
+    var out = stream.readNBytes(len);
+    LogProvider.logger(getClass()).debug(new String(out));
+    return out;
   }
 
   @Override
