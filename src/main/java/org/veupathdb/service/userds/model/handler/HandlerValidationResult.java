@@ -1,25 +1,28 @@
 package org.veupathdb.service.userds.model.handler;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 public class HandlerValidationResult
 {
-  private final List < String > general;
+  public static final String
+    KEY_GENERAL = "general",
+    KEY_BY_KEY  = "byKey";
 
-  private final Map < String, List < String > > byKey;
+  private List < String > general;
 
-  @JsonCreator
-  public HandlerValidationResult(
-    @JsonProperty("general") final List < String > general,
-    @JsonProperty("byKey")   final Map < String, List < String > > byKey
-  ) {
-    this.general = Collections.unmodifiableList(general);
-    this.byKey = Collections.unmodifiableMap(byKey);
+  private Map < String, List < String > > byKey;
+
+  @JsonSetter(KEY_GENERAL)
+  public void setGeneral(List < String > general) {
+    this.general = general;
+  }
+
+  @JsonSetter(KEY_BY_KEY)
+  public void setByKey(Map < String, List < String > > byKey) {
+    this.byKey = byKey;
   }
 
   public List < String > getGeneral() {
