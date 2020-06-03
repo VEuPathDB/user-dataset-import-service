@@ -3,6 +3,7 @@ package org.veupathdb.service.userds.service;
 import java.io.InputStream;
 import java.nio.file.Paths;
 
+import org.apache.logging.log4j.Logger;
 import org.irods.jargon.core.connection.ClientServerNegotiationPolicy;
 import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.packinstr.DataObjInp;
@@ -12,30 +13,33 @@ import org.veupathdb.service.userds.model.config.ExtOptions;
 
 public class Irods
 {
+  private static final Logger log = LogProvider.logger(Irods.class);
+
   private static final String
-    lzPath   = "",
-    flagPath = "";
+    lzPath   = "/ebrc/workspaces/lz",
+    flagPath = "/ebrc/workspaces/flags";
 
   private static IRODSAccount    account;
   private static IRODSFileSystem system;
 
   public static void writeDataset(String fName, InputStream pipe)
   throws Exception {
-    LogProvider.logger(Irods.class).trace("Irods#writeDataset");
+    log.trace("Irods#writeDataset");
     var fs = system.getIRODSFileFactory(account);
 
     try (var writer = fs.instanceIRODSFileOutputStream(
       Paths.get(lzPath, fName).toString(),
       DataObjInp.OpenFlags.WRITE_FAIL_IF_EXISTS
     )) {
+      log.debug("writing dataset {} to iRODS {}", fName, lzPath);
       pipe.transferTo(writer);
     }
 
-    var file = fs.instanceIRODSFile(Paths.get(
-      flagPath,
-      fName.replace(".tgz", ".txt")
-      ).toString()
-    );
+    var flag = Paths.get(flagPath, fName.replace(".tgz", ".txt")).toString();
+    var file = fs.instanceIRODSFile(flag);
+
+    log.debug("writing flag {} to iRODS {}", flag, flagPath);
+
     try {
       file.createNewFile();
     } finally {
@@ -44,7 +48,7 @@ public class Irods
   }
 
   public static void initialize(ExtOptions opts) {
-    LogProvider.logger(Irods.class).trace("Irods#initialize");
+    log.trace("Irods#initialize");
     try {
       account = initAccount(opts);
       system = initSystem();
@@ -54,7 +58,7 @@ public class Irods
   }
 
   private static IRODSFileSystem initSystem() throws Exception {
-    LogProvider.logger(Irods.class).trace("Irods#initSystem");
+    log.trace("Irods#initSystem");
     return IRODSFileSystem.instance();
   }
 
@@ -62,7 +66,7 @@ public class Irods
    * Initialize an iRODS account object.
    */
   private static IRODSAccount initAccount(ExtOptions opts) throws Exception {
-    LogProvider.logger(Irods.class).trace("Irods#initAccount");
+    log.trace("Irods#initAccount");
     final var csnp = new ClientServerNegotiationPolicy();
 
     csnp.setSslNegotiationPolicy(
