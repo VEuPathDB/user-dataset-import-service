@@ -26,7 +26,7 @@ abstract class SelectJobBase
     var projects = new ArrayList <String>(1);
     try (var subRs = rs.getArray(Schema.Column.PROJECTS).getResultSet()) {
       while (subRs.next()) {
-        var projectId = rs.getShort(2);
+        var projectId = subRs.getShort(2);
         var project   = ProjectCache.getInstance().getKey(projectId);
 
         log.debug("Appending project {} ({})", project, projectId);
