@@ -19,6 +19,8 @@ import static org.veupathdb.service.userds.util.Format.Json;
 
 public class Importer implements Runnable
 {
+  private static final Logger log = LogProvider.logger(Importer.class);
+
   private final JobRow      job;
   private final String      boundary;
   private final InputStream reader;
@@ -34,6 +36,7 @@ public class Importer implements Runnable
   }
 
   public void run() {
+    log.trace("Importer#run");
     try {
       final var hand = Handler.getHandler("biom").orElseThrow();
 
@@ -110,8 +113,13 @@ public class Importer implements Runnable
 
   private void doStore(HandlerJobResult result) throws Exception {
     LogProvider.logger(getClass()).trace("Importer#doStore");
-    Irods.writeDataset(result.getFileName(), result.getContent());
-    result.getContent().close();
+    try {
+      Irods.writeDataset(result.getFileName(), result.getContent());
+    } catch (Throwable t) {
+      lo
+    } finally {
+      result.getContent().close();
+    }
   }
 
   private void do400(HandlerGeneralError err) throws Exception {

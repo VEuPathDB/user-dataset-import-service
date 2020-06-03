@@ -29,6 +29,7 @@ import org.veupathdb.service.userds.repo.InsertJobQuery;
 import org.veupathdb.service.userds.repo.SelectJobQuery;
 import org.veupathdb.service.userds.repo.SelectJobsQuery;
 import org.veupathdb.service.userds.service.Importer;
+import org.veupathdb.service.userds.service.ThreadProvider;
 import org.veupathdb.service.userds.util.ErrFac;
 import org.veupathdb.service.userds.util.Errors;
 import org.veupathdb.service.userds.util.InputStreamNotifier;
@@ -127,7 +128,8 @@ public class UserDatasetSvc implements UserDatasets
 
       synchronized (lock) {
         var pipeWrap = new InputStreamNotifier(body, lock);
-        new Thread(new Importer(optJob.get(), boundary, pipeWrap)).start();
+        ThreadProvider.newThread(new Importer(optJob.get(), boundary, pipeWrap))
+          .start();
         lock.wait();
       }
 
