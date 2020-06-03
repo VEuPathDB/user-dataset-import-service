@@ -1,7 +1,6 @@
 package org.veupathdb.service.userds.model.handler;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 public class HandlerValidationError
 {
@@ -9,16 +8,17 @@ public class HandlerValidationError
     KEY_ERRORS = "reasons",
     KEY_STATUS = "status";
 
-  private final String status;
+  private String status;
 
-  private final HandlerValidationResult errors;
+  private HandlerValidationResult errors;
 
-  @JsonCreator
-  public HandlerValidationError(
-    @JsonProperty(KEY_STATUS) String status,
-    @JsonProperty(KEY_ERRORS) HandlerValidationResult errors
-  ) {
+  @JsonSetter(KEY_STATUS)
+  public void setStatus(String status) {
     this.status = status;
+  }
+
+  @JsonSetter(KEY_ERRORS)
+  public void setErrors(HandlerValidationResult errors) {
     this.errors = errors;
   }
 

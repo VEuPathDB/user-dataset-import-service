@@ -16,7 +16,7 @@ public class HandlerValidationResult
   @JsonCreator
   public HandlerValidationResult(
     @JsonProperty("general") final List < String > general,
-    @JsonProperty("byKey") final Map < String, List < String > > byKey
+    @JsonProperty("byKey")   final Map < String, List < String > > byKey
   ) {
     this.general = Collections.unmodifiableList(general);
     this.byKey = Collections.unmodifiableMap(byKey);

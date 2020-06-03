@@ -3,10 +3,12 @@ package org.veupathdb.service.userds.model;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProjectCache extends HashMap<String, Short> {
+public class ProjectCache extends HashMap < String, Short >
+{
   private static ProjectCache instance;
 
-  private Map<Short, String> inverse;
+  private Map < Short, String > inverse;
+
   private ProjectCache() {
     super(16);
   }
@@ -14,6 +16,10 @@ public class ProjectCache extends HashMap<String, Short> {
   public String getKey(Short value) {
     populateInverse();
     return inverse.get(value);
+  }
+
+  public Map < Short, String > getInverse() {
+    return inverse;
   }
 
   public static ProjectCache getInstance() {
