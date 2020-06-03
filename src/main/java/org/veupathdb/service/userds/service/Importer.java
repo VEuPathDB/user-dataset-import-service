@@ -106,16 +106,19 @@ public class Importer implements Runnable
   }
 
   private void doStore(HandlerJobResult result) throws Exception {
+    LogProvider.logger(getClass()).trace("Importer#doStore");
     Irods.writeDataset(result.getFileName(), result.getContent());
     result.getContent().close();
   }
 
   private void do400(HandlerGeneralError err) throws Exception {
+    LogProvider.logger(getClass()).trace("Importer#do400");
     UpdateJobStatusQuery.run(job.getDbId(), JobStatus.REJECTED);
     InsertMessageQuery.run(job.getDbId(), err.getMessage());
   }
 
   private void do422(HandlerValidationError err) throws Exception {
+    LogProvider.logger(getClass()).trace("Importer#do400");
     var js = Json.convertValue(err.getErrors(), JsonNode.class);
     UpdateJobStatusQuery.run(job.getDbId(), JobStatus.ERRORED);
     InsertMessageQuery.run(job.getDbId(), js);
@@ -126,6 +129,7 @@ public class Importer implements Runnable
   }
 
   private void do500(String err) throws Exception {
+    LogProvider.logger(getClass()).trace("Importer#do500");
     UpdateJobStatusQuery.run(job.getDbId(), JobStatus.ERRORED);
     InsertMessageQuery.run(job.getDbId(), err);
   }

@@ -7,6 +7,7 @@ import org.irods.jargon.core.connection.ClientServerNegotiationPolicy;
 import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.packinstr.DataObjInp;
 import org.irods.jargon.core.pub.IRODSFileSystem;
+import org.veupathdb.lib.container.jaxrs.providers.LogProvider;
 import org.veupathdb.service.userds.model.config.ExtOptions;
 
 public class Irods
@@ -20,6 +21,7 @@ public class Irods
 
   public static void writeDataset(String fName, InputStream pipe)
   throws Exception {
+    LogProvider.logger(Irods.class).trace("Irods#writeDataset");
     var fs = system.getIRODSFileFactory(account);
 
     try (var writer = fs.instanceIRODSFileOutputStream(
@@ -42,6 +44,7 @@ public class Irods
   }
 
   public static void initialize(ExtOptions opts) {
+    LogProvider.logger(Irods.class).trace("Irods#initialize");
     try {
       account = initAccount(opts);
       system = initSystem();
@@ -51,6 +54,7 @@ public class Irods
   }
 
   private static IRODSFileSystem initSystem() throws Exception {
+    LogProvider.logger(Irods.class).trace("Irods#initSystem");
     return IRODSFileSystem.instance();
   }
 
@@ -58,6 +62,7 @@ public class Irods
    * Initialize an iRODS account object.
    */
   private static IRODSAccount initAccount(ExtOptions opts) throws Exception {
+    LogProvider.logger(Irods.class).trace("Irods#initAccount");
     final var csnp = new ClientServerNegotiationPolicy();
 
     csnp.setSslNegotiationPolicy(
