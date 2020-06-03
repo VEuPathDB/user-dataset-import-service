@@ -66,7 +66,7 @@ public class Irods
     final var csnp = new ClientServerNegotiationPolicy();
 
     csnp.setSslNegotiationPolicy(
-      ClientServerNegotiationPolicy.SslNegotiationPolicy.CS_NEG_REQUIRE);
+      ClientServerNegotiationPolicy.SslNegotiationPolicy.CS_NEG_DONT_CARE);
 
     return IRODSAccount.instance(
       opts.getIrodsHost().orElseThrow(),
