@@ -5,6 +5,8 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import org.apache.logging.log4j.Logger;
+import org.veupathdb.lib.container.jaxrs.providers.LogProvider;
 import org.veupathdb.service.userds.model.JobRow;
 import org.veupathdb.service.userds.model.ProjectCache;
 import org.veupathdb.service.userds.model.StatusCache;
@@ -12,12 +14,24 @@ import org.veupathdb.service.userds.util.Format;
 
 abstract class SelectJobBase
 {
+  private static final Logger log = LogProvider.logger(SelectJobBase.class);
+
   protected static JobRow rsToJobRow(ResultSet rs) throws Exception {
+    log.trace("SelectJobBase#rsToJobRow");
+
+    final var jobId = rs.getString(Schema.Column.JOB_ID);
+
+    log.debug("Building job " + jobId);
 
     var projects = new ArrayList <String>(1);
     try (var subRs = rs.getArray(Schema.Column.PROJECTS).getResultSet()) {
       while (subRs.next()) {
-        projects.add(ProjectCache.getInstance().getKey(rs.getShort(1)));
+        var projectId = rs.getShort(1);
+        var project   = ProjectCache.getInstance().getKey(projectId);
+
+        log.debug("Appending project {} ({})", project, projectId);
+
+        projects.add(project);
       }
     }
 
@@ -28,7 +42,7 @@ abstract class SelectJobBase
 
     return new JobRow(
       rs.getInt(Schema.Column.DB_ID),
-      rs.getString(Schema.Column.JOB_ID),
+      jobId,
       rs.getLong(Schema.Column.USER_ID),
       StatusCache.getInstance().getKey(rs.getShort(Schema.Column.STATUS)),
       rs.getString(Schema.Column.NAME),
