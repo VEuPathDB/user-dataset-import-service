@@ -20,9 +20,6 @@ public interface ValidationErrors {
   @JsonProperty("errors")
   ErrorsType getErrors();
 
-  @JsonProperty("errors")
-  void setErrors(ErrorsType errors);
-
   @JsonDeserialize(
       as = ValidationErrorsImpl.ErrorsTypeImpl.class
   )

@@ -2,7 +2,9 @@ package org.veupathdb.service.userds.controller;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.bouncycastle.util.io.Streams;
 import org.veupathdb.service.userds.Main;
 import org.veupathdb.service.userds.generated.model.NotFoundErrorImpl;
 import org.veupathdb.service.userds.generated.resources.Projects;
@@ -12,7 +14,8 @@ import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 
-public class ProjectSvc implements Projects {
+public class ProjectController implements Projects {
+  private static final String[] BASE_FILE_TYPES = {"zip", "tar.gz", "tgz"};
 
   @Override
   public GetProjectsResponse getProjects() {
@@ -67,9 +70,9 @@ public class ProjectSvc implements Projects {
     }
 
     return GetProjectsDatasetTypesFileTypesByProjectAndDsTypeResponse
-      .respond200WithApplicationJson(stream(svcs)
+      .respond200WithApplicationJson(Stream.concat(stream(svcs)
         .map(Service::getFileTypes)
-        .flatMap(Arrays::stream)
+        .flatMap(Arrays::stream), Stream.of(BASE_FILE_TYPES))
         .sorted()
         .distinct()
         .collect(Collectors.toList()));

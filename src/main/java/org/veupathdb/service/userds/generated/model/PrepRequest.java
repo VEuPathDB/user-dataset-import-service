@@ -2,39 +2,46 @@ package org.veupathdb.service.userds.generated.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import java.util.List;
 
-@JsonDeserialize(
-    as = PrepRequestImpl.class
-)
-public interface PrepRequest {
-  @JsonProperty("datasetName")
+@JsonDeserialize(as = PrepRequestImpl.class)
+public interface PrepRequest
+{
+  String
+    KEY_DS_NAME  = "datasetName",
+    KEY_DESC     = "description",
+    KEY_SUMMARY  = "summary",
+    KEY_PROJECTS = "projects",
+    KEY_DS_TYPE  = "datasetType";
+
+  @JsonProperty(KEY_DS_NAME)
   String getDatasetName();
 
-  @JsonProperty("datasetName")
+  @JsonProperty(KEY_DS_NAME)
   void setDatasetName(String datasetName);
 
-  @JsonProperty("description")
+  @JsonProperty(KEY_DESC)
   String getDescription();
 
-  @JsonProperty("description")
+  @JsonProperty(KEY_DESC)
   void setDescription(String description);
 
-  @JsonProperty("summary")
+  @JsonProperty(KEY_SUMMARY)
   String getSummary();
 
-  @JsonProperty("summary")
+  @JsonProperty(KEY_SUMMARY)
   void setSummary(String summary);
 
-  @JsonProperty("projects")
-  List<String> getProjects();
+  @JsonProperty(KEY_PROJECTS)
+  List < String > getProjects();
 
-  @JsonProperty("projects")
-  void setProjects(List<String> projects);
+  @JsonProperty(KEY_PROJECTS)
+  void setProjects(List < String > projects);
 
-  @JsonProperty("datasetType")
+  @JsonProperty(KEY_DS_TYPE)
   String getDatasetType();
 
-  @JsonProperty("datasetType")
+  @JsonProperty(KEY_DS_TYPE)
   void setDatasetType(String dsType);
 }

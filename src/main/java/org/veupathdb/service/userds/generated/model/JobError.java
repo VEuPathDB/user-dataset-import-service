@@ -6,19 +6,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.util.Map;
 
-@JsonDeserialize(
-    as = JobErrorImpl.class
-)
+@JsonDeserialize(as = JobErrorImpl.class)
 public interface JobError {
+
   @JsonAnyGetter
   Map<String, Object> getAdditionalProperties();
 
   @JsonAnySetter
-  void setAdditionalProperties(String key, Object value);
+  JobError setAdditionalProperties(String key, Object value);
 
   @JsonProperty("message")
   String getMessage();
 
   @JsonProperty("message")
-  void setMessage(String message);
+  JobError setMessage(String message);
 }

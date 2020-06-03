@@ -13,23 +13,23 @@ import org.veupathdb.service.userds.generated.support.ResponseDelegate;
 public interface UserDatasets {
   @GET
   @Produces("application/json")
-  GetResponse getUserDatasets();
+  GetResponse getUserJobs();
 
   @POST
   @Produces("application/json")
   @Consumes("application/json")
-  PostResponse postUserDatasets(PrepRequest entity);
+  PostResponse createJob(PrepRequest entity);
 
   @GET
   @Path("/{jobId}")
   @Produces("application/json")
-  GetByJobIdResponse getUserDatasetsByJobId(@PathParam("jobId") String jobId);
+  GetByJobIdResponse getJob(@PathParam("jobId") String jobId);
 
   @POST
   @Path("/{jobId}")
   @Produces("application/json")
   @Consumes("multipart/form-data")
-  PostByJobIdResponse postUserDatasetsByJobId(
+  PostByJobIdResponse postImport(
     @PathParam("jobId")    String jobId,
     InputStream body
   );

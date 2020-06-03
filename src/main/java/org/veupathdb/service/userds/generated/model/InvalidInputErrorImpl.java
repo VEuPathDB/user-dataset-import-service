@@ -7,17 +7,20 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonTypeName("invalid-input")
 @JsonPropertyOrder({
-    "status",
-    "message",
-    "errors"
+  "status",
+  "message",
+  "errors"
 })
-public class InvalidInputErrorImpl implements InvalidInputError {
+public class InvalidInputErrorImpl implements InvalidInputError
+{
   @JsonProperty("status")
   private final String status = _DISCRIMINATOR_TYPE_NAME;
 
@@ -53,24 +56,27 @@ public class InvalidInputErrorImpl implements InvalidInputError {
   }
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
-  @JsonPropertyOrder({
-      "general",
-      "byKey"
-  })
-  public static class ErrorsTypeImpl implements InvalidInputError.ErrorsType {
+  @JsonPropertyOrder({"general", "byKey"})
+  public static class ErrorsTypeImpl implements InvalidInputError.ErrorsType
+  {
     @JsonProperty("general")
-    private List<String> general;
+    private List < String > general;
 
     @JsonProperty("byKey")
     private InvalidInputError.ErrorsType.ByKeyType byKey;
 
+    public ErrorsTypeImpl() {
+      this.general = new ArrayList <>();
+      this.byKey = new ByKeyTypeImpl();
+    }
+
     @JsonProperty("general")
-    public List<String> getGeneral() {
+    public List < String > getGeneral() {
       return this.general;
     }
 
     @JsonProperty("general")
-    public void setGeneral(List<String> general) {
+    public void setGeneral(List < String > general) {
       this.general = general;
     }
 
@@ -86,12 +92,14 @@ public class InvalidInputErrorImpl implements InvalidInputError {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonPropertyOrder
-    public static class ByKeyTypeImpl implements InvalidInputError.ErrorsType.ByKeyType {
+    public static class ByKeyTypeImpl
+      implements InvalidInputError.ErrorsType.ByKeyType
+    {
       @JsonIgnore
-      private Map<String, Object> additionalProperties = new ExcludingMap();
+      private Map < String, Object > additionalProperties = new ExcludingMap();
 
       @JsonAnyGetter
-      public Map<String, Object> getAdditionalProperties() {
+      public Map < String, Object > getAdditionalProperties() {
         return additionalProperties;
       }
 
