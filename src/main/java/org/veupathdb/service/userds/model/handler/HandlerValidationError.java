@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class HandlerValidationError
 {
   public static final String
-    KEY_ERRORS = "errors",
+    KEY_ERRORS = "reasons",
     KEY_STATUS = "status";
 
   private final String status;

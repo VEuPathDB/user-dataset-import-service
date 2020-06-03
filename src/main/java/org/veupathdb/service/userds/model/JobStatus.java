@@ -3,6 +3,8 @@ package org.veupathdb.service.userds.model;
 import java.util.Arrays;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum JobStatus
 {
   AWAITING_UPLOAD("awaiting-upload"),
@@ -22,6 +24,7 @@ public enum JobStatus
     this.name = name;
   }
 
+  @JsonValue
   public String getName() {
     return name;
   }
