@@ -37,7 +37,7 @@ public interface Projects
       super(response, entity);
     }
 
-    public static GetProjectsResponse respond200WithApplicationJson(List < String > entity) {
+    public static GetProjectsResponse respond200(List < String > entity) {
       var responseBuilder = Response.status(200)
         .header("Content-Type", "application/json");
       var wrappedEntity = new GenericEntity <>(entity){};

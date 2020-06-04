@@ -18,8 +18,8 @@ public class ProjectController implements Projects {
 
   @Override
   public GetProjectsResponse getProjects() {
-    return GetProjectsResponse.respond200WithApplicationJson(
-      stream(Main.jsonConfig.getServices())
+    return GetProjectsResponse.respond200(
+      Main.jsonConfig.getServices().stream()
         .map(Service::getProjects)
         .flatMap(Arrays::stream)
         .distinct()
@@ -30,7 +30,8 @@ public class ProjectController implements Projects {
   @Override
   public GetProjectHandlers
   getProjectHandlers(String project) {
-    final var svcs = stream(Main.jsonConfig.getServices())
+    final var svcs = Main.jsonConfig.getServices()
+      .stream()
       .filter(svc -> asList(svc.getProjects()).contains(project))
       .toArray(Service[]::new);
 
@@ -55,7 +56,8 @@ public class ProjectController implements Projects {
     String project,
     String dsType
   ) {
-    final var svcs = stream(Main.jsonConfig.getServices())
+    final var svcs = Main.jsonConfig.getServices()
+      .stream()
       .filter(svc -> dsType.equals(svc.getDsType()))
       .filter(svc -> asList(svc.getProjects()).contains(project))
       .toArray(Service[]::new);
