@@ -39,22 +39,11 @@ public interface UserDatasets {
       super(response, entity);
     }
 
-    private GetResponse(Response response) {
-      super(response);
-    }
-
-    public static GetResponse respond200(
-        List<StatusResponse> entity) {
+    public static GetResponse respond200(List<StatusResponse> entity) {
       Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
-      GenericEntity<List<StatusResponse>> wrappedEntity = new GenericEntity<List<StatusResponse>>(entity){};
+      GenericEntity<List<StatusResponse>> wrappedEntity = new GenericEntity <>(entity){};
       responseBuilder.entity(wrappedEntity);
       return new GetResponse(responseBuilder.build(), wrappedEntity);
-    }
-
-    public static GetResponse respond401WithApplicationJson(UnauthorizedError entity) {
-      Response.ResponseBuilder responseBuilder = Response.status(401).header("Content-Type", "application/json");
-      responseBuilder.entity(entity);
-      return new GetResponse(responseBuilder.build(), entity);
     }
 
     public static GetResponse respond500(ServerError entity) {
@@ -69,24 +58,8 @@ public interface UserDatasets {
       super(response, entity);
     }
 
-    private PostResponse(Response response) {
-      super(response);
-    }
-
     public static PostResponse respond200(PrepResponse entity) {
       Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
-      responseBuilder.entity(entity);
-      return new PostResponse(responseBuilder.build(), entity);
-    }
-
-    public static PostResponse respond400WithApplicationJson(BadRequestError entity) {
-      Response.ResponseBuilder responseBuilder = Response.status(400).header("Content-Type", "application/json");
-      responseBuilder.entity(entity);
-      return new PostResponse(responseBuilder.build(), entity);
-    }
-
-    public static PostResponse respond401WithApplicationJson(UnauthorizedError entity) {
-      Response.ResponseBuilder responseBuilder = Response.status(401).header("Content-Type", "application/json");
       responseBuilder.entity(entity);
       return new PostResponse(responseBuilder.build(), entity);
     }
@@ -109,20 +82,9 @@ public interface UserDatasets {
       super(response, entity);
     }
 
-    private GetByJobIdResponse(Response response) {
-      super(response);
-    }
-
     public static GetByJobIdResponse respond200(
         StatusResponse entity) {
       Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
-      responseBuilder.entity(entity);
-      return new GetByJobIdResponse(responseBuilder.build(), entity);
-    }
-
-    public static GetByJobIdResponse respond401WithApplicationJson(
-        UnauthorizedError entity) {
-      Response.ResponseBuilder responseBuilder = Response.status(401).header("Content-Type", "application/json");
       responseBuilder.entity(entity);
       return new GetByJobIdResponse(responseBuilder.build(), entity);
     }
@@ -149,13 +111,6 @@ public interface UserDatasets {
     public static PostByJobIdResponse respond200(
         ProcessResponse entity) {
       Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
-      responseBuilder.entity(entity);
-      return new PostByJobIdResponse(responseBuilder.build(), entity);
-    }
-
-    public static PostByJobIdResponse respond404(
-        NotFoundError entity) {
-      Response.ResponseBuilder responseBuilder = Response.status(404).header("Content-Type", "application/json");
       responseBuilder.entity(entity);
       return new PostByJobIdResponse(responseBuilder.build(), entity);
     }

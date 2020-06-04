@@ -116,7 +116,8 @@ public class Importer implements Runnable
     try {
       Irods.writeDataset(result.getFileName(), result.getContent());
     } catch (Throwable t) {
-      lo
+      log.debug("failed to write dataset", t);
+      throw t;
     } finally {
       result.getContent().close();
     }
