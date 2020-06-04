@@ -56,6 +56,16 @@ public class StatusResponseImpl implements StatusResponse {
   )
   private Date started;
 
+  @JsonProperty("finished")
+  @JsonFormat(
+    shape = JsonFormat.Shape.STRING,
+    pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
+  )
+  @JsonDeserialize(
+    using = TimestampDeserializer.class
+  )
+  private Date finished;
+
   @JsonProperty("id")
   public String getId() {
     return this.id;
@@ -155,18 +165,21 @@ public class StatusResponseImpl implements StatusResponse {
     return this;
   }
 
-  @JsonDeserialize(
-      using = StatusDetailsType.StatusDetailsDeserializer.class
-  )
-  @JsonSerialize(
-      using = StatusDetailsType.Serializer.class
-  )
+  @JsonProperty("finished")
+  public Date getFinished() {
+    return this.finished;
+  }
+
+  @JsonProperty("finished")
+  public StatusResponse setFinished(Date finished) {
+    this.finished = finished;
+    return this;
+  }
+
+  @JsonDeserialize(using = StatusDetailsType.StatusDetailsDeserializer.class)
+  @JsonSerialize(using = StatusDetailsType.Serializer.class)
   public static class StatusDetailsTypeImpl implements StatusResponse.StatusDetailsType {
     private Object anyType;
-
-    private StatusDetailsTypeImpl() {
-      this.anyType = null;
-    }
 
     public StatusDetailsTypeImpl(ValidationErrors validationErrors) {
       this.anyType = validationErrors;

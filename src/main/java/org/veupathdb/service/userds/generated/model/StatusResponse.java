@@ -75,6 +75,12 @@ public interface StatusResponse {
   @JsonProperty("started")
   StatusResponse setStarted(Date started);
 
+  @JsonProperty("finished")
+  Date getFinished();
+
+  @JsonProperty("finished")
+  StatusResponse setFinished(Date started);
+
   @JsonDeserialize(
       using = StatusDetailsType.StatusDetailsDeserializer.class
   )

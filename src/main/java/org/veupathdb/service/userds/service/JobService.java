@@ -2,6 +2,7 @@ package org.veupathdb.service.userds.service;
 
 import java.sql.Date;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -108,7 +109,12 @@ public class JobService
       .setStarted(Date.from(
         row.getStarted()
           .atZone(ZoneId.systemDefault())
-          .toInstant()));
+          .toInstant()))
+      .setFinished(row.getFinished()
+        .map(d -> d.atZone(ZoneId.systemDefault()))
+        .map(ZonedDateTime::toInstant)
+        .map(Date::from)
+        .orElse(null));
 
     // If the job status was "errored" then we only have an exception message
     // to return.

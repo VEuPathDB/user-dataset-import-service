@@ -23,6 +23,7 @@ types:
         required: false
         type: ValidationErrors | JobError
       started: datetime
+      finished?: datetime
     examples:
       success:
         id: 2XZEXFa8FMA2HmQpHpA9eA
@@ -31,13 +32,15 @@ types:
           - MicrobiomeDB
         status: success
         started: '2020-06-04T16:06:26.074Z'
+        finished: '2020-06-04T16:06:28.090Z'
       errored:
         id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
         datasetName: my-dataset
         projects:
           - PlasmoDB
         status: errored
-        started: 2020-05-20T09:43:27-0500
+        started: '2020-06-04T16:06:26.074Z'
+        finished: '2020-06-04T16:06:28.090Z'
         statusDetails:
           message: Dataset handler failed to process uploaded user dataset.
       rejected:
@@ -51,7 +54,8 @@ types:
             general:
               - "('Could not load the file as BIOM - does it conform to the specification on https://biom-format.org?', ValueError('Expecting object: line 139 column 1 (char 1554)',))"
             byKey: {}
-        started: "2020-06-04T16:19:39.625Z"
+        started: '2020-06-04T16:06:26.074Z'
+        finished: '2020-06-04T16:06:28.090Z'
   ValidationErrors:
     properties:
       errors:
