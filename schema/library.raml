@@ -9,11 +9,6 @@
 ################################################################################
 
 types:
-  UuidString:
-    displayName: UUID v4 String
-    type: string
-    pattern: ^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}$
-    example: b296c3d9-4032-41b1-906e-c97ccfc447e3
   ProjectType:
     type: string
     examples:
@@ -52,7 +47,7 @@ types:
     type: object
     additionalProperties: false
     properties:
-      id: UuidString
+      id: string
       datasetName: string
       description?: string
       summary?: string
@@ -112,7 +107,7 @@ types:
         type: string
         enum:
           - ok
-      jobId: UuidString
+      jobId: string
   ProcessResponse:
     type: object
     additionalProperties: false

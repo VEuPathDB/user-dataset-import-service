@@ -7,7 +7,7 @@ types:
   StatusResponse:
     additionalProperties: false
     properties:
-      id: common.UuidString
+      id: string
       datasetName: string
       description?: string
       summary?: string
@@ -34,17 +34,17 @@ types:
         statusDetails:
           message: Dataset handler failed to process uploaded user dataset.
       rejected:
-        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
-        datasetName: my-dataset
+        id: 1mDdvV8elI0wXUVD6AUGi4
+        datasetName: foo
         projects:
-          - PlasmoDB
+          - MicrobiomeDB
         status: rejected
-        started: 2020-05-20T09:43:27-0500
         statusDetails:
           errors:
-            general: []
-            byKey:
-              datasetName: Dataset name is required
+            general:
+              - "('Could not load the file as BIOM - does it conform to the specification on https://biom-format.org?', ValueError('Expecting object: line 139 column 1 (char 1554)',))"
+            byKey: {}
+        started: "2020-06-04T16:19:39.625Z"
   ValidationErrors:
     properties:
       errors:
