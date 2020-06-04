@@ -71,6 +71,8 @@ public class Handler
         BodyHandlers.ofString()
       );
 
+    logger.debug("Handler responded with code {}", res.statusCode());
+
     return switch (res.statusCode()) {
       case 204 -> Optional.empty();
       case 422 -> Optional.of(Either.ofRight(Json.readValue(
