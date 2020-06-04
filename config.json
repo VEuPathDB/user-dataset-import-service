@@ -3,7 +3,7 @@
     {
       "dsType": "biom",
       "projects": [
-        "MicroBiomeDB"
+        "MicrobiomeDB"
       ],
       "fileTypes": [
         "biom"
