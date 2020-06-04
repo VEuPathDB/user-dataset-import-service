@@ -20,6 +20,7 @@ public class Query
     selectStatuses();
 
     updateJobStatus();
+    updateJobCompleted();
   }
 
   public static String insertJob() {
@@ -57,6 +58,11 @@ public class Query
   public static String updateJobStatus() {
     return loader.udpate("job-status")
       .orElseThrow(throwable("update", "job-status"));
+  }
+
+  public static String updateJobCompleted() {
+    return loader.udpate("job-completed")
+      .orElseThrow(throwable("update", "job-completed"));
   }
 
   private static Supplier<RuntimeException> throwable(String mode, String sql) {

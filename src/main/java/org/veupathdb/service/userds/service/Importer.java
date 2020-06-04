@@ -1,6 +1,7 @@
 package org.veupathdb.service.userds.service;
 
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -12,6 +13,7 @@ import org.veupathdb.service.userds.model.handler.HandlerGeneralError;
 import org.veupathdb.service.userds.model.handler.HandlerJobResult;
 import org.veupathdb.service.userds.model.handler.HandlerValidationError;
 import org.veupathdb.service.userds.repo.InsertMessageQuery;
+import org.veupathdb.service.userds.repo.UpdateJobCompletedQuery;
 import org.veupathdb.service.userds.repo.UpdateJobStatusQuery;
 import org.veupathdb.service.userds.util.Errors;
 
@@ -57,6 +59,7 @@ public class Importer implements Runnable
       }
 
       UpdateJobStatusQuery.run(job.getDbId(), JobStatus.SUCCESS);
+      UpdateJobCompletedQuery.run(job.getDbId(), LocalDateTime.now());
     } catch (Throwable e) {
       LogProvider.logger(getClass())
         .error("Failed to submit job to handler", e);
