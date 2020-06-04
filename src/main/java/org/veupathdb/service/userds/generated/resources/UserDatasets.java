@@ -64,12 +64,6 @@ public interface UserDatasets {
       return new PostResponse(responseBuilder.build(), entity);
     }
 
-    public static PostResponse respond422(InvalidInputError entity) {
-      Response.ResponseBuilder responseBuilder = Response.status(422).header("Content-Type", "application/json");
-      responseBuilder.entity(entity);
-      return new PostResponse(responseBuilder.build(), entity);
-    }
-
     public static PostResponse respond500(ServerError entity) {
       Response.ResponseBuilder responseBuilder = Response.status(500).header("Content-Type", "application/json");
       responseBuilder.entity(entity);

@@ -1,7 +1,6 @@
 package org.veupathdb.service.userds;
 
 import java.io.FileReader;
-import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
@@ -31,16 +30,16 @@ public class Main extends Server {
   public static  HandlerConfig jsonConfig;
 
   public static void main(String[] args) throws Exception {
-    LOG.info("Parsing service config");
-    jsonConfig = Format.Json.readerFor(HandlerConfig.class)
-      .readValue(new FileReader("config.json"));
-
     LOG.info("Initializing import datastore connection");
     importDB = DbMan.initImportDb();
 
     LOG.info("Populating type caches");
     SelectStatusQuery.run();
     SelectProjectQuery.run();
+
+    LOG.info("Parsing service config");
+    jsonConfig = Format.Json.readerFor(HandlerConfig.class)
+      .readValue(new FileReader("config.json"));
 
     var server = new Main();
 
@@ -68,7 +67,8 @@ public class Main extends Server {
 
   @Override
   protected Dependency[] dependencies() {
-    final var deps = Arrays.stream(jsonConfig.getServices())
+    final var deps = jsonConfig.getServices()
+      .stream()
       .map(svc -> new HandlerDependency(svc.getDsType(), svc.getName(), 80))
       .map(Dependency.class::cast)
       .collect(Collectors.toList());

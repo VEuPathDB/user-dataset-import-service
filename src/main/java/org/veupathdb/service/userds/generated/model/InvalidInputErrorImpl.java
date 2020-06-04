@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -96,15 +97,15 @@ public class InvalidInputErrorImpl implements InvalidInputError
       implements InvalidInputError.ErrorsType.ByKeyType
     {
       @JsonIgnore
-      private Map < String, Object > additionalProperties = new ExcludingMap();
+      private Map < String, List<String> > additionalProperties = new HashMap <>();
 
       @JsonAnyGetter
-      public Map < String, Object > getAdditionalProperties() {
+      public Map < String, List<String> > getAdditionalProperties() {
         return additionalProperties;
       }
 
       @JsonAnySetter
-      public void setAdditionalProperties(String key, Object value) {
+      public void setAdditionalProperties(String key, List<String> value) {
         this.additionalProperties.put(key, value);
       }
     }

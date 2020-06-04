@@ -2,86 +2,101 @@ package org.veupathdb.service.userds.service;
 
 import java.sql.Date;
 import java.time.ZoneId;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import com.devskiller.friendly_id.FriendlyId;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.veupathdb.service.userds.Main;
 import org.veupathdb.service.userds.generated.model.*;
 import org.veupathdb.service.userds.model.JobRow;
 import org.veupathdb.service.userds.model.JobStatus;
+import org.veupathdb.service.userds.model.MetaValidationResult;
+import org.veupathdb.service.userds.model.ProjectCache;
+import org.veupathdb.service.userds.repo.InsertJobQuery;
 import org.veupathdb.service.userds.repo.SelectJobQuery;
 import org.veupathdb.service.userds.repo.SelectJobsQuery;
 
+import static java.util.Collections.singletonList;
+import static org.veupathdb.service.userds.generated.model.PrepRequest.*;
+
 public class JobService
 {
+  /**
+   * Look up existing jobs owned by the given user id.
+   *
+   * @param userId User id to lookup.
+   *
+   * @return A list of jobs owned by the given user id.  If no jobs were found,
+   * the returned list will be empty.
+   */
   public static List < JobRow > getJobsByUser(long userId) throws Exception {
     return SelectJobsQuery.run(userId);
   }
 
+  /**
+   * Look up an existing job by the given job token/id string.
+   *
+   * @param jobId Job id to lookup.
+   *
+   * @return An option which will contain a job instance if a matching job was
+   * found.
+   */
   public static Optional < JobRow > getJobByToken(String jobId)
   throws Exception {
     return SelectJobQuery.run(jobId);
   }
 
-  private static final String
-    valErrBlankName  = "Dataset name cannot be blank.",
-    valErrNoProjects = "At least one target project must be provided.",
-    valErrBlankType  = "Dataset type cannot be blank.",
-    valErrUnsupported = "Project %s has no handlers for dataset type %s.";
+  public static String insertJob(PrepRequest req, long userId)
+  throws Exception {
+    final var jobId = FriendlyId.createFriendlyId();
+    InsertJobQuery.run(prepToJob(req, jobId, userId));
+    return jobId;
+  }
 
-  public static Optional < InvalidInputError.ErrorsType > validateJobMeta(
+  private static final String
+    valErrBlankName = "Dataset name cannot be blank.";
+
+  /**
+   * Perform input data validation for a job creation request body.
+   *
+   * @param req Job creation request body
+   *
+   * @return An option which will contain a validation error set if validation
+   * fails.
+   */
+  public static Optional < MetaValidationResult > validateJobMeta(
     final PrepRequest req
   ) {
-    var respond = false;
-    var out     = new InvalidInputErrorImpl.ErrorsTypeImpl();
+    var out = new MetaValidationResult();
 
     // Verify the request has a non-empty name
     if (req.getDatasetName() == null || req.getDatasetName().isBlank()) {
-      respond = true;
-      out.getByKey().setAdditionalProperties(
-        PrepRequest.KEY_DS_NAME, new String[] {valErrBlankName});
+      out.getByKey().put(KEY_DS_NAME, singletonList(valErrBlankName));
     }
 
-    // Verify the request has a non-empty project array
-    if (req.getProjects() == null || req.getProjects().isEmpty()) {
-      respond = true;
-      out.getByKey().setAdditionalProperties(PrepRequest.KEY_PROJECTS,
-        new String[]{valErrNoProjects});
+    // Verify that there are handlers configured for the selected jobs
+    var projects = validateProjectsKey(req.getProjects());
+    if (!projects.isEmpty()) {
+      out.getByKey().put(KEY_PROJECTS, projects);
     }
 
-    // Verify the request has a non-empty dataset type that matches with the
-    // configured services.
-    if (req.getDatasetType() == null || req.getDatasetType().isBlank()) {
-      respond = true;
-      out.getByKey()
-        .setAdditionalProperties(PrepRequest.KEY_DS_TYPE,
-          new String[]{valErrBlankType});
-    } else {
-      // Get relevant service entries for projects
-      var matches = Arrays.stream(Main.jsonConfig.getServices())
-        .filter(svc -> Arrays.stream(svc.getProjects())
-          .anyMatch(req.getProjects()::contains))
-        .collect(Collectors.toList());
-
-      // For each matching service, verify that the dataset type is available
-      // for that service.
-      for (var n : matches) {
-        if (!n.getDsType().equals(req.getDatasetType())) {
-          respond = true;
-          Arrays.stream(n.getProjects())
-            .filter(req.getProjects()::contains)
-            .map(p -> String.format(valErrUnsupported, p, req.getDatasetType()))
-            .forEach(out.getGeneral()::add);
-        }
-      }
+    var type = validateTypeKey(req.getDatasetType(), req);
+    if (!type.isEmpty()) {
+      out.getByKey().put(KEY_DS_TYPE, type);
     }
 
-    return respond ? Optional.of(out) : Optional.empty();
+    return out.containsErrors() ? Optional.of(out) : Optional.empty();
   }
 
+  /**
+   * Convert a JobRow instance to an output StatusResponse instance.
+   *
+   * @param row Row to convert.
+   *
+   * @return StatusResponse object.
+   */
   public static StatusResponse rowToStatus(JobRow row) {
     var out = new StatusResponseImpl()
       .setId(row.getJobId())
@@ -127,5 +142,77 @@ public class JobService
       body.getDatasetName(), body.getDescription(), body.getSummary(), null,
       null, null, body.getProjects()
     );
+  }
+
+  /**
+   * Error messages for input "projects" key validation.
+   */
+  private static final String
+    valErrBadProject = "Unrecognized project %s",
+    valErrNoProjects = "At least one target project must be provided.",
+    valErrNoProHands = "No handlers configured for project %s";
+
+  /**
+   * Input "projects" key validation
+   */
+  private static List < String > validateProjectsKey(List < String > projects) {
+    final var out = new ArrayList < String >();
+
+    // Verify the request has a non-empty project array
+    if (projects == null || projects.isEmpty()) {
+      out.add(valErrNoProjects);
+    } else {
+      projects.stream()
+        // Filter out and warn about bad projects
+        .filter(p -> {
+          if (!ProjectCache.getInstance().containsKey(p)) {
+            out.add(String.format(valErrBadProject, p));
+            return false;
+          }
+          return true;
+        })
+
+        // Warn about projects with no handlers
+        .forEach(p -> {
+          if (!Main.jsonConfig.getProjects().contains(p)) {
+            out.add(String.format(valErrNoProHands, p));
+          }
+        });
+    }
+
+    return out;
+  }
+
+  /**
+   * Error messages for input "datasetType" key validation.
+   */
+  private static final String
+    valErrBlankType   = "Dataset type cannot be blank.",
+    valErrNoHandlers  = "No handlers configured for dataset type %s.",
+    valErrUnsupported = "Project %s has no handlers for dataset type %s.";
+
+  /**
+   * Input "datasetType" key validation.
+   */
+  private static List < String > validateTypeKey(String type, PrepRequest req) {
+    final var out = new ArrayList < String >();
+
+    // Verify the request has a non-empty dataset type that matches with the
+    // configured services.
+    if (type == null || type.isBlank()) {
+      out.add(valErrBlankType);
+    } else if (Main.jsonConfig.getByType().containsKey(type)) {
+      out.add(String.format(valErrNoHandlers, type));
+    } else {
+      var set = Main.jsonConfig.getByType().get(type);
+
+      for (var p : req.getProjects()) {
+        if (!set.contains(p)) {
+          out.add(String.format(valErrUnsupported, p, type));
+        }
+      }
+    }
+
+    return out;
   }
 }
