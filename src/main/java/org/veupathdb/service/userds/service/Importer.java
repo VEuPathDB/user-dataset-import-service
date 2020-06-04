@@ -130,9 +130,9 @@ public class Importer implements Runnable
   }
 
   private void do422(HandlerValidationError err) throws Exception {
-    LogProvider.logger(getClass()).trace("Importer#do400");
+    LogProvider.logger(getClass()).trace("Importer#do422");
     var js = Json.convertValue(err.getErrors(), JsonNode.class);
-    UpdateJobStatusQuery.run(job.getDbId(), JobStatus.ERRORED);
+    UpdateJobStatusQuery.run(job.getDbId(), JobStatus.REJECTED);
     InsertMessageQuery.run(job.getDbId(), js);
   }
 
