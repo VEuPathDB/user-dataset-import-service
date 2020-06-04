@@ -129,6 +129,7 @@ public class Importer implements Runnable
   private void do400(HandlerGeneralError err) throws Exception {
     LogProvider.logger(getClass()).trace("Importer#do400");
     UpdateJobStatusQuery.run(job.getDbId(), JobStatus.REJECTED);
+    UpdateJobCompletedQuery.run(job.getDbId(), LocalDateTime.now());
     InsertMessageQuery.run(job.getDbId(), err.getMessage());
   }
 
@@ -136,6 +137,7 @@ public class Importer implements Runnable
     LogProvider.logger(getClass()).trace("Importer#do422");
     var js = Json.convertValue(err.getErrors(), JsonNode.class);
     UpdateJobStatusQuery.run(job.getDbId(), JobStatus.REJECTED);
+    UpdateJobCompletedQuery.run(job.getDbId(), LocalDateTime.now());
     InsertMessageQuery.run(job.getDbId(), js);
   }
 
@@ -146,6 +148,7 @@ public class Importer implements Runnable
   private void do500(String err) throws Exception {
     LogProvider.logger(getClass()).trace("Importer#do500");
     UpdateJobStatusQuery.run(job.getDbId(), JobStatus.ERRORED);
+    UpdateJobCompletedQuery.run(job.getDbId(), LocalDateTime.now());
     InsertMessageQuery.run(job.getDbId(), err);
   }
 }
