@@ -30,7 +30,6 @@ public class Handler
   private static final String
     jobEndpoint = "http://%s/job/%s",
     statusEndpoint = jobEndpoint + "/status",
-    boundary = "DATASET-CONTENT",
     MULTIPART_HEAD = MediaType.MULTIPART_FORM_DATA + "; boundary=",
     fileName = "filename=";
 

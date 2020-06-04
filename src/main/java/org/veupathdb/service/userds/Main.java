@@ -38,7 +38,6 @@ public class Main extends Server {
     LOG.info("Initializing import datastore connection");
     importDB = DbMan.initImportDb();
 
-
     LOG.info("Populating type caches");
     SelectStatusQuery.run();
     SelectProjectQuery.run();

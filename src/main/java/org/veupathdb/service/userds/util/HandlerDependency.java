@@ -1,15 +1,11 @@
 package org.veupathdb.service.userds.util;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
-import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.file.Paths;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.veupathdb.lib.container.jaxrs.health.ServiceDependency;
 
 import static org.apache.logging.log4j.LogManager.getLogger;

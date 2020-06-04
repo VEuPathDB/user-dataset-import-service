@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.bouncycastle.util.io.Streams;
 import org.veupathdb.service.userds.Main;
 import org.veupathdb.service.userds.generated.model.NotFoundErrorImpl;
 import org.veupathdb.service.userds.generated.resources.Projects;
@@ -29,8 +28,8 @@ public class ProjectController implements Projects {
   }
 
   @Override
-  public GetProjectsDatasetTypesByProjectResponse
-  getProjectsDatasetTypesByProject(String project) {
+  public GetProjectHandlers
+  getProjectHandlers(String project) {
     final var svcs = stream(Main.jsonConfig.getServices())
       .filter(svc -> asList(svc.getProjects()).contains(project))
       .toArray(Service[]::new);
@@ -38,12 +37,12 @@ public class ProjectController implements Projects {
     if (svcs.length == 0) {
       final var out = new NotFoundErrorImpl();
       out.setMessage("no configured handlers for " + project);
-      return GetProjectsDatasetTypesByProjectResponse
-        .respond404WithApplicationJson(out);
+      return GetProjectHandlers
+        .respond404(out);
     }
 
-    return GetProjectsDatasetTypesByProjectResponse
-      .respond200WithApplicationJson(stream(svcs)
+    return GetProjectHandlers
+      .respond200(stream(svcs)
         .map(Service::getDsType)
         .sorted()
         .distinct()
@@ -51,8 +50,8 @@ public class ProjectController implements Projects {
   }
 
   @Override
-  public GetProjectsDatasetTypesFileTypesByProjectAndDsTypeResponse
-  getProjectsDatasetTypesFileTypesByProjectAndDsType(
+  public GetHandlerFileTypes
+  getHandlerFileTypes(
     String project,
     String dsType
   ) {
@@ -65,12 +64,12 @@ public class ProjectController implements Projects {
       final var out = new NotFoundErrorImpl();
       out.setMessage(format("dataset type %s not found for project type %s",
         dsType, project));
-      return GetProjectsDatasetTypesFileTypesByProjectAndDsTypeResponse
-        .respond404WithApplicationJson(out);
+      return GetHandlerFileTypes
+        .respond404(out);
     }
 
-    return GetProjectsDatasetTypesFileTypesByProjectAndDsTypeResponse
-      .respond200WithApplicationJson(Stream.concat(stream(svcs)
+    return GetHandlerFileTypes
+      .respond200(Stream.concat(stream(svcs)
         .map(Service::getFileTypes)
         .flatMap(Arrays::stream), Stream.of(BASE_FILE_TYPES))
         .sorted()

@@ -3,10 +3,9 @@ package org.veupathdb.service.userds.generated.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-@JsonDeserialize(
-    as = DependencyStatusImpl.class
-)
-public interface DependencyStatus {
+@JsonDeserialize(as = DependencyStatusImpl.class)
+public interface DependencyStatus
+{
   @JsonProperty("name")
   String getName();
 
@@ -25,7 +24,8 @@ public interface DependencyStatus {
   @JsonProperty("online")
   void setOnline(OnlineType online);
 
-  enum OnlineType {
+  enum OnlineType
+  {
     @JsonProperty("yes")
     YES("yes"),
 

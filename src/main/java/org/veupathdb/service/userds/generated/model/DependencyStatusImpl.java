@@ -5,12 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-    "name",
-    "reachable",
-    "online"
-})
-public class DependencyStatusImpl implements DependencyStatus {
+@JsonPropertyOrder({"name", "reachable", "online"})
+public class DependencyStatusImpl implements DependencyStatus
+{
   @JsonProperty("name")
   private String name;
 

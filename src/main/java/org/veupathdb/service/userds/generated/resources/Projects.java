@@ -7,11 +7,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
+
 import org.veupathdb.service.userds.generated.model.NotFoundError;
 import org.veupathdb.service.userds.generated.support.ResponseDelegate;
 
 @Path("/projects")
-public interface Projects {
+public interface Projects
+{
   @GET
   @Produces("application/json")
   GetProjectsResponse getProjects();
@@ -19,80 +21,78 @@ public interface Projects {
   @GET
   @Path("/{project}/datasetTypes")
   @Produces("application/json")
-  GetProjectsDatasetTypesByProjectResponse getProjectsDatasetTypesByProject(
-      @PathParam("project") String project);
+  GetProjectHandlers getProjectHandlers(@PathParam("project") String project);
 
   @GET
   @Path("/{project}/datasetTypes/{dsType}/fileTypes")
   @Produces("application/json")
-  GetProjectsDatasetTypesFileTypesByProjectAndDsTypeResponse getProjectsDatasetTypesFileTypesByProjectAndDsType(
-      @PathParam("project") String project, @PathParam("dsType") String dsType);
+  GetHandlerFileTypes getHandlerFileTypes(
+    @PathParam("project") String project,
+    @PathParam("dsType") String dsType
+  );
 
-  class GetProjectsResponse extends ResponseDelegate {
+  class GetProjectsResponse extends ResponseDelegate
+  {
     private GetProjectsResponse(Response response, Object entity) {
       super(response, entity);
     }
 
-    private GetProjectsResponse(Response response) {
-      super(response);
-    }
-
-    public static GetProjectsResponse respond200WithApplicationJson(List<String> entity) {
-      Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
-      GenericEntity<List<String>> wrappedEntity = new GenericEntity<List<String>>(entity){};
+    public static GetProjectsResponse respond200WithApplicationJson(List < String > entity) {
+      var responseBuilder = Response.status(200)
+        .header("Content-Type", "application/json");
+      var wrappedEntity = new GenericEntity <>(entity){};
       responseBuilder.entity(wrappedEntity);
       return new GetProjectsResponse(responseBuilder.build(), wrappedEntity);
     }
   }
 
-  class GetProjectsDatasetTypesByProjectResponse extends ResponseDelegate {
-    private GetProjectsDatasetTypesByProjectResponse(Response response, Object entity) {
+  class GetProjectHandlers extends ResponseDelegate
+  {
+    private GetProjectHandlers(Response response, Object entity) {
       super(response, entity);
     }
 
-    private GetProjectsDatasetTypesByProjectResponse(Response response) {
-      super(response);
-    }
-
-    public static GetProjectsDatasetTypesByProjectResponse respond200WithApplicationJson(
-        List<Object> entity) {
-      Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
-      GenericEntity<List<Object>> wrappedEntity = new GenericEntity<List<Object>>(entity){};
+    public static GetProjectHandlers respond200(List < Object > entity) {
+      Response.ResponseBuilder responseBuilder = Response.status(200)
+        .header("Content-Type", "application/json");
+      GenericEntity < List < Object > > wrappedEntity = new GenericEntity <>(
+        entity)
+      {
+      };
       responseBuilder.entity(wrappedEntity);
-      return new GetProjectsDatasetTypesByProjectResponse(responseBuilder.build(), wrappedEntity);
+      return new GetProjectHandlers(
+        responseBuilder.build(),
+        wrappedEntity
+      );
     }
 
-    public static GetProjectsDatasetTypesByProjectResponse respond404WithApplicationJson(
-        NotFoundError entity) {
-      Response.ResponseBuilder responseBuilder = Response.status(404).header("Content-Type", "application/json");
+    public static GetProjectHandlers respond404(NotFoundError entity) {
+      Response.ResponseBuilder responseBuilder = Response.status(404)
+        .header("Content-Type", "application/json");
       responseBuilder.entity(entity);
-      return new GetProjectsDatasetTypesByProjectResponse(responseBuilder.build(), entity);
+      return new GetProjectHandlers(responseBuilder.build(), entity);
     }
   }
 
-  class GetProjectsDatasetTypesFileTypesByProjectAndDsTypeResponse extends ResponseDelegate {
-    private GetProjectsDatasetTypesFileTypesByProjectAndDsTypeResponse(Response response,
-        Object entity) {
+  class GetHandlerFileTypes extends ResponseDelegate
+  {
+    private GetHandlerFileTypes(Response response, Object entity) {
       super(response, entity);
     }
 
-    private GetProjectsDatasetTypesFileTypesByProjectAndDsTypeResponse(Response response) {
-      super(response);
-    }
-
-    public static GetProjectsDatasetTypesFileTypesByProjectAndDsTypeResponse respond200WithApplicationJson(
-        List<Object> entity) {
-      Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
-      GenericEntity<List<Object>> wrappedEntity = new GenericEntity<List<Object>>(entity){};
+    public static GetHandlerFileTypes respond200(List < Object > entity) {
+      var responseBuilder = Response.status(200)
+        .header("Content-Type", "application/json");
+      var wrappedEntity = new GenericEntity <>(entity) {};
       responseBuilder.entity(wrappedEntity);
-      return new GetProjectsDatasetTypesFileTypesByProjectAndDsTypeResponse(responseBuilder.build(), wrappedEntity);
+      return new GetHandlerFileTypes(responseBuilder.build(), wrappedEntity);
     }
 
-    public static GetProjectsDatasetTypesFileTypesByProjectAndDsTypeResponse respond404WithApplicationJson(
-        NotFoundError entity) {
-      Response.ResponseBuilder responseBuilder = Response.status(404).header("Content-Type", "application/json");
+    public static GetHandlerFileTypes respond404(NotFoundError entity) {
+      var responseBuilder = Response.status(404)
+        .header("Content-Type", "application/json");
       responseBuilder.entity(entity);
-      return new GetProjectsDatasetTypesFileTypesByProjectAndDsTypeResponse(responseBuilder.build(), entity);
+      return new GetHandlerFileTypes(responseBuilder.build(), entity);
     }
   }
 }
