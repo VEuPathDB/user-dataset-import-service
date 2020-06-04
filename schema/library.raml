@@ -44,6 +44,10 @@ types:
       success: success
       rejected: rejected
       errored: errored
+  JobError:
+    type: object
+    properties:
+      message: string
   StatusResponse:
     type: object
     additionalProperties: false
@@ -66,17 +70,15 @@ types:
       started: datetime
     examples:
       errored:
+        datasetName: my-dataset
+        projects:
+          - PlasmoDB
         status: errored
         started: 2020-05-20T09:43:27-0500
         statusDetails:
           message: Dataset handler failed to process uploaded user dataset.
         id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
-        datasetName: my-dataset
-        projects:
-          - PlasmoDB
       rejected:
-        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
-        datasetName: my-dataset
         projects:
           - PlasmoDB
         status: rejected
@@ -86,6 +88,8 @@ types:
             general: []
             byKey:
               datasetName: Dataset name is required
+        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
+        datasetName: my-dataset
   ValidationErrors:
     type: object
     properties:
@@ -100,10 +104,25 @@ types:
             type: object
             properties:
               //: string
-  JobError:
+  PrepResponse:
     type: object
+    additionalProperties: false
     properties:
-      message: string
+      status:
+        type: string
+        enum:
+          - ok
+      jobId: UuidString
+  ProcessResponse:
+    type: object
+    additionalProperties: false
+    properties:
+      status:
+        description: Upload completion status
+        type: string
+        default: ok
+        enum:
+          - ok
   PrepRequest:
     type: object
     additionalProperties: false
@@ -129,23 +148,4 @@ types:
         type: array
         minItems: 1
         items: ProjectType
-  PrepResponse:
-    type: object
-    additionalProperties: false
-    properties:
-      status:
-        type: string
-        enum:
-          - ok
-      jobId: UuidString
-  ProcessResponse:
-    type: object
-    additionalProperties: false
-    properties:
-      status:
-        description: Upload completion status
-        type: string
-        default: ok
-        enum:
-          - ok
 

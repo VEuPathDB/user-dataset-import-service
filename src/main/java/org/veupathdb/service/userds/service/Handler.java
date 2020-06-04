@@ -142,7 +142,8 @@ public class Handler
     if (handlers.containsKey(form))
       return Optional.ofNullable(handlers.get(form));
 
-    var optSvc = Arrays.stream(Main.jsonConfig.getServices())
+    var optSvc = Main.jsonConfig.getServices()
+      .stream()
       .filter(svc -> form.equals(svc.getDsType()))
       .findAny();
 
