@@ -201,7 +201,7 @@ public class JobService
     // configured services.
     if (type == null || type.isBlank()) {
       out.add(valErrBlankType);
-    } else if (Main.jsonConfig.getByType().containsKey(type)) {
+    } else if (!Main.jsonConfig.getByType().containsKey(type)) {
       out.add(String.format(valErrNoHandlers, type));
     } else {
       var set = Main.jsonConfig.getByType().get(type);
