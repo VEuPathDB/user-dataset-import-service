@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.stream.Collectors;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Request;
@@ -18,6 +19,7 @@ import org.veupathdb.service.userds.generated.model.PrepRequest;
 import org.veupathdb.service.userds.generated.model.PrepResponseImpl;
 import org.veupathdb.service.userds.generated.model.ProcessResponseImpl;
 import org.veupathdb.service.userds.generated.resources.UserDatasets;
+import org.veupathdb.service.userds.model.JobStatus;
 import org.veupathdb.service.userds.repo.InsertJobQuery;
 import org.veupathdb.service.userds.service.Importer;
 import org.veupathdb.service.userds.service.JobService;
@@ -34,7 +36,8 @@ public class UserDatasetController implements UserDatasets
     errRowFetch      = "failed to fetch user's job rows",
     errJobCreate     = "failed to create new job entry",
     errProcessImport = "error when processing import",
-    errContentType   = "missing or invalid Content-Type header";
+    errContentType   = "missing or invalid Content-Type header",
+    errDoubleStart   = "cannot resubmit an upload to a started job";
 
   private final Logger log;
 
@@ -109,18 +112,25 @@ public class UserDatasetController implements UserDatasets
     try {
       var job = JobService.getJobByToken(jobId)
         .orElseThrow(NotFoundException::new);
+
+      if (job.getStatus() != JobStatus.AWAITING_UPLOAD)
+        throw new BadRequestException(errDoubleStart);
+
       var lock = new Object();
       var bound = Header.getBoundaryString(headers)
         .orElseThrow(() -> new BadRequestException(errContentType));
 
       //noinspection SynchronizationOnLocalVariableOrMethodParameter
       synchronized (lock) {
-        var pipeWrap = new InputStreamNotifier(body, lock);
-        ThreadProvider.newThread(new Importer(job, bound, pipeWrap)).start();
+        ThreadProvider.newThread(new Importer(
+          job, bound, new InputStreamNotifier(body, lock))).start();
         lock.wait();
       }
 
       return PostByJobIdResponse.respond200(new ProcessResponseImpl());
+    } catch (WebApplicationException e) {
+      // Don't catch Jax-RS exceptions.
+      throw e;
     } catch (Throwable e) {
       log.error(errProcessImport, e);
       return PostByJobIdResponse.respond500(ErrFac.new500(req, e));
