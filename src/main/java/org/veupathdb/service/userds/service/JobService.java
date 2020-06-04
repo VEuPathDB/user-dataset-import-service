@@ -110,17 +110,22 @@ public class JobService
           .atZone(ZoneId.systemDefault())
           .toInstant()));
 
+    // If the job status was "errored" then we only have an exception message
+    // to return.
     if (row.getStatus() == JobStatus.ERRORED) {
       out.setStatusDetails(new StatusResponseImpl.StatusDetailsTypeImpl(
         new JobErrorImpl()
           .setMessage(row.getMessage().map(JsonNode::textValue).orElse(null))));
+
+    // If the job status was "rejected" then we have validation errors to
+    // return.
     } else if (row.getStatus() == JobStatus.REJECTED && row.getMessage().isPresent()) {
       var dets = new ValidationErrorsImpl();
       var raw  = row.getMessage().get();
 
       if (raw.has("general")) {
         raw.get("general")
-          .forEach(j -> dets.getErrors().getGeneral().add(raw.textValue()));
+          .forEach(j -> dets.getErrors().getGeneral().add(j.textValue()));
       }
 
       if (raw.has("byKey")) {
@@ -128,7 +133,7 @@ public class JobService
         obj.fieldNames()
           .forEachRemaining(k -> dets.getErrors()
             .getByKey()
-            .setAdditionalProperties(k, obj.get(k).textValue()));
+            .setAdditionalProperties(k, obj.get(k)));
       }
 
       out.setStatusDetails(new StatusResponseImpl.StatusDetailsTypeImpl(dets));
