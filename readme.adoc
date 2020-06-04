@@ -1,1 +1,4 @@
 = User Dataset Import Service
+
+https://veupathdb.github.io/service-user-dataset-import/api.html[API Docs]
+
