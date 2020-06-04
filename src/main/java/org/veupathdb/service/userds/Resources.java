@@ -2,6 +2,7 @@ package org.veupathdb.service.userds;
 
 import org.veupathdb.lib.container.jaxrs.config.Options;
 import org.veupathdb.lib.container.jaxrs.server.ContainerResources;
+import org.veupathdb.service.userds.controller.DebugController;
 import org.veupathdb.service.userds.controller.ProjectController;
 import org.veupathdb.service.userds.controller.UserDatasetController;
 
@@ -15,7 +16,6 @@ public class Resources extends ContainerResources {
 
   public Resources(Options opts) {
     super(opts);
-
   }
 
   /**
@@ -28,6 +28,7 @@ public class Resources extends ContainerResources {
     return new Object[] {
       ProjectController.class,
       UserDatasetController.class,
+      DebugController.class
     };
   }
 }
