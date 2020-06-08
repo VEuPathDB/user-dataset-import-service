@@ -3,6 +3,7 @@ package org.veupathdb.service.userds.controller;
 import java.io.InputStream;
 import java.util.stream.Collectors;
 import javax.ws.rs.BadRequestException;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
@@ -19,6 +20,7 @@ import org.veupathdb.service.userds.generated.model.PrepRequest;
 import org.veupathdb.service.userds.generated.model.PrepResponseImpl;
 import org.veupathdb.service.userds.generated.model.ProcessResponseImpl;
 import org.veupathdb.service.userds.generated.resources.UserDatasets;
+import org.veupathdb.service.userds.model.JobRow;
 import org.veupathdb.service.userds.model.JobStatus;
 import org.veupathdb.service.userds.service.Importer;
 import org.veupathdb.service.userds.service.JobService;
@@ -97,6 +99,18 @@ public class UserDatasetController implements UserDatasets
     } catch (Throwable e) {
       log.error(errJobCreate, e);
       return PostResponse.respond500(ErrFac.new500(req, e));
+    }
+  }
+
+  @Override
+  public void deleteJob(String jobId) {
+    try {
+      deleteJobById(getJobByToken(jobId)
+        .map(JobRow::getDbId)
+        .orElseThrow(NumberFormatException::new));
+    } catch (Exception e) {
+      log.error(errRowFetch, e);
+      throw new InternalServerErrorException(e);
     }
   }
 

@@ -67,7 +67,26 @@ securitySchemes:
           ID of the specific import job for which details should be returned.
           The user making the request must own the resource or this will return
           401.
+
+    delete:
+      displayName: Delete Job
+      responses:
+        204:
+          body:
+            text/plain:
+              type: string
+        401:
+          body:
+            type: err.UnauthorizedError
+        404:
+          body:
+            type: err.NotFoundError
+        500:
+          body:
+            type: err.ServerError
+
     get:
+      displayName: Lookup Job
       description: Shows status information for the job with the given ID
       securedBy: header-auth
       responses:
@@ -83,7 +102,9 @@ securitySchemes:
         500:
           body:
             type: err.ServerError
+
     post:
+      displayName: Upload Job Data
       securedBy: header-auth
       description: |
         Upload a dataset package to be processed and made available on the sites

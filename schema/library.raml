@@ -9,6 +9,25 @@
 ################################################################################
 
 types:
+  PrepResponse:
+    type: object
+    additionalProperties: false
+    properties:
+      status:
+        type: string
+        enum:
+          - ok
+      jobId: string
+  ProcessResponse:
+    type: object
+    additionalProperties: false
+    properties:
+      status:
+        description: Upload completion status
+        type: string
+        default: ok
+        enum:
+          - ok
   PrepRequest:
     type: object
     additionalProperties: false
@@ -34,36 +53,6 @@ types:
         type: array
         minItems: 1
         items: ProjectType
-  PrepResponse:
-    type: object
-    additionalProperties: false
-    properties:
-      status:
-        type: string
-        enum:
-          - ok
-      jobId: string
-  ProcessResponse:
-    type: object
-    additionalProperties: false
-    properties:
-      status:
-        description: Upload completion status
-        type: string
-        default: ok
-        enum:
-          - ok
-  JobStatus:
-    type: string
-    examples:
-      sending-to-handler: sending-to-handler
-      handler-unpacking: handler-unpacking
-      handler-processing: handler-processing
-      handler-packing: handler-packing
-      sending-to-datastore: sending-to-datastore
-      success: success
-      rejected: rejected
-      errored: errored
   ProjectType:
     type: string
     examples:
@@ -83,6 +72,17 @@ types:
       TrichDB: TrichDB
       TritrypDB: TritrypDB
       Vectorbase: Vectorbase
+  JobStatus:
+    type: string
+    examples:
+      sending-to-handler: sending-to-handler
+      handler-unpacking: handler-unpacking
+      handler-processing: handler-processing
+      handler-packing: handler-packing
+      sending-to-datastore: sending-to-datastore
+      success: success
+      rejected: rejected
+      errored: errored
   StatusResponse:
     type: object
     additionalProperties: false
@@ -106,13 +106,13 @@ types:
       finished?: datetime
     examples:
       success:
+        status: success
         started: '2020-06-04T16:06:26.074Z'
         finished: '2020-06-04T16:06:28.090Z'
         id: 2XZEXFa8FMA2HmQpHpA9eA
         datasetName: foo
         projects:
           - MicrobiomeDB
-        status: success
       errored:
         statusDetails:
           message: Dataset handler failed to process uploaded user dataset.
@@ -124,7 +124,6 @@ types:
         started: '2020-06-04T16:06:26.074Z'
         finished: '2020-06-04T16:06:28.090Z'
       rejected:
-        started: '2020-06-04T16:06:26.074Z'
         finished: '2020-06-04T16:06:28.090Z'
         id: 1mDdvV8elI0wXUVD6AUGi4
         datasetName: foo
@@ -136,6 +135,7 @@ types:
             general:
               - "('Could not load the file as BIOM - does it conform to the specification on https://biom-format.org?', ValueError('Expecting object: line 139 column 1 (char 1554)',))"
             byKey: {}
+        started: '2020-06-04T16:06:26.074Z'
   ValidationErrors:
     type: object
     properties:

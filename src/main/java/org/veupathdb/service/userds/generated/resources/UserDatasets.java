@@ -34,6 +34,10 @@ public interface UserDatasets {
     InputStream body
   );
 
+  @DELETE
+  @Path("/{jobId}")
+  void deleteJob(@PathParam("jobId") String jobId);
+
   class GetResponse extends ResponseDelegate {
     private GetResponse(Response response, Object entity) {
       super(response, entity);

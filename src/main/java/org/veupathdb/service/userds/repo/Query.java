@@ -11,6 +11,8 @@ public class Query
 
   // Prepopulate cache and check for missing queries.
   static {
+    deleteJob();
+
     insertJob();
     insertMessage();
 
@@ -21,6 +23,11 @@ public class Query
 
     updateJobStatus();
     updateJobCompleted();
+  }
+
+  public static String deleteJob() {
+    return loader.delete("job-by-id")
+      .orElseThrow(throwable("delete", "job-by-id"));
   }
 
   public static String insertJob() {

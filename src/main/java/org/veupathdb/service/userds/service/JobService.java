@@ -15,6 +15,7 @@ import org.veupathdb.service.userds.model.JobRow;
 import org.veupathdb.service.userds.model.JobStatus;
 import org.veupathdb.service.userds.model.MetaValidationResult;
 import org.veupathdb.service.userds.model.ProjectCache;
+import org.veupathdb.service.userds.repo.DeleteJobQuery;
 import org.veupathdb.service.userds.repo.InsertJobQuery;
 import org.veupathdb.service.userds.repo.SelectJobQuery;
 import org.veupathdb.service.userds.repo.SelectJobsQuery;
@@ -34,6 +35,10 @@ public class JobService
    */
   public static List < JobRow > getJobsByUser(long userId) throws Exception {
     return SelectJobsQuery.run(userId);
+  }
+
+  public static void deleteJobById(int dbId) throws Exception {
+    DeleteJobQuery.run(dbId);
   }
 
   /**
