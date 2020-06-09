@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.logging.log4j.Logger;
 import org.veupathdb.lib.container.jaxrs.providers.LogProvider;
+import org.veupathdb.service.userds.model.IrodsStatus;
 import org.veupathdb.service.userds.model.JobRow;
 import org.veupathdb.service.userds.model.JobStatus;
 import org.veupathdb.service.userds.model.handler.HandlerGeneralError;
@@ -58,7 +59,26 @@ public class Importer implements Runnable
         Errors.swallow(() -> result.get().getContent().close());
       }
 
-      UpdateJobStatusQuery.run(job.getDbId(), JobStatus.SUCCESS);
+      UpdateJobStatusQuery.run(job.getDbId(), JobStatus.DATASTORE_UNPACKING);
+
+      var flag = Optional.< IrodsStatus >empty();
+      var file = result.get().getFileName();
+
+      while (flag.isEmpty()) {
+        // iRODS is already struggling just to do iRODS stuff, no need to
+        // harass it.
+        Thread.sleep(500);
+
+        flag = Irods.getFlag(file);
+      }
+
+      if (flag.get() == IrodsStatus.SUCCESS) {
+        UpdateJobStatusQuery.run(job.getDbId(), JobStatus.SUCCESS);
+      } else {
+        InsertMessageQuery.run(job.getDbId(), "Datastore failed to unpack dataset");
+        UpdateJobStatusQuery.run(job.getDbId(), JobStatus.ERRORED);
+      }
+
       UpdateJobCompletedQuery.run(job.getDbId(), LocalDateTime.now());
     } catch (Throwable e) {
       LogProvider.logger(getClass())

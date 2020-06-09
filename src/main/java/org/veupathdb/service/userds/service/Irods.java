@@ -2,6 +2,7 @@ package org.veupathdb.service.userds.service;
 
 import java.io.InputStream;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import org.apache.logging.log4j.Logger;
 import org.irods.jargon.core.connection.ClientServerNegotiationPolicy;
@@ -9,6 +10,7 @@ import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.packinstr.DataObjInp;
 import org.irods.jargon.core.pub.IRODSFileSystem;
 import org.veupathdb.lib.container.jaxrs.providers.LogProvider;
+import org.veupathdb.service.userds.model.IrodsStatus;
 import org.veupathdb.service.userds.model.config.ExtOptions;
 
 public class Irods
@@ -18,6 +20,10 @@ public class Irods
   private static final String
     lzPath   = "/ebrc/workspaces/lz",
     flagPath = "/ebrc/workspaces/flags";
+
+  private static final String
+    successFlagPrefix = "success_",
+    failureFlagPrefix = "failure_";
 
   private static IRODSAccount    account;
   private static IRODSFileSystem system;
@@ -45,6 +51,30 @@ public class Irods
     } finally {
       file.close();
     }
+  }
+
+  public static Optional < IrodsStatus > getFlag(String fName)
+  throws Exception {
+    log.trace("Irods#getFlag");
+    var fs = system.getIRODSFileFactory(account);
+
+    var file = fs.instanceIRODSFile(flagPath, successFlagPrefix + fName);
+    try {
+      if (file.exists())
+        return Optional.of(IrodsStatus.SUCCESS);
+    } finally {
+      file.close();
+    }
+
+    file = fs.instanceIRODSFile(flagPath, failureFlagPrefix + fName);
+    try {
+      if (file.exists())
+        return Optional.of(IrodsStatus.FAILURE);
+    } finally {
+      file.close();
+    }
+
+    return Optional.empty();
   }
 
   public static void initialize(ExtOptions opts) {
