@@ -20,27 +20,28 @@ abstract class SelectJobBase
       }
     }
 
-    var messageStr = rs.getString(Schema.Column.MESSAGE);
+    var messageStr = rs.getString(Schema.Table.JobMessages.MESSAGE);
     var message = messageStr != null
       ? Format.Json.readTree(messageStr)
       : null;
 
     return new JobRow(
-      rs.getInt(Schema.Column.DB_ID),
-      rs.getString(Schema.Column.JOB_ID),
-      rs.getLong(Schema.Column.USER_ID),
-      StatusCache.getInstance().getKey(rs.getShort(Schema.Column.STATUS)),
-      rs.getString(Schema.Column.NAME),
-      rs.getString(Schema.Column.DESCRIPTION),
-      rs.getString(Schema.Column.SUMMARY),
-      rs.getObject(Schema.Column.STARTED, OffsetDateTime.class)
+      rs.getInt(Schema.Table.Jobs.DB_ID),
+      rs.getString(Schema.Table.Jobs.JOB_ID),
+      rs.getLong(Schema.Table.Jobs.USER_ID),
+      StatusCache.getInstance().getKey(rs.getShort(Schema.Table.Jobs.STATUS)),
+      rs.getString(Schema.Table.Jobs.NAME),
+      rs.getString(Schema.Table.Jobs.DESCRIPTION),
+      rs.getString(Schema.Table.Jobs.SUMMARY),
+      rs.getObject(Schema.Table.Jobs.STARTED, OffsetDateTime.class)
         .toLocalDateTime(),
       Optional.ofNullable(
-        rs.getObject(Schema.Column.FINISHED, OffsetDateTime.class))
+        rs.getObject(Schema.Table.Jobs.FINISHED, OffsetDateTime.class))
           .map(OffsetDateTime::toLocalDateTime)
         .orElse(null),
       message,
-      projects
+      projects,
+      rs.getInt(Schema.Table.JobIrodsIDs.IRODS_ID)
     );
   }
 }

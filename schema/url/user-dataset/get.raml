@@ -11,6 +11,12 @@ types:
       datasetName: string
       description?: string
       summary?: string
+      datasetId?:
+        description: |
+          iRODS given dataset ID that will be present only if the job completed
+          successfully.
+        type: integer
+        minimum: 0
       projects:
         type: array
         items: common.ProjectType
@@ -31,6 +37,7 @@ types:
         projects:
           - MicrobiomeDB
         status: success
+        datasetId: 12354
         started: '2020-06-04T16:06:26.074Z'
         finished: '2020-06-04T16:06:28.090Z'
       errored:

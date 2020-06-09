@@ -1,9 +1,14 @@
 package org.veupathdb.service.userds.generated.model;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -11,15 +16,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
-@JsonDeserialize(
-    as = StatusResponseImpl.class
-)
+@JsonDeserialize(as = StatusResponseImpl.class)
 public interface StatusResponse {
   @JsonProperty("id")
   String getId();
@@ -81,12 +79,13 @@ public interface StatusResponse {
   @JsonProperty("finished")
   StatusResponse setFinished(Date started);
 
-  @JsonDeserialize(
-      using = StatusDetailsType.StatusDetailsDeserializer.class
-  )
-  @JsonSerialize(
-      using = StatusDetailsType.Serializer.class
-  )
+  @JsonProperty("datasetId")
+  Integer getDatasetId();
+
+  StatusResponse setDatasetId(int datasetId);
+
+  @JsonDeserialize(using = StatusDetailsType.StatusDetailsDeserializer.class)
+  @JsonSerialize(using = StatusDetailsType.Serializer.class)
   interface StatusDetailsType {
     ValidationErrors getValidationErrors();
 
@@ -101,7 +100,7 @@ public interface StatusResponse {
         super(StatusDetailsType.class);}
 
       public void serialize(StatusDetailsType object, JsonGenerator jsonGenerator,
-          SerializerProvider jsonSerializerProvider) throws IOException, JsonProcessingException {
+          SerializerProvider jsonSerializerProvider) throws IOException {
         if ( object.isValidationErrors()) {
           jsonGenerator.writeObject(object.getValidationErrors());
           return;
@@ -127,7 +126,7 @@ public interface StatusResponse {
       }
 
       public StatusDetailsType deserialize(JsonParser jsonParser,
-          DeserializationContext jsonContext) throws IOException, JsonProcessingException {
+          DeserializationContext jsonContext) throws IOException {
         ObjectMapper mapper  = new ObjectMapper();
         Map<String, Object> map = mapper.readValue(jsonParser, Map.class);
         if ( looksLikeValidationErrors(map) ) return new StatusResponseImpl.StatusDetailsTypeImpl(mapper.convertValue(map, ValidationErrorsImpl.class));

@@ -119,7 +119,8 @@ public class JobService
         .map(d -> d.atZone(ZoneId.systemDefault()))
         .map(ZonedDateTime::toInstant)
         .map(Date::from)
-        .orElse(null));
+        .orElse(null))
+      .setDatasetId(row.getIrodsId());
 
     // If the job status was "errored" then we only have an exception message
     // to return.
@@ -154,10 +155,9 @@ public class JobService
   }
 
   public static JobRow prepToJob(PrepRequest body, String jobId, long userId) {
-    return new JobRow(0, jobId, userId, JobStatus.AWAITING_UPLOAD,
-      body.getDatasetName(), body.getDescription(), body.getSummary(), null,
-      null, null, body.getProjects()
-    );
+    return new JobRow(jobId, userId, JobStatus.AWAITING_UPLOAD,
+      body.getDatasetName(), body.getDescription(), body.getSummary(),
+      body.getProjects());
   }
 
   /**

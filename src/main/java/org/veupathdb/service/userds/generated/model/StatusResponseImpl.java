@@ -6,22 +6,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.util.Date;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-    "id",
-    "datasetName",
-    "description",
-    "summary",
-    "stepPercent",
-    "projects",
-    "status",
-    "statusDetails",
-    "started"
-})
-public class StatusResponseImpl implements StatusResponse {
+public class StatusResponseImpl implements StatusResponse
+{
   @JsonProperty("id")
   private String id;
 
@@ -38,7 +29,7 @@ public class StatusResponseImpl implements StatusResponse {
   private int stepPercent;
 
   @JsonProperty("projects")
-  private List<String> projects;
+  private List < String > projects;
 
   @JsonProperty("status")
   private String status;
@@ -46,14 +37,14 @@ public class StatusResponseImpl implements StatusResponse {
   @JsonProperty("statusDetails")
   private StatusResponse.StatusDetailsType statusDetails;
 
+  private int datasetId;
+
   @JsonProperty("started")
   @JsonFormat(
-      shape = JsonFormat.Shape.STRING,
-      pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
+    shape = JsonFormat.Shape.STRING,
+    pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
   )
-  @JsonDeserialize(
-      using = TimestampDeserializer.class
-  )
+  @JsonDeserialize(using = TimestampDeserializer.class)
   private Date started;
 
   @JsonProperty("finished")
@@ -61,9 +52,7 @@ public class StatusResponseImpl implements StatusResponse {
     shape = JsonFormat.Shape.STRING,
     pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
   )
-  @JsonDeserialize(
-    using = TimestampDeserializer.class
-  )
+  @JsonDeserialize(using = TimestampDeserializer.class)
   private Date finished;
 
   @JsonProperty("id")
@@ -122,12 +111,12 @@ public class StatusResponseImpl implements StatusResponse {
   }
 
   @JsonProperty("projects")
-  public List<String> getProjects() {
+  public List < String > getProjects() {
     return this.projects;
   }
 
   @JsonProperty("projects")
-  public StatusResponse setProjects(List<String> projects) {
+  public StatusResponse setProjects(List < String > projects) {
     this.projects = projects;
     return this;
   }
@@ -176,9 +165,22 @@ public class StatusResponseImpl implements StatusResponse {
     return this;
   }
 
+  @Override
+  public Integer getDatasetId() {
+    return datasetId == 0 ? null : datasetId;
+  }
+
+  @Override
+  public StatusResponse setDatasetId(int datasetId) {
+    this.datasetId = datasetId;
+    return this;
+  }
+
   @JsonDeserialize(using = StatusDetailsType.StatusDetailsDeserializer.class)
   @JsonSerialize(using = StatusDetailsType.Serializer.class)
-  public static class StatusDetailsTypeImpl implements StatusResponse.StatusDetailsType {
+  public static class StatusDetailsTypeImpl
+    implements StatusResponse.StatusDetailsType
+  {
     private Object anyType;
 
     public StatusDetailsTypeImpl(ValidationErrors validationErrors) {
@@ -190,7 +192,9 @@ public class StatusResponseImpl implements StatusResponse {
     }
 
     public ValidationErrors getValidationErrors() {
-      if ( !(anyType instanceof  ValidationErrors)) throw new IllegalStateException("fetching wrong type out of the union: org.veupathdb.service.userds.generated.model.ValidationErrors");
+      if (!(anyType instanceof ValidationErrors))
+        throw new IllegalStateException(
+          "fetching wrong type out of the union: org.veupathdb.service.userds.generated.model.ValidationErrors");
       return (ValidationErrors) anyType;
     }
 
@@ -199,7 +203,8 @@ public class StatusResponseImpl implements StatusResponse {
     }
 
     public JobError getJobError() {
-      if ( !(anyType instanceof  JobError)) throw new IllegalStateException("fetching wrong type out of the union: org.veupathdb.service.userds.generated.model.JobError");
+      if (!(anyType instanceof JobError)) throw new IllegalStateException(
+        "fetching wrong type out of the union: org.veupathdb.service.userds.generated.model.JobError");
       return (JobError) anyType;
     }
 

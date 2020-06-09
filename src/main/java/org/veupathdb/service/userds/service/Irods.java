@@ -19,7 +19,8 @@ public class Irods
 
   private static final String
     lzPath   = "/ebrc/workspaces/lz",
-    flagPath = "/ebrc/workspaces/flags";
+    flagPath = "/ebrc/workspaces/flags",
+    userPath = "/ebrc/workspaces/users";
 
   private static final String
     successFlagPrefix = "success_",
@@ -60,8 +61,15 @@ public class Irods
 
     var file = fs.instanceIRODSFile(flagPath, successFlagPrefix + fName);
     try {
-      if (file.exists())
-        return Optional.of(IrodsStatus.SUCCESS);
+      if (file.exists()) {
+        try (var is = fs.instanceIRODSFileInputStream(file)) {
+          var rawBody = new String(is.readAllBytes());
+          var dsId = Integer.parseInt(
+            Paths.get(rawBody.split(userPath)[1].split(" ")[0])
+              .getFileName().toString());
+          return Optional.of(IrodsStatus.success(dsId));
+        }
+      }
     } finally {
       file.close();
     }
@@ -69,7 +77,7 @@ public class Irods
     file = fs.instanceIRODSFile(flagPath, failureFlagPrefix + fName);
     try {
       if (file.exists())
-        return Optional.of(IrodsStatus.FAILURE);
+        return Optional.of(IrodsStatus.failure());
     } finally {
       file.close();
     }

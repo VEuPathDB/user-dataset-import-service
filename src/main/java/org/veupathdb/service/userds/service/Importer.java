@@ -72,7 +72,7 @@ public class Importer implements Runnable
         flag = Irods.getFlag(file);
       }
 
-      if (flag.get() == IrodsStatus.SUCCESS) {
+      if (flag.get().isSuccess()) {
         UpdateJobStatusQuery.run(job.getDbId(), JobStatus.SUCCESS);
       } else {
         InsertMessageQuery.run(job.getDbId(), "Datastore failed to unpack dataset");

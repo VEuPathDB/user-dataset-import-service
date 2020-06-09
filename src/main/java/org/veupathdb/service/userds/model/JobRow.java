@@ -20,6 +20,7 @@ public class JobRow
   private final LocalDateTime   finished;
   private final JsonNode        message;
   private final List < String > projects;
+  private final int             irodsId;
 
   public JobRow(
     int dbId,
@@ -32,7 +33,8 @@ public class JobRow
     LocalDateTime started,
     LocalDateTime finished,
     JsonNode message,
-    List < String > projects
+    List < String > projects,
+    int irodsId
   ) {
     this.dbId = dbId;
     this.jobId = jobId;
@@ -45,6 +47,20 @@ public class JobRow
     this.finished = finished;
     this.message = message;
     this.projects = projects;
+    this.irodsId = irodsId;
+  }
+
+  public JobRow(
+    String jobId,
+    long userId,
+    JobStatus status,
+    String name,
+    String description,
+    String summary,
+    List < String > projects
+  ) {
+    this(0, jobId, userId, status, name, description, summary, null, null,
+      null, projects, 0);
   }
 
   public int getDbId() {
@@ -89,5 +105,9 @@ public class JobRow
 
   public List < String > getProjects() {
     return projects;
+  }
+
+  public int getIrodsId() {
+    return irodsId;
   }
 }

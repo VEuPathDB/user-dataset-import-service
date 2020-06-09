@@ -9,36 +9,6 @@
 ################################################################################
 
 types:
-  ProjectType:
-    type: string
-    examples:
-      AmoebaDB: AmoebaDB
-      ClinepiDB: ClinepiDB
-      CryptoDB: CryptoDB
-      FungiDB: FungiDB
-      GiardiaDB: GiardiaDB
-      HostDB: HostDB
-      MicrobiomeDB: MicrobiomeDB
-      MicrosporidiaDB: MicrosporidiaDB
-      Orthomcl: Orthomcl
-      PiroplasmaDB: PiroplasmaDB
-      PlasmoDB: PlasmoDB
-      SchistoDB: SchistoDB
-      ToxoDB: ToxoDB
-      TrichDB: TrichDB
-      TritrypDB: TritrypDB
-      Vectorbase: Vectorbase
-  JobStatus:
-    type: string
-    examples:
-      sending-to-handler: sending-to-handler
-      handler-unpacking: handler-unpacking
-      handler-processing: handler-processing
-      handler-packing: handler-packing
-      sending-to-datastore: sending-to-datastore
-      success: success
-      rejected: rejected
-      errored: errored
   StatusResponse:
     type: object
     additionalProperties: false
@@ -47,6 +17,12 @@ types:
       datasetName: string
       description?: string
       summary?: string
+      datasetId?:
+        description: |
+          iRODS given dataset ID that will be present only if the job completed
+          successfully.
+        type: integer
+        minimum: 0
       projects:
         type: array
         items: ProjectType
@@ -62,29 +38,25 @@ types:
       finished?: datetime
     examples:
       success:
+        datasetId: 12354
+        started: '2020-06-04T16:06:26.074Z'
         finished: '2020-06-04T16:06:28.090Z'
         id: 2XZEXFa8FMA2HmQpHpA9eA
         datasetName: foo
         projects:
           - MicrobiomeDB
         status: success
-        started: '2020-06-04T16:06:26.074Z'
       errored:
+        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
+        datasetName: my-dataset
+        projects:
+          - PlasmoDB
         status: errored
         started: '2020-06-04T16:06:26.074Z'
         finished: '2020-06-04T16:06:28.090Z'
         statusDetails:
           message: Dataset handler failed to process uploaded user dataset.
-        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
-        datasetName: my-dataset
-        projects:
-          - PlasmoDB
       rejected:
-        id: 1mDdvV8elI0wXUVD6AUGi4
-        datasetName: foo
-        projects:
-          - MicrobiomeDB
-        status: rejected
         statusDetails:
           errors:
             general:
@@ -92,6 +64,11 @@ types:
             byKey: {}
         started: '2020-06-04T16:06:26.074Z'
         finished: '2020-06-04T16:06:28.090Z'
+        id: 1mDdvV8elI0wXUVD6AUGi4
+        datasetName: foo
+        projects:
+          - MicrobiomeDB
+        status: rejected
   ValidationErrors:
     type: object
     properties:
@@ -154,4 +131,34 @@ types:
         default: ok
         enum:
           - ok
+  ProjectType:
+    type: string
+    examples:
+      AmoebaDB: AmoebaDB
+      ClinepiDB: ClinepiDB
+      CryptoDB: CryptoDB
+      FungiDB: FungiDB
+      GiardiaDB: GiardiaDB
+      HostDB: HostDB
+      MicrobiomeDB: MicrobiomeDB
+      MicrosporidiaDB: MicrosporidiaDB
+      Orthomcl: Orthomcl
+      PiroplasmaDB: PiroplasmaDB
+      PlasmoDB: PlasmoDB
+      SchistoDB: SchistoDB
+      ToxoDB: ToxoDB
+      TrichDB: TrichDB
+      TritrypDB: TritrypDB
+      Vectorbase: Vectorbase
+  JobStatus:
+    type: string
+    examples:
+      sending-to-handler: sending-to-handler
+      handler-unpacking: handler-unpacking
+      handler-processing: handler-processing
+      handler-packing: handler-packing
+      sending-to-datastore: sending-to-datastore
+      success: success
+      rejected: rejected
+      errored: errored
 
