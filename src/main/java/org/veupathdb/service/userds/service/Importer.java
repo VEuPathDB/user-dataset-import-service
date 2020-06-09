@@ -62,7 +62,7 @@ public class Importer implements Runnable
       UpdateJobStatusQuery.run(job.getDbId(), JobStatus.DATASTORE_UNPACKING);
 
       var flag = Optional.< IrodsStatus >empty();
-      var file = result.get().getFileName();
+      var file = result.get().getFileName().substring(0, result.get().getFileName().indexOf('.'));
 
       while (flag.isEmpty()) {
         // iRODS is already struggling just to do iRODS stuff, no need to
