@@ -38,14 +38,14 @@ types:
       finished?: datetime
     examples:
       success:
-        datasetId: 12354
-        started: '2020-06-04T16:06:26.074Z'
-        finished: '2020-06-04T16:06:28.090Z'
         id: 2XZEXFa8FMA2HmQpHpA9eA
         datasetName: foo
         projects:
           - MicrobiomeDB
         status: success
+        datasetId: 12354
+        started: '2020-06-04T16:06:26.074Z'
+        finished: '2020-06-04T16:06:28.090Z'
       errored:
         id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
         datasetName: my-dataset
@@ -57,6 +57,11 @@ types:
         statusDetails:
           message: Dataset handler failed to process uploaded user dataset.
       rejected:
+        id: 1mDdvV8elI0wXUVD6AUGi4
+        datasetName: foo
+        projects:
+          - MicrobiomeDB
+        status: rejected
         statusDetails:
           errors:
             general:
@@ -64,11 +69,6 @@ types:
             byKey: {}
         started: '2020-06-04T16:06:26.074Z'
         finished: '2020-06-04T16:06:28.090Z'
-        id: 1mDdvV8elI0wXUVD6AUGi4
-        datasetName: foo
-        projects:
-          - MicrobiomeDB
-        status: rejected
   ValidationErrors:
     type: object
     properties:
@@ -87,6 +87,25 @@ types:
     type: object
     properties:
       message: string
+  PrepResponse:
+    type: object
+    additionalProperties: false
+    properties:
+      status:
+        type: string
+        enum:
+          - ok
+      jobId: string
+  ProcessResponse:
+    type: object
+    additionalProperties: false
+    properties:
+      status:
+        description: Upload completion status
+        type: string
+        default: ok
+        enum:
+          - ok
   PrepRequest:
     type: object
     additionalProperties: false
@@ -112,25 +131,6 @@ types:
         type: array
         minItems: 1
         items: ProjectType
-  PrepResponse:
-    type: object
-    additionalProperties: false
-    properties:
-      status:
-        type: string
-        enum:
-          - ok
-      jobId: string
-  ProcessResponse:
-    type: object
-    additionalProperties: false
-    properties:
-      status:
-        description: Upload completion status
-        type: string
-        default: ok
-        enum:
-          - ok
   ProjectType:
     type: string
     examples:

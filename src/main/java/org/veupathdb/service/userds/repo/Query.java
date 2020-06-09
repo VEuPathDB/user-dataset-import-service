@@ -13,6 +13,7 @@ public class Query
   static {
     deleteJob();
 
+    insertIrodsId();
     insertJob();
     insertMessage();
 
@@ -38,6 +39,11 @@ public class Query
   public static String insertMessage() {
     return loader.insert("message")
       .orElseThrow(throwable("insert", "message"));
+  }
+
+  public static String insertIrodsId() {
+    return loader.insert("irods-id")
+      .orElseThrow(throwable("insert", "irods-id"));
   }
 
 

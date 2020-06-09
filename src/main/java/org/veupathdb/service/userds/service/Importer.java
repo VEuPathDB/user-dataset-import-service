@@ -13,6 +13,7 @@ import org.veupathdb.service.userds.model.JobStatus;
 import org.veupathdb.service.userds.model.handler.HandlerGeneralError;
 import org.veupathdb.service.userds.model.handler.HandlerJobResult;
 import org.veupathdb.service.userds.model.handler.HandlerValidationError;
+import org.veupathdb.service.userds.repo.InsertDatasetIdQuery;
 import org.veupathdb.service.userds.repo.InsertMessageQuery;
 import org.veupathdb.service.userds.repo.UpdateJobCompletedQuery;
 import org.veupathdb.service.userds.repo.UpdateJobStatusQuery;
@@ -73,6 +74,7 @@ public class Importer implements Runnable
       }
 
       if (flag.get().isSuccess()) {
+        InsertDatasetIdQuery.run(job.getDbId(), flag.get().getDsId());
         UpdateJobStatusQuery.run(job.getDbId(), JobStatus.SUCCESS);
       } else {
         InsertMessageQuery.run(job.getDbId(), "Datastore failed to unpack dataset");
