@@ -20,7 +20,6 @@ import org.veupathdb.service.userds.generated.model.PrepRequest;
 import org.veupathdb.service.userds.generated.model.PrepResponseImpl;
 import org.veupathdb.service.userds.generated.model.ProcessResponseImpl;
 import org.veupathdb.service.userds.generated.resources.UserDatasets;
-import org.veupathdb.service.userds.model.JobRow;
 import org.veupathdb.service.userds.model.JobStatus;
 import org.veupathdb.service.userds.service.Importer;
 import org.veupathdb.service.userds.service.JobService;
@@ -40,7 +39,8 @@ public class UserDatasetController implements UserDatasets
     errJobCreate     = "failed to create new job entry",
     errProcessImport = "error when processing import",
     errContentType   = "missing or invalid Content-Type header",
-    errDoubleStart   = "cannot resubmit an upload to a started job";
+    errDoubleStart   = "cannot resubmit an upload to a started job",
+    errDelJobRunning = "cannot delete a job that is in progress";
 
   private final Logger log;
 
@@ -105,9 +105,12 @@ public class UserDatasetController implements UserDatasets
   @Override
   public void deleteJob(String jobId) {
     try {
-      deleteJobById(getJobByToken(jobId)
-        .map(JobRow::getDbId)
-        .orElseThrow(NumberFormatException::new));
+      var job = getJobByToken(jobId).orElseThrow(NotFoundException::new);
+
+      switch (job.getStatus()) {
+        case ERRORED, SUCCESS -> deleteJobById(job.getDbId());
+        default -> throw new BadRequestException(errDelJobRunning);
+      }
     } catch (Exception e) {
       log.error(errRowFetch, e);
       throw new InternalServerErrorException(e);
