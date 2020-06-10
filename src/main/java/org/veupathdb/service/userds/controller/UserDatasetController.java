@@ -108,9 +108,12 @@ public class UserDatasetController implements UserDatasets
       var job = getJobByToken(jobId).orElseThrow(NotFoundException::new);
 
       switch (job.getStatus()) {
-        case ERRORED, SUCCESS -> deleteJobById(job.getDbId());
+        case REJECTED, ERRORED, SUCCESS -> deleteJobById(job.getDbId());
         default -> throw new BadRequestException(errDelJobRunning);
       }
+    } catch (WebApplicationException e) {
+      // Don't catch Jax-RS exceptions.
+      throw e;
     } catch (Exception e) {
       log.error(errRowFetch, e);
       throw new InternalServerErrorException(e);
