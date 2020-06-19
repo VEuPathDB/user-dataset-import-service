@@ -2,3 +2,29 @@
 
 https://veupathdb.github.io/service-user-dataset-import/api.html[API Docs]
 
+HTTP service that allows users to upload datasets directly to a site,
+skipping Galaxy entirely.
+
+== In this repo
+
+For base contents and explanations see the
+https://github.com/VEuPathDB/example-jaxrs-container-service[template project].
+
+[cols="2,1,5"]
+|===
+| docker-compose.yml
+| Docker
+| Configuration file needed to spin up the full service stack for development
+purposes. +
+For additional info see
+https://github.com/VEuPathDB/service-user-dataset-import/blob/master/stack-readme.adoc[stack-readme.adoc]
+| Dockerfile
+| Docker
+| The docker config specifically for the service-user-dataset-import container.
+| pgDockerfile
+| Docker
+| The docker config for the service's backing datastore.
+| init.sql
+| Postgres
+| The initialization script for the service's backing Postgres datastore.
+|===
