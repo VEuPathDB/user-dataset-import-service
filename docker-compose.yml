@@ -76,12 +76,6 @@ services:
       ACCT_DB_USER:
       ACCT_DB_PASS:
       ACCT_DB_NAME:
-    command: >-
-      while nc -zv postgres 5432; do
-        echo "Waiting for postgres to start.";
-        sleep 1s;
-      done;
-      java -jar /service.jar
     labels:
       - "traefik.http.routers.dataset-import-service-dev.rule=Host(`dataset-import-service-dev.local.apidb.org`)"
       - "traefik.http.routers.dataset-import-service-dev.tls=true"
