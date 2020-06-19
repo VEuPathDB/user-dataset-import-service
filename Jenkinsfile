@@ -41,7 +41,7 @@ node('centos8') {
       sh "podman build --format=docker -f pgDockerfile -t user-dataset-import-datastore ."
 
       // push to dockerhub (for now)
-      sh "podman push --creds \"$HUB_LOGIN\" user-dataset-import-datastore docker://docker.io/veupathdb/${imageName}:${tag}"
+      sh "podman push --creds \"$HUB_LOGIN\" user-dataset-import-datastore docker://docker.io/veupathdb/user-dataset-import-datastore:${tag}"
     }
   }
 }
