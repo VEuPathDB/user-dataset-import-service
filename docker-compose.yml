@@ -10,7 +10,7 @@ services:
 
   # BIOM form handler
   biom-handler:
-    container_name: user-dataset-biom-handler
+    container_name: handler-biom
     image: veupathdb/user-dataset-handler-biom
     deploy:
       restart_policy:
@@ -27,10 +27,8 @@ services:
 
   # Datastore
   postgres:
-    container_name: user-dataset-import-datastore
-    build:
-      context: .
-      dockerfile: ./pgDockerfile
+    container_name: datastore
+    image: veupathdb/user-dataset-import-datastore
     deploy:
       restart_policy:
         condition: on-failure
@@ -43,7 +41,7 @@ services:
 
   # Import Service
   importer:
-    container_name: user-dataset-import-service
+    container_name: service
     image: veupathdb/user-dataset-import-service
     deploy:
       restart_policy:
