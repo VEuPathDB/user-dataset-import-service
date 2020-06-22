@@ -57,7 +57,7 @@ public enum JobStatus
     return name;
   }
 
-  public static Optional <JobStatus> fromString(String name) {
+  public static Optional < JobStatus > fromString(String name) {
     return Arrays.stream(values())
       .filter(v -> v.name.equals(name))
       .findAny();
