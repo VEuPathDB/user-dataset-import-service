@@ -29,18 +29,7 @@ public class Main extends Server {
   private static DataSource    importDB;
   public static  HandlerConfig jsonConfig;
 
-  public static void main(String[] args) throws Exception {
-    LOG.info("Initializing import datastore connection");
-    importDB = DbMan.initImportDb();
-
-    LOG.info("Populating type caches");
-    SelectStatusQuery.run();
-    SelectProjectQuery.run();
-
-    LOG.info("Parsing service config");
-    jsonConfig = Format.Json.readerFor(HandlerConfig.class)
-      .readValue(new FileReader("config.json"));
-
+  public static void main(String[] args) {
     var server = new Main();
 
     server.enableAccountDB();
@@ -51,6 +40,21 @@ public class Main extends Server {
   protected void postCliParse(Options opts) {
     LOG.info("Initializing iRODS library");
     Irods.initialize(options);
+
+    LOG.info("Initializing import datastore connection");
+    importDB = DbMan.initImportDb();
+
+    LOG.info("Populating type caches");
+    try {
+      SelectStatusQuery.run();
+      SelectProjectQuery.run();
+
+      LOG.info("Parsing service config");
+      jsonConfig = Format.Json.readerFor(HandlerConfig.class)
+        .readValue(new FileReader("config.json"));
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override

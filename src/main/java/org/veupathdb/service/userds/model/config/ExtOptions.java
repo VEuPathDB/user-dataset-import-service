@@ -49,6 +49,38 @@ public class ExtOptions extends Options
     arity = "1")
   private String irodsResource;
 
+  @Option(
+    names = "--datastore-host",
+    defaultValue = "${env:DATASTORE_HOST}",
+    description = "env: DATASTORE_HOST",
+    arity = "1"
+  )
+  private String dsHost;
+
+  @Option(
+    names = "--datastore-port",
+    defaultValue = "${env:DATASTORE_PORT}",
+    description = "env: DATASTORE_PORT",
+    arity = "1"
+  )
+  private Integer dsPort;
+
+  @Option(
+    names = "--datastore-user",
+    defaultValue = "${env:DATASTORE_USER}",
+    description = "env: DATASTORE_USER",
+    arity = "1"
+  )
+  private String dsUser;
+
+  @Option(
+    names = "--datastore-pass",
+    defaultValue = "${env:DATASTORE_PASS}",
+    description = "env: DATASTORE_PASS",
+    arity = "1"
+  )
+  private String dsPass;
+
   public Optional < String > getIrodsHost() {
     return Optional.ofNullable(irodsHost);
   }
@@ -71,5 +103,21 @@ public class ExtOptions extends Options
 
   public Optional < String > getIrodsResource() {
     return Optional.ofNullable(irodsResource);
+  }
+
+  public Optional < String > getDsHost() {
+    return Optional.ofNullable(dsHost);
+  }
+
+  public Optional < Integer > getDsPort() {
+    return Optional.ofNullable(dsPort);
+  }
+
+  public Optional < String > getDsUser() {
+    return Optional.ofNullable(dsUser);
+  }
+
+  public Optional < String > getDsPass() {
+    return Optional.ofNullable(dsPass);
   }
 }

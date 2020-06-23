@@ -52,7 +52,7 @@ services:
       - internal
       # - traefik
     ports:
-      - 8080:80
+      - 8081:80
     depends_on:
       - postgres
       - biom-handler
@@ -76,6 +76,9 @@ services:
       ACCT_DB_USER:
       ACCT_DB_PASS:
       ACCT_DB_NAME:
+
+      # Postgres settings
+      DATASTORE_PASS: 1234
     command: >-
       sh -c "while ! nc -z postgres 5432; do
         echo 'waiting for postgres';

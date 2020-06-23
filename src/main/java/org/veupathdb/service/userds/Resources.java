@@ -17,6 +17,7 @@ public class Resources extends ContainerResources {
   public Resources(Options opts) {
     super(opts);
     enableCors();
+    enableDummyAuth();
   }
 
   /**
