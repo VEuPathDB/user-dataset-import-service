@@ -61,7 +61,9 @@ public class Handler
                 new HandlerPayload(
                   job.getName(),
                   job.getUserId(),
-                  job.getProjects()
+                  job.getProjects(),
+                  job.getDescription().orElse(null),
+                  job.getSummary().orElse(null)
                 )
               )
             )
