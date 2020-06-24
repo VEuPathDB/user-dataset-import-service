@@ -13,7 +13,10 @@ import org.veupathdb.service.userds.generated.support.ResponseDelegate;
 public interface UserDatasets {
   @GET
   @Produces("application/json")
-  GetResponse getUserJobs();
+  GetResponse getUserJobs(
+    @QueryParam("limit") Integer limit,
+    @QueryParam("page") Integer page
+  );
 
   @POST
   @Produces("application/json")

@@ -9,128 +9,6 @@
 ################################################################################
 
 types:
-  StatusResponse:
-    type: object
-    additionalProperties: false
-    properties:
-      id: string
-      datasetName: string
-      description?: string
-      summary?: string
-      datasetId?:
-        description: |
-          iRODS given dataset ID that will be present only if the job completed
-          successfully.
-        type: integer
-        minimum: 0
-      projects:
-        type: array
-        items: ProjectType
-      status: JobStatus
-      statusDetails:
-        description: |
-          Optional property containing additional details about the job status.
-
-          Will contain error messages, warnings, or validation failure reasons.
-        type: ValidationErrors | JobError
-        required: false
-      started: datetime
-      finished?: datetime
-    examples:
-      success:
-        id: 2XZEXFa8FMA2HmQpHpA9eA
-        datasetName: foo
-        projects:
-          - MicrobiomeDB
-        status: success
-        datasetId: 12354
-        started: '2020-06-04T16:06:26.074Z'
-        finished: '2020-06-04T16:06:28.090Z'
-      errored:
-        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
-        datasetName: my-dataset
-        projects:
-          - PlasmoDB
-        status: errored
-        started: '2020-06-04T16:06:26.074Z'
-        finished: '2020-06-04T16:06:28.090Z'
-        statusDetails:
-          message: Dataset handler failed to process uploaded user dataset.
-      rejected:
-        id: 1mDdvV8elI0wXUVD6AUGi4
-        datasetName: foo
-        projects:
-          - MicrobiomeDB
-        status: rejected
-        statusDetails:
-          errors:
-            general:
-              - "('Could not load the file as BIOM - does it conform to the specification on https://biom-format.org?', ValueError('Expecting object: line 139 column 1 (char 1554)',))"
-            byKey: {}
-        started: '2020-06-04T16:06:26.074Z'
-        finished: '2020-06-04T16:06:28.090Z'
-  ValidationErrors:
-    type: object
-    properties:
-      errors:
-        type: object
-        additionalProperties: false
-        properties:
-          general:
-            type: array
-            items: string
-          byKey:
-            type: object
-            properties:
-              //: string
-  JobError:
-    type: object
-    properties:
-      message: string
-  PrepResponse:
-    type: object
-    additionalProperties: false
-    properties:
-      status:
-        type: string
-        enum:
-          - ok
-      jobId: string
-  ProcessResponse:
-    type: object
-    additionalProperties: false
-    properties:
-      status:
-        description: Upload completion status
-        type: string
-        default: ok
-        enum:
-          - ok
-  PrepRequest:
-    type: object
-    additionalProperties: false
-    properties:
-      datasetName:
-        description: Name for the user dataset.  Will be visible in the site(s).
-        type: string
-      datasetType:
-        description: Type of the dataset job.
-        type: string
-        enum:
-          - biom
-      description:
-        description: Optional description for the user dataset.
-        type: string
-        required: false
-      summary:
-        description: Optional summary of the user dataset.
-        type: string
-        required: false
-      projects:
-        description: Target projects for which this user dataset should be made available for install.
-        type: array
-        minItems: 1
-        items: ProjectType
   ProjectType:
     type: string
     examples:
@@ -161,4 +39,139 @@ types:
       success: success
       rejected: rejected
       errored: errored
+  DatasetOrigin:
+    type: string
+    examples:
+      Galaxy: galaxy
+      Direct Upload: direct-upload
+  StatusResponse:
+    type: object
+    additionalProperties: false
+    properties:
+      id: string
+      datasetName: string
+      description?: string
+      summary?: string
+      datasetId?:
+        description: |
+          iRODS given dataset ID that will be present only if the job completed
+          successfully.
+        type: integer
+        minimum: 0
+      projects:
+        type: array
+        items: ProjectType
+      status: JobStatus
+      statusDetails:
+        description: |
+          Optional property containing additional details about the job status.
+
+          Will contain error messages, warnings, or validation failure reasons.
+        type: ValidationErrors | JobError
+        required: false
+      origin: DatasetOrigin
+      started: datetime
+      finished?: datetime
+    examples:
+      success:
+        status: success
+        datasetId: 12354
+        origin: direct-upload
+        started: '2020-06-04T16:06:26.074Z'
+        finished: '2020-06-04T16:06:28.090Z'
+        id: 2XZEXFa8FMA2HmQpHpA9eA
+        datasetName: foo
+        projects:
+          - MicrobiomeDB
+      errored:
+        started: '2020-06-04T16:06:26.074Z'
+        finished: '2020-06-04T16:06:28.090Z'
+        statusDetails:
+          message: Dataset handler failed to process uploaded user dataset.
+        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
+        datasetName: my-dataset
+        projects:
+          - PlasmoDB
+        status: errored
+        origin: direct-upload
+      rejected:
+        datasetName: foo
+        projects:
+          - MicrobiomeDB
+        status: rejected
+        origin: direct-upload
+        statusDetails:
+          errors:
+            general:
+              - "('Could not load the file as BIOM - does it conform to the specification on https://biom-format.org?', ValueError('Expecting object: line 139 column 1 (char 1554)',))"
+            byKey: {}
+        started: '2020-06-04T16:06:26.074Z'
+        finished: '2020-06-04T16:06:28.090Z'
+        id: 1mDdvV8elI0wXUVD6AUGi4
+  ValidationErrors:
+    type: object
+    properties:
+      errors:
+        type: object
+        additionalProperties: false
+        properties:
+          general:
+            type: array
+            items: string
+          byKey:
+            type: object
+            properties:
+              //: string
+  JobError:
+    type: object
+    properties:
+      message: string
+  PrepRequest:
+    type: object
+    additionalProperties: false
+    properties:
+      datasetName:
+        description: Name for the user dataset.  Will be visible in the site(s).
+        type: string
+      datasetType:
+        description: Type of the dataset job.
+        type: string
+        enum:
+          - biom
+      description:
+        description: Optional description for the user dataset.
+        type: string
+        required: false
+      summary:
+        description: Optional summary of the user dataset.
+        type: string
+        required: false
+      projects:
+        description: Target projects for which this user dataset should be made available for install.
+        type: array
+        minItems: 1
+        items: ProjectType
+      origin:
+        description: Dataset origin, either `galaxy` or `direct-upload`.
+        type: DatasetOrigin
+        required: false
+  PrepResponse:
+    type: object
+    additionalProperties: false
+    properties:
+      status:
+        type: string
+        enum:
+          - ok
+      jobId: string
+  ProcessResponse:
+    type: object
+    additionalProperties: false
+    properties:
+      status:
+        description: Upload completion status
+        type: string
+        default: ok
+        enum:
+          - ok
 

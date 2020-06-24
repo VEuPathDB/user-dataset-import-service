@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.veupathdb.service.userds.model.JobRow;
 import org.veupathdb.service.userds.model.ProjectCache;
 import org.veupathdb.service.userds.model.StatusCache;
+import org.veupathdb.service.userds.model.handler.DatasetOriginCache;
 import org.veupathdb.service.userds.util.Format;
 
 abstract class SelectJobBase
@@ -41,6 +42,9 @@ abstract class SelectJobBase
         .orElse(null),
       message,
       projects,
+      DatasetOriginCache.getInstance()
+        .get(rs.getShort(Schema.Table.Jobs.ORIGIN_ID))
+        .orElseThrow(),
       rs.getInt(Schema.Table.JobIrodsIDs.IRODS_ID)
     );
   }

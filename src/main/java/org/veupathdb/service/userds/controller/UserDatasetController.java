@@ -2,10 +2,7 @@ package org.veupathdb.service.userds.controller;
 
 import java.io.InputStream;
 import java.util.stream.Collectors;
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Request;
@@ -21,6 +18,8 @@ import org.veupathdb.service.userds.generated.model.PrepResponseImpl;
 import org.veupathdb.service.userds.generated.model.ProcessResponseImpl;
 import org.veupathdb.service.userds.generated.resources.UserDatasets;
 import org.veupathdb.service.userds.model.JobStatus;
+import org.veupathdb.service.userds.model.handler.DatasetOrigin;
+import org.veupathdb.service.userds.repo.SelectJobsQuery;
 import org.veupathdb.service.userds.service.Importer;
 import org.veupathdb.service.userds.service.JobService;
 import org.veupathdb.service.userds.service.ThreadProvider;
@@ -58,11 +57,27 @@ public class UserDatasetController implements UserDatasets
   }
 
   @Override
-  public GetResponse getUserJobs() {
+  public GetResponse getUserJobs(Integer limit, Integer page) {
+    if (limit != null) {
+      if (limit < 0) {
+        throw new BadRequestException("limit must not be less than 0");
+      }
+    } else {
+      limit = SelectJobsQuery.DEFAULT_LIMIT;
+    }
+
+    if (page != null) {
+      if (page < 0) {
+        throw new BadRequestException("page must not be less than 0");
+      }
+    } else {
+      page = SelectJobsQuery.DEFAULT_OFFSET;
+    }
+
     try {
       return GetResponse.respond200(getJobsByUser(UserProvider.lookupUser(req)
         .map(UserProfile::getUserId)
-        .orElseThrow())
+        .orElseThrow(), limit, page)
         .stream()
         .map(JobService::rowToStatus)
         .collect(Collectors.toList()));
@@ -90,6 +105,11 @@ public class UserDatasetController implements UserDatasets
     validateJobMeta(entity).ifPresent(r -> {
       throw new UnprocessableEntityException(r.getGeneral(), r.getByKey());
     });
+
+    // TODO: This field will become required when Galaxy runs imports through
+    //       this service.
+    if (entity.getOrigin() == null)
+      entity.setOrigin(DatasetOrigin.DIRECT_UPLOAD);
 
     try {
       return PostResponse.respond200(new PrepResponseImpl()

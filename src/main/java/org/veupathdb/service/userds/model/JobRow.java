@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.veupathdb.service.userds.model.handler.DatasetOrigin;
 
 
 public class JobRow
@@ -21,6 +22,7 @@ public class JobRow
   private final JsonNode        message;
   private final List < String > projects;
   private final int             irodsId;
+  private final DatasetOrigin   origin;
 
   public JobRow(
     int dbId,
@@ -34,6 +36,7 @@ public class JobRow
     LocalDateTime finished,
     JsonNode message,
     List < String > projects,
+    DatasetOrigin origin,
     int irodsId
   ) {
     this.dbId = dbId;
@@ -47,6 +50,7 @@ public class JobRow
     this.finished = finished;
     this.message = message;
     this.projects = projects;
+    this.origin = origin;
     this.irodsId = irodsId;
   }
 
@@ -57,10 +61,11 @@ public class JobRow
     String name,
     String description,
     String summary,
-    List < String > projects
+    List < String > projects,
+    DatasetOrigin origin
   ) {
     this(0, jobId, userId, status, name, description, summary, null, null,
-      null, projects, 0);
+      null, projects, origin, 0);
   }
 
   public int getDbId() {
@@ -109,5 +114,9 @@ public class JobRow
 
   public int getIrodsId() {
     return irodsId;
+  }
+
+  public DatasetOrigin getOrigin() {
+    return origin;
   }
 }

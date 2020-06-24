@@ -62,6 +62,7 @@ public class Handler
                   job.getName(),
                   job.getUserId(),
                   job.getProjects(),
+                  job.getOrigin(),
                   job.getDescription().orElse(null),
                   job.getSummary().orElse(null)
                 )

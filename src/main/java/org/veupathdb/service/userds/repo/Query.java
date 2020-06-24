@@ -21,6 +21,7 @@ public class Query
     selectSingleJob();
     selectProjects();
     selectStatuses();
+    selectOrigins();
 
     updateJobStatus();
     updateJobCompleted();
@@ -60,6 +61,11 @@ public class Query
   public static String selectStatuses() {
     return loader.select("statuses")
       .orElseThrow(throwable("select", "statuses"));
+  }
+
+  public static String selectOrigins() {
+    return loader.select("origins")
+      .orElseThrow(throwable("select", "origins"));
   }
 
   public static String selectProjects() {

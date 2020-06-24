@@ -4,7 +4,7 @@ version: 1.0.0
 mediaType: application/json
 
 uses:
-  err: .tools/raml/errors.raml
+  error: https://raw.githubusercontent.com/VEuPathDB/docs-api-schema/v1.1.1/libraries/errors.raml
   lib: schema/library.raml
 
 securitySchemes:
@@ -24,6 +24,19 @@ securitySchemes:
     displayName: All User Dataset Uploads
     securedBy: header-auth
     description: List user dataset uploads and their statuses
+    queryParameters:
+      limit:
+        description: Limit the results to this number of rows.
+        type: integer
+        minimum: 0
+        default: 100
+      page:
+        description: |
+          Retrieve results from the given page (actual offset used is
+          `page * limit`).
+        type: integer
+        minimum: 0
+        default: 0
     responses:
       200:
         body:
@@ -31,10 +44,10 @@ securitySchemes:
           items: lib.StatusResponse
       401:
         body:
-          type: err.UnauthorizedError
+          type: error.Unauthorized
       500:
         body:
-          type: err.ServerError
+          type: error.Server
   post:
     displayName: Start User Dataset Upload
     securedBy: header-auth
@@ -49,16 +62,16 @@ securitySchemes:
           type: lib.PrepResponse
       400:
         body:
-          type: err.BadRequestError
+          type: error.BadRequest
       401:
         body:
-          type: err.UnauthorizedError
+          type: error.Unauthorized
       422:
         body:
-          type: err.InvalidInputError
+          type: error.UnprocessableEntity
       500:
         body:
-          type: err.ServerError
+          type: error.Server
 
   /{jobId}:
     uriParameters:
@@ -77,13 +90,13 @@ securitySchemes:
               type: string
         401:
           body:
-            type: err.UnauthorizedError
+            type: error.Unauthorized
         404:
           body:
-            type: err.NotFoundError
+            type: error.NotFound
         500:
           body:
-            type: err.ServerError
+            type: error.Server
 
     get:
       displayName: Lookup Job
@@ -95,13 +108,13 @@ securitySchemes:
             type: lib.StatusResponse
         401:
           body:
-            type: err.UnauthorizedError
+            type: error.Unauthorized
         404:
           body:
-            type: err.NotFoundError
+            type: error.NotFound
         500:
           body:
-            type: err.ServerError
+            type: error.Server
 
     post:
       displayName: Upload Job Data
@@ -122,16 +135,16 @@ securitySchemes:
             type: lib.ProcessResponse
         400:
           body:
-            type: err.BadRequestError
+            type: error.BadRequest
         401:
           body:
-            type: err.UnauthorizedError
+            type: error.Unauthorized
         404:
           body:
-            type: err.NotFoundError
+            type: error.NotFound
         500:
           body:
-            type: err.ServerError
+            type: error.Server
 
 /projects:
   displayName: List Projects
@@ -160,7 +173,7 @@ securitySchemes:
             type: array
         404:
           body:
-            type: err.NotFoundError
+            type: error.NotFound
 
     /{dsType}/fileTypes:
       uriParameters:
@@ -178,4 +191,4 @@ securitySchemes:
               type: array
           404:
             body:
-              type: err.NotFoundError
+              type: error.NotFound

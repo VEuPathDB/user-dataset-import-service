@@ -28,6 +28,10 @@ types:
         type: array
         minItems: 1
         items: common.ProjectType
+      origin:
+        description: Dataset origin, either `galaxy` or `direct-upload`.
+        type: common.DatasetOrigin
+        required: false
   PrepResponse:
     additionalProperties: false
     properties:

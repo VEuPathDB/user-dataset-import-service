@@ -18,16 +18,20 @@ public class HandlerPayload
 
   private final String description;
 
+  private final DatasetOrigin origin;
+
   public HandlerPayload(
     String name,
     long userId,
     List < String > projects,
+    DatasetOrigin origin,
     String description,
     String summary
   ) {
     this.name = name;
     this.userId = userId;
     this.projects = projects;
+    this.origin = origin;
     this.description = description;
     this.summary = summary;
   }
@@ -55,5 +59,10 @@ public class HandlerPayload
   @JsonGetter
   public String getDescription() {
     return description;
+  }
+
+  @JsonGetter
+  public DatasetOrigin getOrigin() {
+    return origin;
   }
 }

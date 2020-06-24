@@ -28,6 +28,7 @@ types:
           Will contain error messages, warnings, or validation failure reasons.
         required: false
         type: ValidationErrors | JobError
+      origin: common.DatasetOrigin
       started: datetime
       finished?: datetime
     examples:
@@ -38,6 +39,7 @@ types:
           - MicrobiomeDB
         status: success
         datasetId: 12354
+        origin: direct-upload
         started: '2020-06-04T16:06:26.074Z'
         finished: '2020-06-04T16:06:28.090Z'
       errored:
@@ -46,6 +48,7 @@ types:
         projects:
           - PlasmoDB
         status: errored
+        origin: direct-upload
         started: '2020-06-04T16:06:26.074Z'
         finished: '2020-06-04T16:06:28.090Z'
         statusDetails:
@@ -56,6 +59,7 @@ types:
         projects:
           - MicrobiomeDB
         status: rejected
+        origin: direct-upload
         statusDetails:
           errors:
             general:

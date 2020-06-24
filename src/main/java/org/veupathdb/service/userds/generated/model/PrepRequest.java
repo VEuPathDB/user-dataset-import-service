@@ -1,7 +1,10 @@
 package org.veupathdb.service.userds.generated.model;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.veupathdb.service.userds.model.handler.DatasetOrigin;
 
 import java.util.List;
 
@@ -13,10 +16,14 @@ public interface PrepRequest
     KEY_DESC     = "description",
     KEY_SUMMARY  = "summary",
     KEY_PROJECTS = "projects",
-    KEY_DS_TYPE  = "datasetType";
+    KEY_DS_TYPE  = "datasetType",
+    KEY_ORIGIN   = "datasetOrigin";
 
   @JsonProperty(KEY_DS_NAME)
   String getDatasetName();
+
+  @JsonGetter
+  DatasetOrigin getOrigin();
 
   @JsonProperty(KEY_DS_NAME)
   void setDatasetName(String datasetName);
@@ -44,4 +51,8 @@ public interface PrepRequest
 
   @JsonProperty(KEY_DS_TYPE)
   void setDatasetType(String dsType);
+
+
+  @JsonSetter
+  void setOrigin(DatasetOrigin origin);
 }

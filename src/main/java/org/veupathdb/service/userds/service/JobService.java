@@ -15,6 +15,7 @@ import org.veupathdb.service.userds.model.JobRow;
 import org.veupathdb.service.userds.model.JobStatus;
 import org.veupathdb.service.userds.model.MetaValidationResult;
 import org.veupathdb.service.userds.model.ProjectCache;
+import org.veupathdb.service.userds.model.handler.DatasetOrigin;
 import org.veupathdb.service.userds.repo.DeleteJobQuery;
 import org.veupathdb.service.userds.repo.InsertJobQuery;
 import org.veupathdb.service.userds.repo.SelectJobQuery;
@@ -33,8 +34,9 @@ public class JobService
    * @return A list of jobs owned by the given user id.  If no jobs were found,
    * the returned list will be empty.
    */
-  public static List < JobRow > getJobsByUser(long userId) throws Exception {
-    return SelectJobsQuery.run(userId);
+  public static List < JobRow > getJobsByUser(long userId, int limit, int page)
+  throws Exception {
+    return SelectJobsQuery.run(userId, limit, page);
   }
 
   public static void deleteJobById(int dbId) throws Exception {
@@ -154,10 +156,14 @@ public class JobService
     return out;
   }
 
+  /**
+   * Convert a job prep request to a dummy job row for inserting into the
+   * database.
+   */
   public static JobRow prepToJob(PrepRequest body, String jobId, long userId) {
     return new JobRow(jobId, userId, JobStatus.AWAITING_UPLOAD,
       body.getDatasetName(), body.getDescription(), body.getSummary(),
-      body.getProjects());
+      body.getProjects(), body.getOrigin());
   }
 
   /**

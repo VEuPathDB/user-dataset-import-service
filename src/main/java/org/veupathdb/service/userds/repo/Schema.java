@@ -14,6 +14,7 @@ public interface Schema
         NAME        = "name",
         DESCRIPTION = "description",
         SUMMARY     = "summary",
+        ORIGIN_ID   = "origin_id",
         STARTED     = "started",
         FINISHED    = "finished";
     }

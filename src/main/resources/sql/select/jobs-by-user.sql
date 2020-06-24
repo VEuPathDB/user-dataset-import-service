@@ -15,4 +15,6 @@ WHERE
   user_id = ?
 ORDER BY
   started DESC
+LIMIT ?
+OFFSET ?
 ;

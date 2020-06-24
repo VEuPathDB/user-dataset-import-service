@@ -13,6 +13,7 @@ import org.veupathdb.lib.container.jaxrs.server.ContainerResources;
 import org.veupathdb.lib.container.jaxrs.server.Server;
 import org.veupathdb.service.userds.model.config.ExtOptions;
 import org.veupathdb.service.userds.model.config.HandlerConfig;
+import org.veupathdb.service.userds.repo.SelectOriginQuery;
 import org.veupathdb.service.userds.repo.SelectProjectQuery;
 import org.veupathdb.service.userds.repo.SelectStatusQuery;
 import org.veupathdb.service.userds.service.Irods;
@@ -48,6 +49,7 @@ public class Main extends Server {
     try {
       SelectStatusQuery.run();
       SelectProjectQuery.run();
+      SelectOriginQuery.run();
 
       LOG.info("Parsing service config");
       jsonConfig = Format.Json.readerFor(HandlerConfig.class)
