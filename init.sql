@@ -64,7 +64,7 @@ VALUES
 ;
 
 /*--------------------------------------------------------*\
-|  Status Mapping                                          |
+|  Origin Mapping                                          |
 \*--------------------------------------------------------*/
 
 CREATE TABLE IF NOT EXISTS ds_types.origin
@@ -89,6 +89,10 @@ VALUES
 
 CREATE SCHEMA IF NOT EXISTS ds_jobs;
 
+/*--------------------------------------------------------*\
+|  Import Jobs                                             |
+\*--------------------------------------------------------*/
+
 CREATE TABLE IF NOT EXISTS ds_jobs.jobs
 (
   db_id       SERIAL PRIMARY KEY
@@ -107,6 +111,10 @@ CREATE TABLE IF NOT EXISTS ds_jobs.jobs
 
 CREATE INDEX IF NOT EXISTS jobs_user_id ON ds_jobs.jobs (user_id);
 
+/*--------------------------------------------------------*\
+|  Job Project Attachments                                 |
+\*--------------------------------------------------------*/
+
 CREATE TABLE IF NOT EXISTS ds_jobs.job_projects
 (
   db_id      INT NOT NULL REFERENCES ds_jobs.jobs (db_id) ON DELETE CASCADE
@@ -114,11 +122,19 @@ CREATE TABLE IF NOT EXISTS ds_jobs.job_projects
     REFERENCES ds_types.project (project_id) ON DELETE CASCADE
 );
 
+/*--------------------------------------------------------*\
+|  Job Error Messages                                      |
+\*--------------------------------------------------------*/
+
 CREATE TABLE IF NOT EXISTS ds_jobs.job_messages
 (
   db_id   INT   NOT NULL REFERENCES ds_jobs.jobs (db_id) ON DELETE CASCADE
 , message JSONB NOT NULL
 );
+
+/*--------------------------------------------------------*\
+|  Job iRODS Attachments                                   |
+\*--------------------------------------------------------*/
 
 CREATE TABLE IF NOT EXISTS ds_jobs.job_irods_id
 (
