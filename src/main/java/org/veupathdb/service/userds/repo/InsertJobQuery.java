@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import org.veupathdb.service.userds.model.JobRow;
 import org.veupathdb.service.userds.model.ProjectCache;
 import org.veupathdb.service.userds.model.StatusCache;
+import org.veupathdb.service.userds.model.handler.DatasetOriginCache;
 import org.veupathdb.service.userds.util.DbMan;
 
 public class InsertJobQuery
@@ -30,8 +31,11 @@ public class InsertJobQuery
     out.setString(4, row.getName());
     out.setString(5, row.getDescription().orElse(null));
     out.setString(6, row.getSummary().orElse(null));
+    out.setShort(7, DatasetOriginCache.getInstance()
+      .get(row.getOrigin())
+      .orElseThrow());
 
-    out.setArray(7, cn.createArrayOf("SMALLINT", row.getProjects()
+    out.setArray(8, cn.createArrayOf("SMALLINT", row.getProjects()
       .stream()
       .map(ProjectCache.getInstance()::get)
       .toArray(Object[]::new)));

@@ -1,8 +1,8 @@
 WITH job AS (
   INSERT INTO
-    ds_jobs.jobs (job_id, user_id, status_id, name, description, summary)
+    ds_jobs.jobs (job_id, user_id, status_id, name, description, summary, origin_id)
   VALUES
-    (?, ?, ?, ?, ?, ?)
+    (?, ?, ?, ?, ?, ?, ?)
   RETURNING db_id
 )
 INSERT INTO
