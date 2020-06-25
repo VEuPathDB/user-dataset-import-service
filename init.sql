@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS ds_jobs.jobs
 , finished    TIMESTAMPTZ
 );
 
-CREATE INDEX IF NOT EXISTS ds_jobs.jobs_user_id ON ds_jobs.jobs (user_id);
+CREATE INDEX IF NOT EXISTS jobs_user_id ON ds_jobs.jobs (user_id);
 
 CREATE TABLE IF NOT EXISTS ds_jobs.job_projects
 (
