@@ -14,7 +14,7 @@ import org.veupathdb.service.userds.util.DbMan;
 
 public class Migrator
 {
-  private static final String migrationsDir = "sql/migrations/";
+  private static final String migrationsDir = "/sql/migrations/";
 
   public static void run() throws Exception {
     final var log = LogProvider.logger(Main.class);
