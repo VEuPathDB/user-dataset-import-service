@@ -15,6 +15,9 @@ import org.veupathdb.service.userds.model.config.ExtOptions;
 
 public class Irods
 {
+  private static final int bufferSize = 16384;
+  private static final int flushCount = 10;  // flush every 160KiB
+  private static final int noteCount  = 640; // log every 10MiB
   private static final Logger log = LogProvider.logger(Irods.class);
 
   private static final String
@@ -38,8 +41,21 @@ public class Irods
       Paths.get(lzPath, fName).toString(),
       DataObjInp.OpenFlags.WRITE_FAIL_IF_EXISTS
     )) {
+      var buffer = new byte[bufferSize];
+      var counter = 0;
       log.debug("writing dataset {} to iRODS {}", fName, lzPath);
-      pipe.transferTo(writer);
+      int len;
+      while ((len = pipe.read(buffer)) > -1) {
+        writer.write(buffer, 0, len);
+        counter++;
+
+        if (counter % flushCount == 0)
+          writer.flush();
+
+        if (counter % noteCount == 0)
+          log.trace(((counter % noteCount) * 10) + "MiB written to iRODS");
+      }
+      writer.flush();
     }
 
     var flag = Paths.get(flagPath, fName.replace(".tgz", ".txt")).toString();
