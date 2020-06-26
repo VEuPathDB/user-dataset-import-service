@@ -51,6 +51,8 @@ public class Migrator
     final var jar   = new ZipInputStream(getSelf().getLocation().openStream());
     final var paths = new ArrayList < String >(12);
 
+    ver = ver.replace('.', '-');
+
     ZipEntry file;
     while ((file = jar.getNextEntry()) != null) {
       var path = file.getName();
