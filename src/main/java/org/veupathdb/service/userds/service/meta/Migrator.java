@@ -41,7 +41,7 @@ public class Migrator
       for (var path : migs) {
         try (var stmt = con.createStatement()) {
           log.debug("executing {}.sql", path);
-          stmt.execute(loader.rawSql(migrationsDir + path).orElseThrow());
+          stmt.execute(loader.rawSql("migrations." + path).orElseThrow());
         }
       }
     }
