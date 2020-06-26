@@ -37,10 +37,10 @@ public class Migrator
     log.debug("found {} migrations", migs.size());
 
     try (var con = DbMan.getImportDb().getConnection()) {
-      var loader = new SqlLoader("/" + migrationsDir);
+      var loader = new SqlLoader("/");
       for (var path : migs) {
         try (var stmt = con.createStatement()) {
-          log.debug("executing {}{}.sql", migrationsDir, path);
+          log.debug("executing {}.sql", path);
           stmt.execute(loader.rawSql(path).orElseThrow());
         }
       }
@@ -59,10 +59,7 @@ public class Migrator
       if (!path.startsWith(migrationsDir) || !path.endsWith(".sql"))
         continue;
 
-      // Chop off the /path/value/ and the next / character
-      path = path.substring(migrationsDir.length());
-
-      final var version = path.split("/")[0];
+      final var version = path.split("/")[2];
 
       // Skip migrations that are at or below the current version
       if (ver.compareTo(version) > -1)
