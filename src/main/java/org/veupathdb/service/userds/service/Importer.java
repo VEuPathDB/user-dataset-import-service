@@ -25,8 +25,8 @@ public class Importer implements Runnable
 {
   private static final Logger log = LogProvider.logger(Importer.class);
 
-  private final JobRow      job;
-  private final String      boundary;
+  private final JobRow job;
+  private final String boundary;
   private final InputStream reader;
 
   public Importer(
@@ -54,6 +54,8 @@ public class Importer implements Runnable
       if (result.isEmpty())
         return;
 
+      UpdateJobStatusQuery.run(job.getDbId(), JobStatus.SENDING_TO_DATASTORE);
+
       try {
         doStore(result.get());
       } finally {
@@ -62,8 +64,10 @@ public class Importer implements Runnable
 
       UpdateJobStatusQuery.run(job.getDbId(), JobStatus.DATASTORE_UNPACKING);
 
-      var flag = Optional.< IrodsStatus >empty();
-      var file = result.get().getFileName().substring(0, result.get().getFileName().indexOf('.'));
+      var flag = Optional. < IrodsStatus > empty();
+      var file = result.get()
+        .getFileName()
+        .substring(0, result.get().getFileName().indexOf('.'));
 
       while (flag.isEmpty()) {
         // iRODS is already struggling just to do iRODS stuff, no need to
@@ -77,7 +81,10 @@ public class Importer implements Runnable
         InsertDatasetIdQuery.run(job.getDbId(), flag.get().getDsId());
         UpdateJobStatusQuery.run(job.getDbId(), JobStatus.SUCCESS);
       } else {
-        InsertMessageQuery.run(job.getDbId(), "Datastore failed to unpack dataset");
+        InsertMessageQuery.run(
+          job.getDbId(),
+          "Datastore failed to unpack dataset"
+        );
         UpdateJobStatusQuery.run(job.getDbId(), JobStatus.ERRORED);
       }
 
@@ -115,7 +122,8 @@ public class Importer implements Runnable
     return false;
   }
 
-  private Optional< HandlerJobResult > doSubmit(Handler hand) throws Exception {
+  private Optional < HandlerJobResult > doSubmit(Handler hand)
+  throws Exception {
     var raw = hand.submitJob(job, boundary, reader);
 
     if (raw.isLeft())
