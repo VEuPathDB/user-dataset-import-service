@@ -28,10 +28,10 @@ import static org.veupathdb.service.userds.util.Format.Json;
 public class Handler
 {
   private static final String
-    jobEndpoint = "http://%s/job/%s",
+    jobEndpoint    = "http://%s/job/%s",
     statusEndpoint = jobEndpoint + "/status",
     MULTIPART_HEAD = MediaType.MULTIPART_FORM_DATA + "; boundary=",
-    fileName = "filename=";
+    fileName       = "filename=";
 
   private static final Map < String, Handler > handlers = Collections
     .synchronizedMap(new HashMap <>());
@@ -89,6 +89,16 @@ public class Handler
     };
   }
 
+  /**
+   * Submit handler job.
+   *
+   * @param job      Job Details
+   * @param boundary HTTP multipart/form-data boundary string
+   * @param body     Upload file
+   *
+   * @return Result of either a success response or an error.  The error may be
+   * either a general error or a validation error.
+   */
   public Either < HandlerJobResult, Either < HandlerGeneralError, HandlerValidationError > >
   submitJob(
     final JobRow job,
@@ -129,13 +139,13 @@ public class Handler
 
       return res.statusCode() == 422
         ? Either.ofRight(Either.ofRight(Json.readValue(
-          res.body(),
-          HandlerValidationError.class
-        )))
+        res.body(),
+        HandlerValidationError.class
+      )))
         : Either.ofRight(Either.ofLeft(Json.readValue(
-          res.body(),
-          HandlerGeneralError.class
-        )));
+        res.body(),
+        HandlerGeneralError.class
+      )));
     } finally {
       Errors.swallow(body::close);
     }
