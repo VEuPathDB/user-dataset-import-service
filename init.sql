@@ -1,5 +1,25 @@
 /*----------------------------------------------------------------------------*\
 |                                                                              |
+|  Service Metadata                                                            |
+|                                                                              |
+\*----------------------------------------------------------------------------*/
+
+CREATE SCHEMA ds_meta;
+
+CREATE TABLE IF NOT EXISTS ds_meta.kv_store
+(
+  key VARCHAR(32) NOT NULL PRIMARY KEY,
+  value VARCHAR(256)
+);
+
+INSERT INTO
+  ds_meta.kv_store (key, value)
+VALUES
+  ('version', 'v1.0.3')
+;
+
+/*----------------------------------------------------------------------------*\
+|                                                                              |
 |  Static Components                                                           |
 |                                                                              |
 \*----------------------------------------------------------------------------*/
@@ -105,6 +125,7 @@ CREATE TABLE IF NOT EXISTS ds_jobs.jobs
 , summary     VARCHAR
 , origin_id   SMALLINT     NOT NULL
     REFERENCES ds_types.origin (origin_id) ON DELETE RESTRICT
+, type        VARCHAR(16)  NOT NULL
 , started     TIMESTAMPTZ  NOT NULL DEFAULT now()
 , finished    TIMESTAMPTZ
 );

@@ -11,7 +11,7 @@ public class UpdateJobStatusQuery
   public static void run(int dbId, JobStatus status) throws SQLException {
     try (
       var cn = DbMan.getImportDb().getConnection();
-      var ps = cn.prepareStatement(Query.updateJobStatus())
+      var ps = cn.prepareStatement(SQL.Update.Job.Status)
     ) {
       ps.setShort(1, StatusCache.getInstance().get(status));
       ps.setInt(2, dbId);

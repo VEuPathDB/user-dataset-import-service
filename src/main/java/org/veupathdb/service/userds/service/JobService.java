@@ -15,7 +15,6 @@ import org.veupathdb.service.userds.model.JobRow;
 import org.veupathdb.service.userds.model.JobStatus;
 import org.veupathdb.service.userds.model.MetaValidationResult;
 import org.veupathdb.service.userds.model.ProjectCache;
-import org.veupathdb.service.userds.model.handler.DatasetOrigin;
 import org.veupathdb.service.userds.repo.DeleteJobQuery;
 import org.veupathdb.service.userds.repo.InsertJobQuery;
 import org.veupathdb.service.userds.repo.SelectJobQuery;
@@ -163,7 +162,7 @@ public class JobService
   public static JobRow prepToJob(PrepRequest body, String jobId, long userId) {
     return new JobRow(jobId, userId, JobStatus.AWAITING_UPLOAD,
       body.getDatasetName(), body.getDescription(), body.getSummary(),
-      body.getProjects(), body.getOrigin());
+      body.getProjects(), body.getOrigin(), body.getDatasetType());
   }
 
   /**

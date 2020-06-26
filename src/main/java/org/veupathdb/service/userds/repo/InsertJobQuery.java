@@ -23,7 +23,7 @@ public class InsertJobQuery
 
   private static PreparedStatement prepare(Connection cn, JobRow row)
   throws SQLException {
-    var out = cn.prepareStatement(Query.insertJob());
+    var out = cn.prepareStatement(SQL.Insert.Job);
 
     out.setString(1, row.getJobId());
     out.setLong(2, row.getUserId());

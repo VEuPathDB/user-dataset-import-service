@@ -22,10 +22,7 @@ public interface PrepRequest
   @JsonProperty(KEY_DS_NAME)
   String getDatasetName();
 
-  @JsonGetter
-  DatasetOrigin getOrigin();
-
-  @JsonProperty(KEY_DS_NAME)
+   @JsonProperty(KEY_DS_NAME)
   void setDatasetName(String datasetName);
 
   @JsonProperty(KEY_DESC)
@@ -52,7 +49,9 @@ public interface PrepRequest
   @JsonProperty(KEY_DS_TYPE)
   void setDatasetType(String dsType);
 
+  @JsonGetter(KEY_ORIGIN)
+  DatasetOrigin getOrigin();
 
-  @JsonSetter
+  @JsonSetter(KEY_ORIGIN)
   void setOrigin(DatasetOrigin origin);
 }

@@ -30,7 +30,7 @@ public class SelectJobQuery extends SelectJobBase
 
   public static PreparedStatement prepare(Connection con, String jobId)
   throws SQLException {
-    final var out = con.prepareStatement(Query.selectSingleJob());
+    final var out = con.prepareStatement(SQL.Select.Job.ByJobID);
     out.setString(1, jobId);
     return out;
 

@@ -23,21 +23,23 @@ public class JobRow
   private final List < String > projects;
   private final int             irodsId;
   private final DatasetOrigin   origin;
+  private final String          type;
 
   public JobRow(
-    int dbId,
-    String jobId,
-    long userId,
-    JobStatus status,
-    String name,
-    String description,
-    String summary,
-    LocalDateTime started,
-    LocalDateTime finished,
-    JsonNode message,
-    List < String > projects,
-    DatasetOrigin origin,
-    int irodsId
+    final int             dbId,
+    final String          jobId,
+    final long            userId,
+    final JobStatus       status,
+    final String          name,
+    final String          description,
+    final String          summary,
+    final LocalDateTime   started,
+    final LocalDateTime   finished,
+    final JsonNode        message,
+    final List < String > projects,
+    final DatasetOrigin   origin,
+    final String          type,
+    final int             irodsId
   ) {
     this.dbId = dbId;
     this.jobId = jobId;
@@ -51,21 +53,23 @@ public class JobRow
     this.message = message;
     this.projects = projects;
     this.origin = origin;
+    this.type = type;
     this.irodsId = irodsId;
   }
 
   public JobRow(
-    String jobId,
-    long userId,
-    JobStatus status,
-    String name,
-    String description,
-    String summary,
-    List < String > projects,
-    DatasetOrigin origin
+    final String          jobId,
+    final long            userId,
+    final JobStatus       status,
+    final String          name,
+    final String          description,
+    final String          summary,
+    final List < String > projects,
+    final DatasetOrigin   origin,
+    final String          type
   ) {
-    this(0, jobId, userId, status, name, description, summary, null, null,
-      null, projects, origin, 0);
+    this(0, jobId, userId, status, name, description, summary, null, null, null,
+      projects, origin, type, 0);
   }
 
   public int getDbId() {
@@ -118,5 +122,9 @@ public class JobRow
 
   public DatasetOrigin getOrigin() {
     return origin;
+  }
+
+  public String getType() {
+    return type;
   }
 }

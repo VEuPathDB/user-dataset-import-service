@@ -29,7 +29,7 @@ public class SelectStatusQuery
     try (
       var cn = DbMan.getImportDb().getConnection();
       var st = cn.createStatement();
-      var rs = st.executeQuery(Query.selectStatuses())
+      var rs = st.executeQuery(SQL.Select.Status.All)
     ) {
       var i = 0;
 

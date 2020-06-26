@@ -7,7 +7,7 @@ public class InsertDatasetIdQuery
   public static void run(int dbId, int irodsId) throws Exception {
     try (
       var cn = DbMan.getImportDb().getConnection();
-      var ps = cn.prepareStatement(Query.insertIrodsId())
+      var ps = cn.prepareStatement(SQL.Insert.IrodsID)
     ) {
       ps.setInt(1, dbId);
       ps.setInt(2, irodsId);

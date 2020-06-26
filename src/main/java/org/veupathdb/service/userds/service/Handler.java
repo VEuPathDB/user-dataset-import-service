@@ -14,12 +14,14 @@ import org.apache.logging.log4j.Logger;
 import org.veupathdb.lib.container.jaxrs.providers.LogProvider;
 import org.veupathdb.service.userds.Main;
 import org.veupathdb.service.userds.model.JobRow;
+import org.veupathdb.service.userds.model.JobStatus;
 import org.veupathdb.service.userds.model.Service;
 import org.veupathdb.service.userds.model.handler.HandlerGeneralError;
 import org.veupathdb.service.userds.model.handler.HandlerJobResult;
 import org.veupathdb.service.userds.model.handler.HandlerPayload;
 import org.veupathdb.service.userds.model.handler.HandlerValidationError;
 import org.veupathdb.service.userds.util.Errors;
+import org.veupathdb.service.userds.util.Format;
 import org.veupathdb.service.userds.util.http.Header;
 
 import static java.lang.String.format;
@@ -149,6 +151,22 @@ public class Handler
     } finally {
       Errors.swallow(body::close);
     }
+  }
+
+  public String getJobStatus(String jobId) throws Exception {
+    final var res = HttpClient.newHttpClient().send(
+      HttpRequest.newBuilder(URI.create(
+        format(statusEndpoint, svc.getName(), jobId)))
+        .GET()
+        .build(),
+      BodyHandlers.ofString()
+    );
+
+    if (res.statusCode() != 200)
+      throw new Exception("Unexpected response code from dataset handler");
+
+    final var body = Format.Json.readTree(res.body());
+    return body.get("status").textValue();
   }
 
   public static Optional < Handler > getHandler(String format) {

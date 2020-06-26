@@ -54,7 +54,7 @@ public class SelectJobsQuery extends SelectJobBase
     int page
   )
   throws SQLException {
-    final var out = con.prepareStatement(Query.selectJobList());
+    final var out = con.prepareStatement(SQL.Select.Job.ByUserID);
     out.setLong(1, userId);
     out.setInt(2, limit);
     out.setInt(3, page * limit);

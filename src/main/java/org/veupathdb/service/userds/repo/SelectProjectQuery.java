@@ -18,7 +18,7 @@ public class SelectProjectQuery
     try (
       var cn = DbMan.getImportDb().getConnection();
       var st = cn.createStatement();
-      var rs = st.executeQuery(Query.selectProjects())
+      var rs = st.executeQuery(SQL.Select.Project.All)
     ) {
       while (rs.next())
         out.put(rs.getString(2), rs.getShort(1));

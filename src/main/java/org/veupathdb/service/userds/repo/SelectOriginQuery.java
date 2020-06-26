@@ -28,7 +28,7 @@ public class SelectOriginQuery
     try (
       var cn = DbMan.getImportDb().getConnection();
       var st = cn.createStatement();
-      var rs = st.executeQuery(Query.selectOrigins())
+      var rs = st.executeQuery(SQL.Select.Origin.All)
     ) {
       var i = 0;
 

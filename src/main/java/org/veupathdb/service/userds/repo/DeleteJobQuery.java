@@ -3,9 +3,7 @@ package org.veupathdb.service.userds.repo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Optional;
 
-import org.veupathdb.service.userds.model.JobRow;
 import org.veupathdb.service.userds.util.DbMan;
 
 /**
@@ -24,7 +22,7 @@ public class DeleteJobQuery
 
   public static PreparedStatement prepare(Connection con, int dbId)
   throws SQLException {
-    final var out = con.prepareStatement(Query.deleteJob());
+    final var out = con.prepareStatement(SQL.Delete.Job);
     out.setInt(1, dbId);
     return out;
   }

@@ -45,6 +45,7 @@ abstract class SelectJobBase
       DatasetOriginCache.getInstance()
         .get(rs.getShort(Schema.Table.Jobs.ORIGIN_ID))
         .orElseThrow(),
+      rs.getString(Schema.Table.Jobs.TYPE),
       rs.getInt(Schema.Table.JobIrodsIDs.IRODS_ID)
     );
   }
