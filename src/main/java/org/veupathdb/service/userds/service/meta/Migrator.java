@@ -37,11 +37,11 @@ public class Migrator
     log.debug("found {} migrations", migs.size());
 
     try (var con = DbMan.getImportDb().getConnection()) {
-      var loader = new SqlLoader();
+      var loader = new SqlLoader(migrationsDir);
       for (var path : migs) {
         try (var stmt = con.createStatement()) {
-          log.debug("executing {}.sql", path);
-          stmt.execute(loader.rawSql("migrations." + path).orElseThrow());
+          log.debug("executing {}{}.sql", migrationsDir, path);
+          stmt.execute(loader.rawSql(path).orElseThrow());
         }
       }
     }
