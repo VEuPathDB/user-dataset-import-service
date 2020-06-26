@@ -14,7 +14,7 @@ import org.veupathdb.service.userds.util.DbMan;
 
 public class Migrator
 {
-  private static final String migrationsDir = "/sql/migrations/";
+  private static final String migrationsDir = "sql/migrations/";
 
   public static void run() throws Exception {
     final var log = LogProvider.logger(Main.class);
@@ -37,7 +37,7 @@ public class Migrator
     log.debug("found {} migrations", migs.size());
 
     try (var con = DbMan.getImportDb().getConnection()) {
-      var loader = new SqlLoader(migrationsDir);
+      var loader = new SqlLoader("/" + migrationsDir);
       for (var path : migs) {
         try (var stmt = con.createStatement()) {
           log.debug("executing {}{}.sql", migrationsDir, path);
