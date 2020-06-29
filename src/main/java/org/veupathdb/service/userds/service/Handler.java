@@ -14,7 +14,6 @@ import org.apache.logging.log4j.Logger;
 import org.veupathdb.lib.container.jaxrs.providers.LogProvider;
 import org.veupathdb.service.userds.Main;
 import org.veupathdb.service.userds.model.JobRow;
-import org.veupathdb.service.userds.model.JobStatus;
 import org.veupathdb.service.userds.model.Service;
 import org.veupathdb.service.userds.model.handler.HandlerGeneralError;
 import org.veupathdb.service.userds.model.handler.HandlerJobResult;

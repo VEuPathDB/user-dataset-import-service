@@ -34,8 +34,9 @@ public class InsertJobQuery
     out.setShort(7, DatasetOriginCache.getInstance()
       .get(row.getOrigin())
       .orElseThrow());
+    out.setString(8, row.getType());
 
-    out.setArray(8, cn.createArrayOf("SMALLINT", row.getProjects()
+    out.setArray(9, cn.createArrayOf("SMALLINT", row.getProjects()
       .stream()
       .map(ProjectCache.getInstance()::get)
       .toArray(Object[]::new)));

@@ -156,7 +156,10 @@ public class UserDatasetController implements UserDatasets
       //noinspection SynchronizationOnLocalVariableOrMethodParameter
       synchronized (lock) {
         ThreadProvider.newThread(new Importer(
-          job, bound, new InputStreamNotifier(body, lock))).start();
+          job,
+          bound,
+          new InputStreamNotifier(body, lock)
+        )).start();
         lock.wait();
       }
 
