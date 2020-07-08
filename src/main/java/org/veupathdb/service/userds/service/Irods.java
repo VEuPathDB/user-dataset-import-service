@@ -15,7 +15,7 @@ import org.veupathdb.service.userds.model.config.ExtOptions;
 
 public class Irods
 {
-  private static final int bufferSize = 16384;
+  private static final int bufferSize = 32_768;
   private static final int flushCount = 10;  // flush every 160KiB
   private static final int noteCount  = 640; // log every 10MiB
   private static final Logger log = LogProvider.logger(Irods.class);
@@ -53,7 +53,7 @@ public class Irods
           writer.flush();
 
         if (counter % noteCount == 0)
-          log.trace(((counter % noteCount) * 10) + "MiB written to iRODS");
+          log.trace((counter * bufferSize / 1024 / 1024) + "MiB written to iRODS");
       }
       writer.flush();
     }
