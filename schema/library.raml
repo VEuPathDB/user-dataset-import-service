@@ -9,6 +9,149 @@
 ################################################################################
 
 types:
+  ProjectType:
+    type: string
+    examples: !!omap
+      - AmoebaDB: !!omap
+          - "": AmoebaDB
+      - ClinepiDB: !!omap
+          - "": ClinepiDB
+      - CryptoDB: !!omap
+          - "": CryptoDB
+      - FungiDB: !!omap
+          - "": FungiDB
+      - GiardiaDB: !!omap
+          - "": GiardiaDB
+      - HostDB: !!omap
+          - "": HostDB
+      - MicrobiomeDB: !!omap
+          - "": MicrobiomeDB
+      - MicrosporidiaDB: !!omap
+          - "": MicrosporidiaDB
+      - Orthomcl: !!omap
+          - "": Orthomcl
+      - PiroplasmaDB: !!omap
+          - "": PiroplasmaDB
+      - PlasmoDB: !!omap
+          - "": PlasmoDB
+      - SchistoDB: !!omap
+          - "": SchistoDB
+      - ToxoDB: !!omap
+          - "": ToxoDB
+      - TrichDB: !!omap
+          - "": TrichDB
+      - TritrypDB: !!omap
+          - "": TritrypDB
+      - Vectorbase: !!omap
+          - "": Vectorbase
+  JobStatus:
+    type: string
+    examples: !!omap
+      - sending-to-handler: !!omap
+          - "": sending-to-handler
+      - handler-unpacking: !!omap
+          - "": handler-unpacking
+      - handler-processing: !!omap
+          - "": handler-processing
+      - handler-packing: !!omap
+          - "": handler-packing
+      - sending-to-datastore: !!omap
+          - "": sending-to-datastore
+      - success: !!omap
+          - "": success
+      - rejected: !!omap
+          - "": rejected
+      - errored: !!omap
+          - "": errored
+  DatasetOrigin:
+    type: string
+    examples: !!omap
+      - Galaxy: !!omap
+          - "": galaxy
+      - Direct Upload: !!omap
+          - "": direct-upload
+  StatusResponse:
+    type: object
+    additionalProperties: false
+    properties:
+      id: string
+      datasetName: string
+      description?: string
+      summary?: string
+      datasetId?:
+        description: |
+          iRODS given dataset ID that will be present only if the job completed
+          successfully.
+        type: integer
+        minimum: 0
+      projects:
+        type: array
+        items: ProjectType
+      status: JobStatus
+      statusDetails:
+        description: |
+          Optional property containing additional details about the job status.
+
+          Will contain error messages, warnings, or validation failure reasons.
+        type: ValidationErrors | JobError
+        required: false
+      origin: DatasetOrigin
+      started: datetime
+      finished?: datetime
+    examples: !!omap
+      - success: !!omap
+          - id: 2XZEXFa8FMA2HmQpHpA9eA
+          - datasetName: foo
+          - projects:
+              - MicrobiomeDB
+          - status: success
+          - datasetId: 12354
+          - origin: direct-upload
+          - started: '2020-06-04T16:06:26.074Z'
+          - finished: '2020-06-04T16:06:28.090Z'
+      - errored: !!omap
+          - id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
+          - datasetName: my-dataset
+          - projects:
+              - PlasmoDB
+          - status: errored
+          - origin: direct-upload
+          - started: '2020-06-04T16:06:26.074Z'
+          - finished: '2020-06-04T16:06:28.090Z'
+          - statusDetails:
+              message: Dataset handler failed to process uploaded user dataset.
+      - rejected: !!omap
+          - id: 1mDdvV8elI0wXUVD6AUGi4
+          - datasetName: foo
+          - projects:
+              - MicrobiomeDB
+          - status: rejected
+          - origin: direct-upload
+          - statusDetails:
+              errors:
+                general:
+                  - "('Could not load the file as BIOM - does it conform to the specification on https://biom-format.org?', ValueError('Expecting object: line 139 column 1 (char 1554)',))"
+                byKey: {}
+          - started: '2020-06-04T16:06:26.074Z'
+          - finished: '2020-06-04T16:06:28.090Z'
+  ValidationErrors:
+    type: object
+    properties:
+      errors:
+        type: object
+        additionalProperties: false
+        properties:
+          general:
+            type: array
+            items: string
+          byKey:
+            type: object
+            properties:
+              //: string
+  JobError:
+    type: object
+    properties:
+      message: string
   PrepRequest:
     type: object
     additionalProperties: false
@@ -57,121 +200,4 @@ types:
         default: ok
         enum:
           - ok
-  ProjectType:
-    type: string
-    examples:
-      AmoebaDB: AmoebaDB
-      ClinepiDB: ClinepiDB
-      CryptoDB: CryptoDB
-      FungiDB: FungiDB
-      GiardiaDB: GiardiaDB
-      HostDB: HostDB
-      MicrobiomeDB: MicrobiomeDB
-      MicrosporidiaDB: MicrosporidiaDB
-      Orthomcl: Orthomcl
-      PiroplasmaDB: PiroplasmaDB
-      PlasmoDB: PlasmoDB
-      SchistoDB: SchistoDB
-      ToxoDB: ToxoDB
-      TrichDB: TrichDB
-      TritrypDB: TritrypDB
-      Vectorbase: Vectorbase
-  JobStatus:
-    type: string
-    examples:
-      sending-to-handler: sending-to-handler
-      handler-unpacking: handler-unpacking
-      handler-processing: handler-processing
-      handler-packing: handler-packing
-      sending-to-datastore: sending-to-datastore
-      success: success
-      rejected: rejected
-      errored: errored
-  DatasetOrigin:
-    type: string
-    examples:
-      Galaxy: galaxy
-      Direct Upload: direct-upload
-  StatusResponse:
-    type: object
-    additionalProperties: false
-    properties:
-      id: string
-      datasetName: string
-      description?: string
-      summary?: string
-      datasetId?:
-        description: |
-          iRODS given dataset ID that will be present only if the job completed
-          successfully.
-        type: integer
-        minimum: 0
-      projects:
-        type: array
-        items: ProjectType
-      status: JobStatus
-      statusDetails:
-        description: |
-          Optional property containing additional details about the job status.
-
-          Will contain error messages, warnings, or validation failure reasons.
-        type: ValidationErrors | JobError
-        required: false
-      origin: DatasetOrigin
-      started: datetime
-      finished?: datetime
-    examples:
-      success:
-        status: success
-        datasetId: 12354
-        origin: direct-upload
-        started: '2020-06-04T16:06:26.074Z'
-        finished: '2020-06-04T16:06:28.090Z'
-        id: 2XZEXFa8FMA2HmQpHpA9eA
-        datasetName: foo
-        projects:
-          - MicrobiomeDB
-      errored:
-        started: '2020-06-04T16:06:26.074Z'
-        finished: '2020-06-04T16:06:28.090Z'
-        statusDetails:
-          message: Dataset handler failed to process uploaded user dataset.
-        id: c4f3cd7b-d08a-4ed4-ba56-1f39cafa1534
-        datasetName: my-dataset
-        projects:
-          - PlasmoDB
-        status: errored
-        origin: direct-upload
-      rejected:
-        status: rejected
-        origin: direct-upload
-        statusDetails:
-          errors:
-            general:
-              - "('Could not load the file as BIOM - does it conform to the specification on https://biom-format.org?', ValueError('Expecting object: line 139 column 1 (char 1554)',))"
-            byKey: {}
-        started: '2020-06-04T16:06:26.074Z'
-        finished: '2020-06-04T16:06:28.090Z'
-        id: 1mDdvV8elI0wXUVD6AUGi4
-        datasetName: foo
-        projects:
-          - MicrobiomeDB
-  ValidationErrors:
-    type: object
-    properties:
-      errors:
-        type: object
-        additionalProperties: false
-        properties:
-          general:
-            type: array
-            items: string
-          byKey:
-            type: object
-            properties:
-              //: string
-  JobError:
-    type: object
-    properties:
-      message: string
 
