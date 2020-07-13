@@ -64,7 +64,7 @@ dependencies {
   implementation("org.irods.jargon:jargon-core:4.3.1.0-RELEASE")
 
   // Core lib, prefers local checkout if available
-  implementation(findProject(":core") ?: "org.veupathdb.lib:jaxrs-container-core:1.6.1")
+  implementation(findProject(":core") ?: "org.veupathdb.lib:jaxrs-container-core:2.1.0")
 
   // Jersey
   implementation("org.glassfish.jersey.containers:jersey-container-grizzly2-http:${jersey}")
@@ -96,7 +96,6 @@ dependencies {
   implementation("com.devskiller.friendly-id:friendly-id:1.+")
 
   // Unit Testing
-  testImplementation("org.junit.jupiter:junit-jupiter-api:${junit}")
+  testImplementation("org.junit.jupiter:junit-jupiter:${junit}")
   testImplementation("org.mockito:mockito-core:2.+")
-  testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junit}")
 }
