@@ -8,7 +8,6 @@ import javax.sql.DataSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.glassfish.grizzly.http.server.HttpHandler;
 import org.veupathdb.lib.container.jaxrs.config.Options;
 import org.veupathdb.lib.container.jaxrs.health.Dependency;
 import org.veupathdb.lib.container.jaxrs.server.ContainerResources;
