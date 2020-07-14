@@ -36,7 +36,7 @@ public class Main extends Server {
   public static void main(String[] args) {
 
     java.util.logging.Logger.getLogger("org.glassfish.grizzly").setLevel(Level.ALL);
-    java.util.logging.Logger.getLogger("com.sun.jersey");
+    java.util.logging.Logger.getLogger("com.sun.jersey").setLevel(Level.ALL);
 
     var server = new Main();
 
