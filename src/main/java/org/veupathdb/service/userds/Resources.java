@@ -18,6 +18,7 @@ public class Resources extends ContainerResources {
     super(opts);
     enableCors();
     enableAuth();
+    enableJerseyTrace();
   }
 
   /**
