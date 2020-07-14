@@ -72,10 +72,12 @@ services:
       AUTH_SECRET_KEY:
 
       # Account DB Connection Info
-      ACCT_DB_HOST:
       ACCT_DB_USER:
       ACCT_DB_PASS:
-      ACCT_DB_NAME:
+      ACCT_DB_TNS_NAME:
+
+      LDAP_SERVER:
+      ORACLE_BASE_DN:
 
       # Postgres settings
       DATASTORE_PASS: 1234
