@@ -1,12 +1,14 @@
 package org.veupathdb.service.userds;
 
 import java.io.FileReader;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.glassfish.grizzly.http.server.HttpHandler;
 import org.veupathdb.lib.container.jaxrs.config.Options;
 import org.veupathdb.lib.container.jaxrs.health.Dependency;
 import org.veupathdb.lib.container.jaxrs.server.ContainerResources;
@@ -32,6 +34,10 @@ public class Main extends Server {
   public static  HandlerConfig jsonConfig;
 
   public static void main(String[] args) {
+
+    final var l = java.util.logging.Logger.getLogger(HttpHandler.class.getName());
+    l.setLevel(Level.ALL);
+
     var server = new Main();
 
     server.enableAccountDB();
