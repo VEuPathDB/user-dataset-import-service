@@ -109,7 +109,7 @@ public class Handler
   ) throws Exception {
     logger.trace("Handler#submitJob(JobRow, String, InputStream)");
     try {
-      final var fut = HttpClient.newHttpClient().sendAsync(
+      final var res = HttpClient.newHttpClient().send(
         HttpRequest.newBuilder(URI.create(
           format(jobEndpoint, svc.getName(), job.getJobId())))
           .header(Header.CONTENT_TYPE, MULTIPART_HEAD + boundary)
@@ -119,15 +119,7 @@ public class Handler
       );
       Errors.swallow(body::close);
 
-      while (!fut.isDone()) {
-        //noinspection BusyWait
-        Thread.sleep(1000);
-        logger.debug("Sent {} bytes to handler", body.bytesRead());
-      }
-
       logger.debug("Upload sent to handler.  Total {} bytes.", body.bytesRead());
-
-      final var res = fut.get();
 
       // Client connection should be closed with the body.close call.  From here
       // on we need to make sure we log errors because Jersey won't do any
