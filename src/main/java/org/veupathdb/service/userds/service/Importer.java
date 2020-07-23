@@ -1,6 +1,5 @@
 package org.veupathdb.service.userds.service;
 
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -18,6 +17,7 @@ import org.veupathdb.service.userds.repo.InsertMessageQuery;
 import org.veupathdb.service.userds.repo.UpdateJobCompletedQuery;
 import org.veupathdb.service.userds.repo.UpdateJobStatusQuery;
 import org.veupathdb.service.userds.util.Errors;
+import org.veupathdb.service.userds.util.InputStreamNotifier;
 
 import static org.veupathdb.service.userds.util.Format.Json;
 
@@ -27,12 +27,12 @@ public class Importer implements Runnable
 
   private final JobRow job;
   private final String boundary;
-  private final InputStream reader;
+  private final InputStreamNotifier reader;
 
   public Importer(
     JobRow job,
     String boundary,
-    InputStream reader
+    InputStreamNotifier reader
   ) {
     this.job = job;
     this.boundary = boundary;
@@ -72,6 +72,7 @@ public class Importer implements Runnable
       while (flag.isEmpty()) {
         // iRODS is already struggling just to do iRODS stuff, no need to
         // harass it.
+        //noinspection BusyWait
         Thread.sleep(500);
 
         flag = Irods.getFlag(file);
@@ -101,7 +102,9 @@ public class Importer implements Runnable
     }
   }
 
-  private boolean doPrep(Handler hand) throws Exception {
+  private boolean doPrep(final Handler hand) throws Exception {
+    log.trace("Importer#doPrep(Handler)");
+
     var raw = hand.prepareJob(job);
 
     if (raw.isEmpty())
@@ -122,8 +125,10 @@ public class Importer implements Runnable
     return false;
   }
 
-  private Optional < HandlerJobResult > doSubmit(Handler hand)
+  private Optional < HandlerJobResult > doSubmit(final Handler hand)
   throws Exception {
+    log.trace("Importer#doSubmit(Handler)");
+
     var raw = hand.submitJob(job, boundary, reader);
 
     if (raw.isLeft())
@@ -144,8 +149,8 @@ public class Importer implements Runnable
     return Optional.empty();
   }
 
-  private void doStore(HandlerJobResult result) throws Exception {
-    LogProvider.logger(getClass()).trace("Importer#doStore");
+  private void doStore(final HandlerJobResult result) throws Exception {
+    log.trace("Importer#doStore(HandlerJobResult)");
     try {
       Irods.writeDataset(result.getFileName(), result.getContent());
     } catch (Throwable t) {
@@ -156,26 +161,28 @@ public class Importer implements Runnable
     }
   }
 
-  private void do400(HandlerGeneralError err) throws Exception {
-    LogProvider.logger(getClass()).trace("Importer#do400");
+  private void do400(final HandlerGeneralError err) throws Exception {
+    log.trace("Importer#do400(HandlerGeneralError)");
     UpdateJobStatusQuery.run(job.getDbId(), JobStatus.REJECTED);
     UpdateJobCompletedQuery.run(job.getDbId(), LocalDateTime.now());
     InsertMessageQuery.run(job.getDbId(), err.getMessage());
   }
 
-  private void do422(HandlerValidationError err) throws Exception {
-    LogProvider.logger(getClass()).trace("Importer#do422");
+  private void do422(final HandlerValidationError err) throws Exception {
+    log.trace("Importer#do422(HandlerValidationError)");
     var js = Json.convertValue(err.getErrors(), JsonNode.class);
     UpdateJobStatusQuery.run(job.getDbId(), JobStatus.REJECTED);
     UpdateJobCompletedQuery.run(job.getDbId(), LocalDateTime.now());
     InsertMessageQuery.run(job.getDbId(), js);
   }
 
-  private void do500(HandlerGeneralError err) throws Exception {
+  private void do500(final HandlerGeneralError err) throws Exception {
+    log.trace("Importer#do500(HandlerGeneralError)");
     do500(err.getMessage());
   }
 
   private void do500(String err) throws Exception {
+    log.trace("Importer#do500(String)");
     LogProvider.logger(getClass()).trace("Importer#do500");
     UpdateJobStatusQuery.run(job.getDbId(), JobStatus.ERRORED);
     UpdateJobCompletedQuery.run(job.getDbId(), LocalDateTime.now());

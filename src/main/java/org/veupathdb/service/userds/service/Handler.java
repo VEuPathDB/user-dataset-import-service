@@ -1,6 +1,5 @@
 package org.veupathdb.service.userds.service;
 
-import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -21,6 +20,7 @@ import org.veupathdb.service.userds.model.handler.HandlerPayload;
 import org.veupathdb.service.userds.model.handler.HandlerValidationError;
 import org.veupathdb.service.userds.util.Errors;
 import org.veupathdb.service.userds.util.Format;
+import org.veupathdb.service.userds.util.InputStreamNotifier;
 import org.veupathdb.service.userds.util.http.Header;
 
 import static java.lang.String.format;
@@ -47,7 +47,8 @@ public class Handler
 
   // TODO: This should return something useful.
   public Optional < Either < HandlerGeneralError, HandlerValidationError > >
-  prepareJob(JobRow job) throws Exception {
+  prepareJob(final JobRow job) throws Exception {
+    logger.trace("Handler#prepareJob(JobRow)");
 
     var res = HttpClient.newHttpClient()
       .send(
@@ -104,10 +105,11 @@ public class Handler
   submitJob(
     final JobRow job,
     final String boundary,
-    final InputStream body
+    final InputStreamNotifier body
   ) throws Exception {
+    logger.trace("Handler#submitJob(JobRow, String, InputStream)");
     try {
-      final var res = HttpClient.newHttpClient().send(
+      final var fut = HttpClient.newHttpClient().sendAsync(
         HttpRequest.newBuilder(URI.create(
           format(jobEndpoint, svc.getName(), job.getJobId())))
           .header(Header.CONTENT_TYPE, MULTIPART_HEAD + boundary)
@@ -117,11 +119,22 @@ public class Handler
       );
       Errors.swallow(body::close);
 
+      while (!fut.isDone()) {
+        //noinspection BusyWait
+        Thread.sleep(1000);
+        logger.debug("Sent {} bytes to handler", body.bytesRead());
+      }
+
+      logger.debug("Upload sent to handler.  Total {} bytes.", body.bytesRead());
+
+      final var res = fut.get();
+
       // Client connection should be closed with the body.close call.  From here
       // on we need to make sure we log errors because Jersey won't do any
       // reporting for us.
 
       if (res.statusCode() == 200) {
+        logger.debug("job submission successful");
         var optName = res.headers()
           .allValues(Header.CONTENT_DISPOSITION)
           .stream()
@@ -136,6 +149,8 @@ public class Handler
         }
 
         return Either.ofLeft(new HandlerJobResult(optName.get(), res.body()));
+      } else {
+        logger.warn("job submission unsuccessful");
       }
 
       return res.statusCode() == 422
@@ -152,7 +167,9 @@ public class Handler
     }
   }
 
-  public String getJobStatus(String jobId) throws Exception {
+  @SuppressWarnings("unused")
+  public String getJobStatus(final String jobId) throws Exception {
+    logger.trace("Handler#getJobStatus(String)");
     final var res = HttpClient.newHttpClient().send(
       HttpRequest.newBuilder(URI.create(
         format(statusEndpoint, svc.getName(), jobId)))
@@ -168,7 +185,8 @@ public class Handler
     return body.get("status").textValue();
   }
 
-  public static Optional < Handler > getHandler(String format) {
+  public static Optional < Handler > getHandler(final String format) {
+    logger.trace("Handler#getHandler(String)");
     var form = format.toLowerCase();
 
     if (handlers.containsKey(form))
