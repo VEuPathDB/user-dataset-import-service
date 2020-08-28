@@ -14,6 +14,11 @@ RUN jlink --compress=2 --module-path /opt/jdk/jmods \
     && apk add --no-cache git sed findutils coreutils make npm \
     && git config --global advice.detachedHead false
 
+RUN apk update \
+    && apk add ca-certificates curl  \
+    && curl https://veupathdb.org/common/apidb-ca-rsa.crt -o /usr/local/share/ca-certificates/apidb-ca-rsa.crt \
+    && update-ca-certificates
+
 ENV DOCKER=build
 COPY makefile gradlew ./
 COPY gradle gradle
