@@ -17,7 +17,8 @@ RUN jlink --compress=2 --module-path /opt/jdk/jmods \
 RUN apk update \
     && apk add ca-certificates curl  \
     && curl https://veupathdb.org/common/apidb-ca-rsa.crt -o /usr/local/share/ca-certificates/apidb-ca-rsa.crt \
-    && update-ca-certificates
+    && update-ca-certificates \
+    && keytool -import -storepass changeit -noprompt -file /usr/local/share/ca-certificates/apidb-ca-rsa.crt -keystore /opt/jdk/lib/security/cacerts
 
 ENV DOCKER=build
 COPY makefile gradlew ./
