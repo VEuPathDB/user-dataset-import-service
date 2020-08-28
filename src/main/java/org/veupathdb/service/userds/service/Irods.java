@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.apache.logging.log4j.Logger;
 import org.irods.jargon.core.connection.ClientServerNegotiationPolicy;
+import org.irods.jargon.core.connection.ClientServerNegotiationPolicy.SslNegotiationPolicy;
 import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.packinstr.DataObjInp;
 import org.irods.jargon.core.pub.IRODSFileSystem;
@@ -123,8 +124,8 @@ public class Irods
     log.trace("Irods#initAccount");
     final var csnp = new ClientServerNegotiationPolicy();
 
-    csnp.setSslNegotiationPolicy(
-      ClientServerNegotiationPolicy.SslNegotiationPolicy.CS_NEG_REFUSE);
+    csnp.setSslNegotiationPolicy(opts.getIrodsSsl()
+      .orElse(SslNegotiationPolicy.CS_NEG_REQUIRE));
 
     return IRODSAccount.instance(
       opts.getIrodsHost().orElseThrow(),

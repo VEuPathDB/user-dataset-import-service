@@ -60,6 +60,21 @@ Dataset handler/exporter for `biom` dataset types.
 `IRODS_PASS`:: Connection credentials: password.
 `IRODS_ZONE`:: {empty}
 `IRODS_RESOURCE`:: {empty}
+`IRODS_SSL_MODE`::
+  iRODS SSL negotiation mode.
++
+Valid values are:
++
+--
+* `CS_NEG_REQUIRE`
+* `CS_NEG_DONT_CARE`
+* `CS_NEG_REFUSE`
+* `NO_NEGOTIATION`
+* `CS_NEG_FAILURE`
+--
++
+When omitted, defaults to `CS_NEG_REQUIRE`
+
 
 === User token salt
 

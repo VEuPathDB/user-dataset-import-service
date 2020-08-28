@@ -2,6 +2,7 @@ package org.veupathdb.service.userds.model.config;
 
 import java.util.Optional;
 
+import org.irods.jargon.core.connection.ClientServerNegotiationPolicy.SslNegotiationPolicy;
 import org.veupathdb.lib.container.jaxrs.config.Options;
 import picocli.CommandLine.Option;
 
@@ -48,6 +49,13 @@ public class ExtOptions extends Options
     description = "env: IRODS_RESOURCE",
     arity = "1")
   private String irodsResource;
+
+  @Option(
+    names = "--irods-ssl-mode",
+    defaultValue = "${env:IRODS_SSL_MODE}",
+    description = "env: IRODS_SSL_MODE",
+    arity = "1")
+  private SslNegotiationPolicy irodsSsl;
 
   @Option(
     names = "--datastore-host",
@@ -103,6 +111,10 @@ public class ExtOptions extends Options
 
   public Optional < String > getIrodsResource() {
     return Optional.ofNullable(irodsResource);
+  }
+
+  public Optional < SslNegotiationPolicy > getIrodsSsl() {
+    return Optional.ofNullable(irodsSsl);
   }
 
   public Optional < String > getDsHost() {
