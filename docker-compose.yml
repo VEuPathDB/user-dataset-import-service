@@ -10,11 +10,11 @@ services:
 
   # BIOM form handler
   biom-handler:
-    image: veupathdb/user-dataset-handler-biom:${HANDLER_TAG:-latest}
+    image: veupathdb/user-dataset-handler-biom:${BIOME_HANDLER_TAG:-latest}
     networks:
       - internal
     labels:
-      - "com.centurylinklabs.watchtower.enable=${HANDLER_WATCHTOWER:-false}"
+      - "com.centurylinklabs.watchtower.enable=${BIOME_HANDLER_WATCHTOWER:-false}"
       - "traefik.enable=false"
 
 
@@ -34,13 +34,13 @@ services:
     networks:
       - internal
     labels:
-      - "com.centurylinklabs.watchtower.enable=${HANDLER_WATCHTOWER:-false}"
+      - "com.centurylinklabs.watchtower.enable=${POSTGRES_WATCHTOWER:-false}"
       - "traefik.enable=false"
 
 
   # Import Service
   importer:
-    image: veupathdb/user-dataset-import-service:${SERVICE_TAG:-latest}
+    image: veupathdb/user-dataset-import-service:${IMPORTER_TAG:-latest}
     networks:
       - internal
       - traefik
@@ -79,7 +79,7 @@ services:
       done;
       java -jar /service.jar"
     labels:
-      - "com.centurylinklabs.watchtower.enable=${HANDLER_WATCHTOWER:-false}"
+      - "com.centurylinklabs.watchtower.enable=${IMPORTER_WATCHTOWER:-false}"
       - "traefik.http.routers.${TRAEFIK_ROUTER:-udis-dev}.rule=Host(`${TRAEFIK_HOST:-udis-dev.local.apidb.org}`)"
       - "traefik.http.routers.${TRAEFIK_ROUTER:-udis-dev}.tls=true"
       - "traefik.http.routers.${TRAEFIK_ROUTER:-udis-dev}.entrypoints=${TRAEFIK_ENTRYPOINTS:-local}"
